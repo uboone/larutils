@@ -32,6 +32,18 @@ set +x
 
 source localProducts*/setup || exit 1
 
+# some shenanigans so we can test mrb v1_03_00 before installing it
+cd $MRB_INSTALL
+curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/packages/mrb/v1_03_00/mrb-1.03.00-noarch.tar.bz2  || \
+      { cat 1>&2 <<EOF
+ERROR: pull of http://scisoft.fnal.gov/scisoft/packages/mrb/v1_03_00/mrb-1.03.00-noarch.tar.bz2 failed
+EOF
+        exit 1
+      }
+tar xf mrb-1.03.00-noarch.tar.bz2 || exit 1
+setup mrb  || exit 1
+which mrb
+
 set -x
 cd $MRB_SOURCE  || exit 1
 # make sure we get a read-only copy
