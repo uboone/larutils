@@ -5,7 +5,6 @@
 # designed to work on Jenkins
 # this is a proof of concept script
 
-echo "larsoft version: $LARVER"
 echo "uboonecode version: $UBOONE"
 echo "ubuitil version: $UBUTIL"
 echo "base qualifiers: $QUAL"
