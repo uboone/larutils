@@ -38,6 +38,7 @@ cd $MRB_SOURCE  || exit 1
 mrb g -r -t $UBOONE uboonecode || exit 1
 mrb g -r -t $UBUTIL ubutil || exit 1
 cd $MRB_BUILDDIR || exit 1
+mrbsetenv || exit 1
 mrb b -j$ncores || exit 1
 mrb mp -j$ncores || exit 1
 mv *.bz2  $WORKSPACE/copyBack/ || exit 1
