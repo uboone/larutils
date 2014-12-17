@@ -92,6 +92,7 @@ qualdir=`echo ${qual_set} | sed -e 's%:%-%'`
 
 set -x
 
+working_dir=$WORKSPACE
 blddir=${working_dir}/build
 srcdir=${working_dir}/source
 mkdir -p ${srcdir} || exit 1
@@ -114,7 +115,7 @@ cd ${blddir} || exit 1
 # pulling binaries is allowed to fail
 ./pullProducts ${working_dir} ${flvr} art-${artver} ${basequal} ${build_type} 
 ./pullProducts ${working_dir} ${flvr} nu-${nuver} ${squal}-${basequal} ${build_type} 
-./pullProducts ${working_dir} ${flvr} larsoft-${version} ${squal}-${basequal} ${build_type} 
+ls
 echo
 echo "begin build"
 echo
