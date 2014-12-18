@@ -92,9 +92,11 @@ qualdir=`echo ${qual_set} | sed -e 's%:%-%'`
 
 set -x
 
-blddir=${working_dir}/build
 srcdir=${working_dir}/source
 mkdir -p ${srcdir} || exit 1
+# make sure we have a clean build directory
+blddir=${working_dir}/build
+rm -rf ${blddir}
 mkdir -p ${blddir} || exit 1
 mkdir -p $WORKSPACE/copyBack || exit 1
 
