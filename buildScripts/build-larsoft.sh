@@ -116,7 +116,6 @@ cd ${blddir} || exit 1
 # pulling binaries is allowed to fail
 ./pullProducts ${blddir} ${flvr} art-${artver} ${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} nu-${nuver} ${squal}-${basequal} ${build_type} 
-ls
 echo
 echo "begin build"
 echo
