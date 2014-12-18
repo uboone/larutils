@@ -23,6 +23,7 @@ find_ups_product(cetbuildtools v4_00_00)
 
 # source code
 add_subdirectory(buildScripts)
+add_subdirectory(scripts)
 add_subdirectory(test)
 add_subdirectory(ups)
 
