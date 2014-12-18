@@ -14,7 +14,8 @@ echo "workspace: $WORKSPACE"
 ncores=`cat /proc/cpuinfo 2>/dev/null | grep -c -e '^processor'`
 
 
-source /grid/fermiapp/products/larsoft/setup || exit 1
+#source /grid/fermiapp/products/larsoft/setup || exit 1
+source /grid/fermiapp/products/uboone/setup_uboone.sh || exit 1
 
 setup git || exit 1
 setup gitflow || exit 1
