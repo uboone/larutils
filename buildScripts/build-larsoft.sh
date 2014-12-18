@@ -119,7 +119,7 @@ ls
 echo
 echo "begin build"
 echo
-./buildFW -t -b ${basequal} -s ${squal} ${working_dir} ${build_type} larsoft-${version} || \
+./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
