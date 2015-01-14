@@ -16,11 +16,7 @@ Options:
 
 Arguments:
 
-  version
-
-  qual_set         Supported qualifier sets: e5, e6
-
-  build_type       debug, prof
+  qual_set         Supported qualifier sets: s6:e6, s5:e6, s5:e5
 
 EOF
 }
@@ -56,6 +52,12 @@ case ${qual_set} in
      squal=s5
      artver=v1_12_04
      nuver=v1_07_00
+  ;;
+  s6:e6) 
+     basequal=e6
+     squal=s6
+     artver=v1_12_05
+     nuver=v1_07_01
   ;;
   *)
     usage
