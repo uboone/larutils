@@ -78,7 +78,7 @@ fi
 
 set -x
 cd ${product_topdir}
-tar cjf ${working_dir}/${product_name}-${dotver}-noarch.tar.gz \
+tar cjf ${working_dir}/${product_name}-${dotver}-noarch.tar.bz2 \
         ${product_name}/${product_version}.version  \
 	${product_name}/${product_version}
 cd ${working_dir}
