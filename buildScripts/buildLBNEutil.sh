@@ -13,7 +13,7 @@ echo "workspace: $WORKSPACE"
 ncores=`cat /proc/cpuinfo 2>/dev/null | grep -c -e '^processor'`
 
 
-source /grid/fermiapp/products/larsoft/setup || exit 1
+source /grid/fermiapp/lbne/software/setup_lbne.sh || exit 1
 
 setup git || exit 1
 setup gitflow || exit 1
@@ -35,7 +35,7 @@ source localProducts*/setup || exit 1
 set -x
 cd $MRB_SOURCE  || exit 1
 # make sure we get a read-only copy
-mrb g -r -t $LBNEVER lbneutil || exit 1
+mrb g -r -t $LBNEUTILVER lbneutil || exit 1
 cd $MRB_BUILDDIR || exit 1
 mrbsetenv || exit 1
 mrb b -j$ncores || exit 1
