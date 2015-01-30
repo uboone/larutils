@@ -27,7 +27,7 @@ mkdir -p $WORKSPACE/temp || exit 1
 mkdir -p $WORKSPACE/copyBack || exit 1
 rm -f $WORKSPACE/copyBack/* || exit 1
 cd $WORKSPACE/temp || exit 1
-mrb newDev  -v $LBNEVER -q $QUAL:$BUILDTYPE || exit 1
+mrb newDev  -v $LBNEUTILVER -q $QUAL:$BUILDTYPE || exit 1
 set +x
 
 source localProducts*/setup || exit 1
