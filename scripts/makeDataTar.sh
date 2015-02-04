@@ -82,7 +82,7 @@ tar cjf ${working_dir}/${product_name}-${dotver}-noarch.tar.bz2 \
         ${product_name}/${product_version}.version  \
 	${product_name}/${product_version}
 cd ${working_dir}
-ls -l ${product_name}-${dotver}-noarch.tar.gz || exit 1
+ls -l ${product_name}-${dotver}-noarch.tar.bz2 || exit 1
 set +x
 
 exit 0
