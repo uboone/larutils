@@ -15,7 +15,14 @@ ncores=`cat /proc/cpuinfo 2>/dev/null | grep -c -e '^processor'`
 
 
 #source /grid/fermiapp/products/larsoft/setup || exit 1
-source /grid/fermiapp/products/uboone/setup_uboone.sh || exit 1
+if [ -f /grid/fermiapp/products/uboone/setup_uboone.sh ]; then
+  source /grid/fermiapp/products/uboone/setup_uboone.sh || exit 1
+elif [ -f /cvmfs/oasis.opensciencegrid.org/microboone/products/setup_uboone.sh ]; then
+  source /cvmfs/oasis.opensciencegrid.org/microboone/products/setup_uboone.sh || exit 1
+else
+  echo "No setup file found."
+  exit 1
+fi
 
 setup git || exit 1
 setup gitflow || exit 1
