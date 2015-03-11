@@ -11,10 +11,19 @@ echo "base qualifiers: $QUAL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
 
+# Don't do ifdh build on macos.
+
+if uname | grep -q Darwin; then
+  if ! echo $QUAL | grep -q noifdh; then
+    echo "Ifdh build requested on macos.  Quitting."
+    exit
+  fi
+fi
+
 ncores=`cat /proc/cpuinfo 2>/dev/null | grep -c -e '^processor'`
 
+# Environment setup, uses /grid/fermiapp or cvmfs.
 
-#source /grid/fermiapp/products/larsoft/setup || exit 1
 if [ -f /grid/fermiapp/products/uboone/setup_uboone.sh ]; then
   source /grid/fermiapp/products/uboone/setup_uboone.sh || exit 1
 elif [ -f /cvmfs/oasis.opensciencegrid.org/microboone/products/setup_uboone.sh ]; then
@@ -24,7 +33,9 @@ else
   exit 1
 fi
 
-setup git || exit 1
+if [ `uname` != Darwin ]; then
+  setup git || exit 1
+fi
 setup gitflow || exit 1
 setup mrb || exit 1
 export MRB_PROJECT=uboone
