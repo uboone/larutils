@@ -27,6 +27,7 @@ fi
 
 # Environment setup, uses /grid/fermiapp or cvmfs.
 
+ls /cvmfs/oasis.opensciencegrid.org
 if [ -f /grid/fermiapp/products/uboone/setup_uboone.sh ]; then
   source /grid/fermiapp/products/uboone/setup_uboone.sh || exit 1
 elif [ -f /cvmfs/oasis.opensciencegrid.org/microboone/products/setup_uboone.sh ]; then
@@ -55,18 +56,18 @@ set +x
 source localProducts*/setup || exit 1
 
 # some shenanigans so we can use getopt v1_1_6
-if [ `uname` = Darwin ]; then
-  cd $MRB_INSTALL
-  curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/packages/getopt/v1_1_6/getopt-1.1.6-d13-x86_64.tar.bz2 || \
-      { cat 1>&2 <<EOF
-ERROR: pull of http://scisoft.fnal.gov/scisoft/packages/getopt/v1_1_6/getopt-1.1.6-d13-x86_64.tar.bz2 failed
-EOF
-        exit 1
-      }
-  tar xf getopt-1.1.6-d13-x86_64.tar.bz2 || exit 1
-  setup getopt v1_1_6  || exit 1
-  which getopt
-fi
+#if [ `uname` = Darwin ]; then
+#  cd $MRB_INSTALL
+#  curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/packages/getopt/v1_1_6/getopt-1.1.6-d13-x86_64.tar.bz2 || \
+#      { cat 1>&2 <<EOF
+#ERROR: pull of http://scisoft.fnal.gov/scisoft/packages/getopt/v1_1_6/getopt-1.1.6-d13-x86_64.tar.bz2 failed
+#EOF
+#        exit 1
+#      }
+#  tar xf getopt-1.1.6-d13-x86_64.tar.bz2 || exit 1
+#  setup getopt v1_1_6  || exit 1
+#  which getopt
+#fi
 
 set -x
 cd $MRB_SOURCE  || exit 1
