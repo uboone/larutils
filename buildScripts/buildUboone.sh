@@ -20,14 +20,22 @@ if uname | grep -q Darwin; then
   fi
 fi
 
-ncores=`cat /proc/cpuinfo 2>/dev/null | grep -c -e '^processor'`
+if [ `uname` = Darwin ]; then
+  ncores=`sysctl -n hw.ncpu`
+else
+  ncores=`cat /proc/cpuinfo 2>/dev/null | grep -c -e '^processor'`
+fi
 if [ $ncores -lt 1 ]; then
   ncores=1
 fi
+echo "Building using $ncores cores."
 
 # Environment setup, uses /grid/fermiapp or cvmfs.
 
+echo "ls /cvmfs/oasis.opensciencegrid.org"
 ls /cvmfs/oasis.opensciencegrid.org
+echo
+
 if [ -f /grid/fermiapp/products/uboone/setup_uboone.sh ]; then
   source /grid/fermiapp/products/uboone/setup_uboone.sh || exit 1
 elif [ -f /cvmfs/oasis.opensciencegrid.org/microboone/products/setup_uboone.sh ]; then
