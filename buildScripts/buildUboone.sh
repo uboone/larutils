@@ -51,17 +51,17 @@ set +x
 
 source localProducts*/setup || exit 1
 
-# some shenanigans so we can use mrb v1_04_01
-#cd $MRB_INSTALL
-#curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/packages/mrb/v1_04_01/mrb-1.04.01-noarch.tar.bz2  || \
-#      { cat 1>&2 <<EOF
-#ERROR: pull of http://scisoft.fnal.gov/scisoft/packages/mrb/v1_04_01/mrb-1.04.01-noarch.tar.bz2 failed
-#EOF
-#        exit 1
-#      }
-#tar xf mrb-1.04.01-noarch.tar.bz2 || exit 1
-#setup mrb  || exit 1
-which mrb
+# some shenanigans so we can use getopt v1_1_6
+cd $MRB_INSTALL
+curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/packages/getopt/v1_1_6/getopt-1.1.6-d13-x86_64.tar.bz2 || \
+      { cat 1>&2 <<EOF
+ERROR: pull of http://scisoft.fnal.gov/scisoft/packages/getopt/v1_1_6/getopt-1.1.6-d13-x86_64.tar.bz2 failed
+EOF
+        exit 1
+      }
+tar xf getopt-1.1.6-d13-x86_64.tar.bz2 || exit 1
+setup getopt v1_1_6  || exit 1
+which getopt
 
 set -x
 cd $MRB_SOURCE  || exit 1
