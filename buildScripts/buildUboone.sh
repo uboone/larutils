@@ -21,6 +21,9 @@ if uname | grep -q Darwin; then
 fi
 
 ncores=`cat /proc/cpuinfo 2>/dev/null | grep -c -e '^processor'`
+if [ ncores -lt 1 ]; then
+  ncores=1
+fi
 
 # Environment setup, uses /grid/fermiapp or cvmfs.
 
