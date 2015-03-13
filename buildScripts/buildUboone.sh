@@ -21,7 +21,8 @@ if uname | grep -q Darwin; then
 fi
 
 if [ `uname` = Darwin ]; then
-  ncores=`sysctl -n hw.ncpu`
+  #ncores=`sysctl -n hw.ncpu`
+  ncores=1
 else
   ncores=`cat /proc/cpuinfo 2>/dev/null | grep -c -e '^processor'`
 fi
