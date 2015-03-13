@@ -73,7 +73,7 @@ source localProducts*/setup || exit 1
 #        exit 1
 #      }
 #  tar xf getopt-1.1.6-d13-x86_64.tar.bz2 || exit 1
-#  setup getopt v1_1_6  || exit 1
+  setup getopt v1_1_6  || exit 1
 #  which getopt
 #fi
 
