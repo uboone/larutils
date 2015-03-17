@@ -52,6 +52,7 @@ fi
 setup gitflow || exit 1
 setup mrb || exit 1
 export MRB_PROJECT=uboone
+which mrb
 
 set -x
 rm -rf $WORKSPACE/temp || exit 1
@@ -60,9 +61,9 @@ mkdir -p $WORKSPACE/copyBack || exit 1
 rm -f $WORKSPACE/copyBack/* || exit 1
 cd $WORKSPACE/temp || exit 1
 mrb newDev  -v $UBOONE -q $QUAL:$BUILDTYPE || exit 1
-set +x
 
 source localProducts*/setup || exit 1
+set +x
 
 # some shenanigans so we can use getopt v1_1_6
 if [ `uname` = Darwin ]; then
