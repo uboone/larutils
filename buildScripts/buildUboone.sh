@@ -50,7 +50,7 @@ if [ `uname` != Darwin ]; then
   setup git || exit 1
 fi
 setup gitflow || exit 1
-setup mrb || exit 1
+setup mrb v1_04_02 || exit 1
 export MRB_PROJECT=uboone
 which mrb
 
