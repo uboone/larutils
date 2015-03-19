@@ -6,7 +6,6 @@
 # this is a proof of concept script
 
 echo "uboonecode version: $UBOONE"
-echo "ubuitil version: $UBUTIL"
 echo "base qualifiers: $QUAL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
@@ -63,8 +62,8 @@ rm -f $WORKSPACE/copyBack/* || exit 1
 cd $WORKSPACE/temp || exit 1
 mrb newDev  -v $UBOONE -q $QUAL:$BUILDTYPE || exit 1
 
-source localProducts*/setup || exit 1
 set +x
+source localProducts*/setup || exit 1
 
 # some shenanigans so we can use getopt v1_1_6
 if [ `uname` = Darwin ]; then
@@ -80,20 +79,22 @@ if [ `uname` = Darwin ]; then
 #  which getopt
 fi
 
-# Extract ubutil version from uboonecode product_deps
-UBUTIL=`grep ubutil $MRB_SOURCE/uboonecode/ups/product_deps  | grep -v qualifier | awk '{print $2}'`
-
 set -x
 cd $MRB_SOURCE  || exit 1
 # make sure we get a read-only copy
 mrb g -r -t $UBOONE uboonecode || exit 1
+
+# Extract ubutil version from uboonecode product_deps
+UBUTIL=`grep ubutil $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+echo "ubuitil version: $UBUTIL"
 mrb g -r -t $UBUTIL ubutil || exit 1
+
 cd $MRB_BUILDDIR || exit 1
 mrbsetenv || exit 1
 mrb b -j$ncores || exit 1
 mrb mp -n uboone -- -j$ncores || exit 1
 # add uboone_data to the manifest
-uboone_data_version=`grep uboone_data $MRB_SOURCE/uboonecode/ups/product_deps  | grep -v qualifier | awk '{print $2}'`
+uboone_data_version=`grep uboone_data $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
 uboone_data_dot_version=`echo ${uboone_data_version} |  sed -e 's/_/./g' | sed -e 's/^v//'`
 echo "uboone_data        ${uboone_data_version}       uboone_data-${uboone_data_dot_version}-noarch.tar.gz" >>  uboone-*_MANIFEST.txt
 mv *.bz2  $WORKSPACE/copyBack/ || exit 1
