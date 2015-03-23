@@ -93,12 +93,41 @@ cd $MRB_BUILDDIR || exit 1
 mrbsetenv || exit 1
 mrb b -j$ncores || exit 1
 mrb mp -n uboone -- -j$ncores || exit 1
+
 # add uboone_data to the manifest
+
+manifest=uboone-*_MANIFEST.txt
 uboone_data_version=`grep uboone_data $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
 uboone_data_dot_version=`echo ${uboone_data_version} |  sed -e 's/_/./g' | sed -e 's/^v//'`
-echo "uboone_data        ${uboone_data_version}       uboone_data-${uboone_data_dot_version}-noarch.tar.gz" >>  uboone-*_MANIFEST.txt
+echo "uboone_data          ${uboone_data_version}       uboone_data-${uboone_data_dot_version}-noarch.tar.gz" >>  $manifest
+
+# Special handling of noifdh builds goes here.
+
+if echo $QUAL | grep -q noifdh; then
+
+  if ! uname | grep -q Darwin; then
+
+    # If this is a macos build, then rename the manifest to remove noifdh qualifier in the name
+
+    noifdh_manifest=`echo $manifest | sed 's/-noifdh//'`
+    mv $manifest $noifdh_manifest
+
+  else
+
+    # Otherwise (for slf builds), delete the manifest entirely.
+
+    rm -f $manifest
+
+  fi
+fi
+
+# Save artifacts.
+
 mv *.bz2  $WORKSPACE/copyBack/ || exit 1
-mv uboone*.txt  $WORKSPACE/copyBack/ || exit 1
+manifest=uboone-*_MANIFEST.txt
+if [ -f $manifest ]; then
+  mv $manifest  $WORKSPACE/copyBack/ || exit 1
+fi
 ls -l $WORKSPACE/copyBack/
 cd $WORKSPACE || exit 1
 rm -rf $WORKSPACE/temp || exit 1
