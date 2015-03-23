@@ -129,7 +129,7 @@ echo
 
 # Fetch laraoft manifest from scisoft and append to uboonecode manifest.
 
-curl http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/manifest/${larsoft_manifest} >> $manifest || exit 1
+curl --fail --silent --location --insecure http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/manifest/${larsoft_manifest} >> $manifest || exit 1
 
 # Special handling of noifdh builds goes here.
 
