@@ -105,7 +105,7 @@ echo "uboone_data          ${uboone_data_version}       uboone_data-${uboone_dat
 
 if echo $QUAL | grep -q noifdh; then
 
-  if ! uname | grep -q Darwin; then
+  if uname | grep -q Darwin; then
 
     # If this is a macos build, then rename the manifest to remove noifdh qualifier in the name
 
