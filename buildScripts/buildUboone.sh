@@ -121,7 +121,7 @@ fi
 
 # Construct name of larsoft manifest.
 
-larsoft_hyphen_qual=`echo $LARSOFT_QUAL | tr : -`
+larsoft_hyphen_qual=`echo $LARSOFT_QUAL | tr : - | sed 's/-noifdh//'`
 larsoft_manifest=larsoft-${larsoft_dot_version}-${flvr}-${larsoft_hyphen_qual}-${BUILDTYPE}_MANIFEST.txt
 echo "Larsoft manifest:"
 echo $larsoft_manifest
