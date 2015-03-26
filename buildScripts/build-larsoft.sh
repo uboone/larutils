@@ -63,7 +63,7 @@ case ${qual_set} in
      basequal=e7
      squal=s7
      artver=v1_13_01
-     nuver=v1_09_00
+     nuver=v1_09_01
   ;;
   *)
     usage
@@ -112,6 +112,12 @@ cd ${blddir} || exit 1
 curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/pullProducts || exit 1
 chmod +x pullProducts
 # source code tarballs MUST be pulled first
+./pullProducts ${blddir} source artbase-${artver} || \
+      { cat 1>&2 <<EOF
+ERROR: pull of artbase-${artver} source failed
+EOF
+        exit 1
+      }
 ./pullProducts ${blddir} source larsoft-${version} || \
       { cat 1>&2 <<EOF
 ERROR: pull of art-${version} failed
