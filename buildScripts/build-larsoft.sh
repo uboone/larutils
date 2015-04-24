@@ -65,6 +65,12 @@ case ${qual_set} in
      artver=v1_13_01
      nuver=v1_09_01
   ;;
+  s8:e7) 
+     basequal=e7
+     squal=s8
+     artver=v1_13_02
+     nuver=v1_09_02
+  ;;
   *)
     usage
     exit 1
