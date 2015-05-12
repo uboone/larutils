@@ -95,6 +95,15 @@ mrb g -r -t $ubutil_version ubutil || exit 1
 
 cd $MRB_BUILDDIR || exit 1
 mrbsetenv || exit 1
+
+# On macos, make a local copy of cmake.
+
+if [ `uname` = Darwin ]; then
+  cp `which cmake` .
+  export PATH=`pwd`:$PATH
+  echo "Using cmake: "`which cmake`
+fi
+
 mrb b -j$ncores || exit 1
 mrb mp -n uboone -- -j$ncores || exit 1
 
