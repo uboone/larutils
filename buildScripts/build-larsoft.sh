@@ -16,7 +16,7 @@ Options:
 
 Arguments:
 
-  qual_set         Supported qualifier sets: s8:e7
+  qual_set         Supported qualifier sets: s8:e7, s11:e7
 
 EOF
 }
@@ -70,6 +70,12 @@ case ${qual_set} in
      squal=s8
      artver=v1_13_02
      nuver=v1_10_02
+  ;;
+  s11:e7) 
+     basequal=e7
+     squal=s11
+     artver=v1_14_02
+     nuver=v1_11_01
   ;;
   *)
     usage
