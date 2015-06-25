@@ -111,7 +111,7 @@ make install
 # Make distribution tarball
 
 cd ${UBOONEDAQ_HOME_DIR}/install
-dot_version=`echo $version | sed -e 's/_/\./g' | sed -e 's/^v//'`
+dot_version=`echo $VERSION | sed -e 's/_/\./g' | sed -e 's/^v//'`
 subdir=`echo $CET_SUBDIR | sed -e 's/\./-/g'`
 qual=`echo $CETPKG_QUAL | sed -e 's/:/-/g'`
 tarballname=uboonedaq_datatypes-${dot_version}-${subdir}-${qual}.tar.bz2
