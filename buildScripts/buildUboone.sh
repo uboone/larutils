@@ -109,6 +109,16 @@ uboone_data_version=`grep uboone_data $MRB_SOURCE/uboonecode/ups/product_deps | 
 uboone_data_dot_version=`echo ${uboone_data_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 echo "uboone_data          ${uboone_data_version}       uboone_data-${uboone_data_dot_version}-noarch.tar.gz" >>  $manifest
 
+# add uboonedaq_datatypes to the manifest
+
+manifest=uboone-*_MANIFEST.txt
+uboonedaq_datatypes_version=`grep uboonedaq_datatypes $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+uboonedaq_datatypes_dot_version=`echo ${uboonedaq_datatypes_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
+os=`get-directory-name os`
+plat=`get-directory-name platform`
+qual=`echo $QUAL |  sed 's/:*noifdh:*//'`
+echo "uboonedaq_datatypes          ${uboonedaq_datatypes_version}       uboonedaq_datatypes-${uboonedaq_datatypes_dot_version}-${os}-${plat}-$qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
+
 # Extract larsoft version from product_deps.
 
 larsoft_version=`grep larsoft $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
