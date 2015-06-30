@@ -117,7 +117,7 @@ uboonedaq_datatypes_dot_version=`echo ${uboonedaq_datatypes_version} | sed -e 's
 os=`get-directory-name os`
 plat=`get-directory-name platform`
 qual=`echo $QUAL |  sed 's/:*noifdh:*//'`
-echo "uboonedaq_datatypes          ${uboonedaq_datatypes_version}       uboonedaq_datatypes-${uboonedaq_datatypes_dot_version}-${os}-${plat}-$qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
+echo "uboonedaq_datatypes          ${uboonedaq_datatypes_version}       uboonedaq_datatypes-${uboonedaq_datatypes_dot_version}-${os}-${plat}-${qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
 
 # Extract larsoft version from product_deps.
 
