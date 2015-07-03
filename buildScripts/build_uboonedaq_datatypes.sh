@@ -45,11 +45,11 @@ fi
 
 if [ -f /grid/fermiapp/products/uboone/setup_uboone.sh ]; then
   source /grid/fermiapp/products/uboone/setup_uboone.sh || exit 1
-elif [ -f /cvmfs/oasis.opensciencegrid.org/microboone/products/setup_uboone.sh ]; then
+elif [ -f /cvmfs/uboone.opensciencegrid.org/products/setup_uboone.sh ]; then
   if [ -x /cvmfs/grid.cern.ch/util/cvmfs-uptodate ]; then
-    /cvmfs/grid.cern.ch/util/cvmfs-uptodate /cvmfs/oasis.opensciencegrid.org/microboone/products
+    /cvmfs/grid.cern.ch/util/cvmfs-uptodate /cvmfs/uboone.opensciencegrid.org/products
   fi
-  source /cvmfs/oasis.opensciencegrid.org/microboone/products/setup_uboone.sh || exit 1
+  source /cvmfs/uboone.opensciencegrid.org/products/setup_uboone.sh || exit 1
 else
   echo "No setup file found."
   exit 1
