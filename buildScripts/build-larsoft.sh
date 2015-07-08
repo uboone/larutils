@@ -81,7 +81,7 @@ case ${qual_set} in
      basequal=e7
      squal=s12
      artver=v1_14_03
-     nuver=v1_13_00
+     nuver=v1_13_01
   ;;
   *)
     usage
