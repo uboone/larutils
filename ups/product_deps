@@ -27,7 +27,7 @@ no_fq_dir
 incdir  -
 libdir  -
 bindir  product_dir    bin
-flcdir  -
+fcldir  -
 
 product          version
 cetbuildtools   v4_12_05       -       only_for_build
