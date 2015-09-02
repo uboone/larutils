@@ -150,7 +150,7 @@ EOF
       }
 ./pullProducts ${blddir} source larsoft-${version} || \
       { cat 1>&2 <<EOF
-ERROR: pull of art-${version} failed
+ERROR: pull of larsoft-${version} failed
 EOF
         exit 1
       }
