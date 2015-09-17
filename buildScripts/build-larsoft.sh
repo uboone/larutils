@@ -130,11 +130,14 @@ qualdir=`echo ${qual_set} | sed -e 's%:%-%'`
 
 set -x
 
-srcdir=${working_dir}/source
-mkdir -p ${srcdir} || exit 1
-# make sure we have a clean build directory
 blddir=${working_dir}/build
+srcdir=${working_dir}/source
+# start with clean directories
 rm -rf ${blddir}
+rm -rf ${srcdir}
+rm -rf $WORKSPACE/copyBack 
+# now make the dfirectories
+mkdir -p ${srcdir} || exit 1
 mkdir -p ${blddir} || exit 1
 mkdir -p $WORKSPACE/copyBack || exit 1
 
