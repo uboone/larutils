@@ -93,7 +93,7 @@ case ${qual_set} in
      basequal=e7
      squal=s15
      artver=v1_15_02
-     nuver=v1_14_02
+     nuver=v1_14_05
   ;;
   *)
     usage
@@ -162,6 +162,7 @@ mv ${blddir}/*source* ${srcdir}/
 cd ${blddir} || exit 1
 # pulling binaries is allowed to fail
 ./pullProducts ${blddir} ${flvr} art-${artver} ${basequal} ${build_type} 
+./pullProducts ${blddir} ${flvr} nubase-${nuver} ${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} nu-${nuver} ${squal}-${basequal} ${build_type} 
 echo
 echo "begin build"
