@@ -116,7 +116,7 @@ esac
 
 dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
-echo "building the larsoft base distribution for ${version} ${dotver} ${qual_set} ${build_type}"
+echo "building the larbase base distribution for ${version} ${dotver} ${qual_set} ${build_type}"
 
 OS=`uname`
 if [ "${OS}" = "Linux" ]
@@ -153,13 +153,7 @@ chmod +x pullProducts
 # source code tarballs MUST be pulled first
 ./pullProducts ${blddir} source larbase-${version} || \
       { cat 1>&2 <<EOF
-ERROR: pull of larbase-${version} source failed
-EOF
-        exit 1
-      }
-./pullProducts ${blddir} source larsoft-${version} || \
-      { cat 1>&2 <<EOF
-ERROR: pull of larsoft-${version} failed
+ERROR: pull of larbase-${version} failed
 EOF
         exit 1
       }
@@ -174,10 +168,6 @@ echo
 echo "begin build"
 echo
 ./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
-   exit 1 
- }
-./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
