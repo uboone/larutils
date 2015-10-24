@@ -101,6 +101,12 @@ case ${qual_set} in
      artver=v1_16_02
      nuver=v1_15_02
   ;;
+  s20:e9) 
+     basequal=e9
+     squal=s20
+     artver=v1_17_02
+     nuver=v1_16_00
+  ;;
   *)
     usage
     exit 1
@@ -113,6 +119,19 @@ case ${build_type} in
     usage
     exit 1
 esac
+
+# check XCode
+if [[ `uname -s` == Darwin ]] 
+then
+  OSnum=`uname -r | cut -f1 -d"."`
+  xver=`xcodebuild -version | grep Xcode | cut -f2 -d" " | cut -f1 -d"."`
+  xcver=`xcodebuild -version | grep Xcode`
+  if [[ ${basequal} == e9 ]] && [[ ${xver} < 7 ]]
+  then
+  echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
+  exit 0
+  fi
+fi
 
 dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
