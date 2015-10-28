@@ -107,6 +107,12 @@ case ${qual_set} in
      artver=v1_17_02
      nuver=v1_16_00
   ;;
+  s21:e9) 
+     basequal=e9
+     squal=s21
+     artver=v1_17_03
+     nuver=v1_16_01
+  ;;
   *)
     usage
     exit 1
@@ -170,6 +176,12 @@ cd ${blddir} || exit 1
 curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/pullProducts || exit 1
 chmod +x pullProducts
 # source code tarballs MUST be pulled first
+./pullProducts ${blddir} source lar_product_stack-${version} || \
+      { cat 1>&2 <<EOF
+ERROR: pull of lar_product_stack-${version} source failed
+EOF
+        exit 1
+      }
 ./pullProducts ${blddir} source larbase-${version} || \
       { cat 1>&2 <<EOF
 ERROR: pull of larbase-${version} source failed
@@ -188,10 +200,15 @@ cd ${blddir} || exit 1
 # pulling binaries is allowed to fail
 ./pullProducts ${blddir} ${flvr} nubase-${nuver} ${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} nu-${nuver} ${squal}-${basequal} ${build_type} 
+./pullProducts ${blddir} ${flvr} lar_product_stack-${version} ${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} larbase-${version} ${squal}-${basequal} ${build_type} 
 echo
 echo "begin build"
 echo
+./buildFW -t -b ${basequal} ${blddir} ${build_type} lar_product_stack-${version} || \
+ { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+   exit 1 
+ }
 ./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
