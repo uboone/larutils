@@ -132,7 +132,7 @@ then
   OSnum=`uname -r | cut -f1 -d"."`
   xver=`xcodebuild -version | grep Xcode | cut -f2 -d" " | cut -f1 -d"."`
   xcver=`xcodebuild -version | grep Xcode`
-  if [[ ${basequal} == e9 ]] && [[ ${xver} < 7 ]]
+  if [[ ${basequal} == e9 ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
   then
   echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
   exit 0

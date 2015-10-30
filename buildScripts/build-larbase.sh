@@ -120,6 +120,19 @@ case ${build_type} in
     exit 1
 esac
 
+# check XCode
+if [[ `uname -s` == Darwin ]] 
+then
+  OSnum=`uname -r | cut -f1 -d"."`
+  xver=`xcodebuild -version | grep Xcode | cut -f2 -d" " | cut -f1 -d"."`
+  xcver=`xcodebuild -version | grep Xcode`
+  if [[ ${basequal} == e9 ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
+  then
+  echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
+  exit 0
+  fi
+fi
+
 dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
 echo "building the larbase base distribution for ${version} ${dotver} ${qual_set} ${build_type}"
