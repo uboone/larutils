@@ -106,12 +106,14 @@ case ${qual_set} in
      squal=s20
      artver=v1_17_02
      nuver=v1_16_00
+     oldver=v04_28_00
   ;;
   s21:e9) 
      basequal=e9
      squal=s21
      artver=v1_17_03
      nuver=v1_16_01
+     oldver=v04_29_00
   ;;
   *)
     usage
@@ -200,6 +202,7 @@ cd ${blddir} || exit 1
 # pulling binaries is allowed to fail
 ./pullProducts ${blddir} ${flvr} nubase-${nuver} ${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} nu-${nuver} ${squal}-${basequal} ${build_type} 
+./pullProducts ${blddir} ${flvr} lar_product_stack-${oldver} ${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} lar_product_stack-${version} ${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} larbase-${version} ${squal}-${basequal} ${build_type} 
 echo
