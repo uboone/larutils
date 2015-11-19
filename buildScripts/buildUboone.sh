@@ -13,12 +13,12 @@ echo "workspace: $WORKSPACE"
 
 # Don't do ifdh build on macos.
 
-if uname | grep -q Darwin; then
-  if ! echo $QUAL | grep -q noifdh; then
-    echo "Ifdh build requested on macos.  Quitting."
-    exit
-  fi
-fi
+#if uname | grep -q Darwin; then
+#  if ! echo $QUAL | grep -q noifdh; then
+#    echo "Ifdh build requested on macos.  Quitting."
+#    exit
+#  fi
+#fi
 
 # Get number of cores to use.
 
