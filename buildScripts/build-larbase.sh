@@ -107,6 +107,18 @@ case ${qual_set} in
      artver=v1_17_03
      nuver=v1_16_01
   ;;
+  s24:e9)
+     basequal=e9
+     squal=s24
+     artver=v1_17_04
+     nuver=v1_17_01
+  ;;
+  s26:e9)
+     basequal=e9
+     squal=s26
+     artver=v1_17_05
+     nuver=v1_18_01
+  ;;
   *)
     usage
     exit 1
@@ -140,7 +152,13 @@ echo "building the larbase base distribution for ${version} ${dotver} ${qual_set
 OS=`uname`
 if [ "${OS}" = "Linux" ]
 then
-  flvr=slf`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
+  id=`lsb_release -is`
+  if [ "${id}" = "Ubuntu" ]
+  then
+    flvr=u`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
+  else
+    flvr=slf`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
+  fi
 elif [ "${OS}" = "Darwin" ]
 then
   flvr=d`uname -r | cut -f1 -d"."`
