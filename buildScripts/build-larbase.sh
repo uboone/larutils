@@ -214,5 +214,7 @@ echo "move files"
 echo
 mv ${blddir}/*.bz2  $WORKSPACE/copyBack/
 mv ${blddir}/*.txt  $WORKSPACE/copyBack/
+rm -rf ${srcdir}
+rm -rf ${blddir}
 
 exit 0
