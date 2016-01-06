@@ -126,7 +126,7 @@ case ${qual_set} in
      basequal=e9
      squal=s26
      artver=v1_17_05
-     nuver=v1_18_01
+     nuver=v1_19_00
      oldver=v04_31_00
   ;;
   *)
