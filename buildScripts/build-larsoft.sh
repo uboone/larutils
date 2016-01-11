@@ -95,6 +95,12 @@ case ${qual_set} in
      artver=v1_15_02
      nuver=v1_14_05
   ;;
+  s18:e7) 
+     basequal=e7
+     squal=s18
+     artver=v1_16_02
+     nuver=v1_15_02
+  ;;
   s18:e9) 
      basequal=e9
      squal=s18
