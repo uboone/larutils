@@ -107,7 +107,7 @@ mrb mp -n uboone -- -j$ncores || exit 1
 manifest=uboone-*_MANIFEST.txt
 uboone_data_version=`grep uboone_data $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
 uboone_data_dot_version=`echo ${uboone_data_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
-echo "uboone_data          ${uboone_data_version}       uboone_data-${uboone_data_dot_version}-noarch.tar.gz" >>  $manifest
+echo "uboone_data          ${uboone_data_version}       uboone_data-${uboone_data_dot_version}-noarch.tar.bz2" >>  $manifest
 
 # add uboonedaq_datatypes to the manifest
 
