@@ -116,7 +116,7 @@ fi
 
 LariatFilters_version=`grep LariatFilters $MRB_SOURCE/lariatsoft/ups/product_deps | grep -v qualifier | awk '{print $2}'`
 LariatFilters_dot_version=`echo ${LariatFilters_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
-echo "LariatFilters        ${LariatFilters_version}          LariatFilters-${LariatFilters_dot_version}-noarch.tar.bz" >>  $manifest
+echo "LariatFilters        ${LariatFilters_version}          LariatFilters-${LariatFilters_dot_version}-noarch.tar.gz" >>  $manifest
 
 # Extract larsoft version from product_deps.
 
