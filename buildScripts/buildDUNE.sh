@@ -87,7 +87,7 @@ fi
 set -x
 cd $MRB_SOURCE  || exit 1
 # make sure we get a read-only copy
-mrb g -r -t $DUNE duntpc || exit 1
+mrb g -r -t $DUNE dunetpc || exit 1
 
 # Extract duneutil version from dunetpc product_deps
 duneutil_version=`grep duneutil $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
