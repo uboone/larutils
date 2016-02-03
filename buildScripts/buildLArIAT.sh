@@ -90,12 +90,12 @@ mrb g -r -t $LARIAT lariatsoft || exit 1
 # Extract lariatutil version from lariatsoft product_deps
 lariatutil_version=`grep lariatutil $MRB_SOURCE/lariatsoft/ups/product_deps | grep -v qualifier | awk '{print $2}'`
 echo "lariatuitil version: $lariatutil_version"
-mrb g -r -t $lariatutil_version lariatutil || exit 1
+mrb g -d lariatutil -t $lariatutil_version http://cdcvs.fnal.gov/projects/lardbt-lariatutil/ || exit 1
 
 # Extract lariatfragments version from lariatsoft product_deps
 lariatfragments_version=`grep lariatfragments $MRB_SOURCE/lariatsoft/ups/product_deps | grep -v qualifier | awk '{print $2}'`
 echo "ubuitil version: $lariatfragments_version"
-mrb g -r -t $lariatfragments_version lariatfragments || exit 1
+mrb g -d lariatfragments -t $lariatfragments_version http://cdcvs.fnal.gov/projects/lariat-online-lariatfragments/ || exit 1
 
 cd $MRB_BUILDDIR || exit 1
 mrbsetenv || exit 1
