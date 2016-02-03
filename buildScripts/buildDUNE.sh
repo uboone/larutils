@@ -160,7 +160,7 @@ fi
 # Save artifacts.
 
 mv *.bz2  $WORKSPACE/copyBack/ || exit 1
-manifest=uboone-*_MANIFEST.txt
+manifest=dune-*_MANIFEST.txt
 if [ -f $manifest ]; then
   mv $manifest  $WORKSPACE/copyBack/ || exit 1
 fi
