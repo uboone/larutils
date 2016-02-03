@@ -105,8 +105,10 @@ mrb mp -n lariat -- -j$ncores || exit 1
 manifest=lariat-*_MANIFEST.txt
 
 if echo $QUAL | grep -q nobeam; then
+    echo $QUAL
 else
 # add LariatBeamFiles to the manifest
+# currently does not exist on scisoft
     LariatBeamFiles_version=`grep LariatBeamFiles $MRB_SOURCE/lariatsoft/ups/product_deps | grep -v qualifier | awk '{print $2}'`
     LariatBeamFiles_dot_version=`echo ${LariatBeamFiles_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
     echo "LariatBeamFiles         ${LariatBeamFiles_version}       LariatBeamFiles-${LariatBeamFiles_dot_version}-noarch.tar.bz2" >>  $manifest
