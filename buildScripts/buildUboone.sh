@@ -100,6 +100,7 @@ mrb g -r -t $ubutil_version ubutil || exit 1
 cd $MRB_BUILDDIR || exit 1
 mrbsetenv || exit 1
 mrb b -j$ncores || exit 1
+cp /usr/lib64/libXmu.so.6 uboonecode/lib
 mrb mp -n uboone -- -j$ncores || exit 1
 
 # add uboone_data to the manifest
