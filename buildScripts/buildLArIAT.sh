@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# build dunetpc, duneutil and lbne_raw_data
+# build lariatsoft, lariatutil and lbne_raw_data
 # use mrb
 # designed to work on Jenkins
 # this is a proof of concept script
 
-echo "dunetpc version: $DUNE"
+echo "lariatsoft version: $LARIAT"
 echo "base qualifiers: $QUAL"
 echo "larsoft qualifiers: $LARSOFT_QUAL"
 echo "build type: $BUILDTYPE"
@@ -36,14 +36,12 @@ echo "Building using $ncores cores."
 
 # Environment setup, uses /grid/fermiapp or cvmfs.
 
-echo "ls /cvmfs/dune.opensciencegrid.org/products/dune/"
-ls /cvmfs/dune.opensciencegrid.org/products/dune/
-echo
+#echo "ls /cvmfs/lariat.opensciencegrid.org/products/lariat/"
+#ls /cvmfs/lariat.opensciencegrid.org/products/lariat/
+#echo
 
-if [ -f /grid/fermiapp/products/dune/setup_dune.sh ]; then
-  source /grid/fermiapp/products/dune/setup_dune.sh || exit 1
-elif [ -f /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh ]; then
-  source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
+if [ -f /grid/fermiapp/lariat/setup_lariat.sh ]; then
+  source /grid/fermiapp/lariat/setup_lariat.sh || exit 1
 else
   echo "No setup file found."
   exit 1
@@ -55,7 +53,7 @@ if ! uname | grep -q Darwin; then
   setup git || exit 1
 fi
 setup gitflow || exit 1
-export MRB_PROJECT=dune
+export MRB_PROJECT=lariat
 echo "Mrb path:"
 which mrb
 
@@ -65,7 +63,7 @@ mkdir -p $WORKSPACE/temp || exit 1
 mkdir -p $WORKSPACE/copyBack || exit 1
 rm -f $WORKSPACE/copyBack/* || exit 1
 cd $WORKSPACE/temp || exit 1
-mrb newDev -v $DUNE -q $QUAL:$BUILDTYPE || exit 1
+mrb newDev -v $LARIAT -q $QUAL:$BUILDTYPE || exit 1
 
 set +x
 source localProducts*/setup || exit 1
@@ -87,33 +85,42 @@ fi
 set -x
 cd $MRB_SOURCE  || exit 1
 # make sure we get a read-only copy
-mrb g -r -t $DUNE dunetpc || exit 1
+mrb g -r -t $LARIAT lariatsoft || exit 1
 
-# Extract duneutil version from dunetpc product_deps
-duneutil_version=`grep duneutil $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
-echo "lariatuitil version: $duneutil_version"
-mrb g -r -t $duneutil_version duneutil || exit 1
+# Extract lariatutil version from lariatsoft product_deps
+lariatutil_version=`grep lariatutil $MRB_SOURCE/lariatsoft/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+echo "lariatuitil version: $lariatutil_version"
+mrb g -d lariatutil -t $lariatutil_version http://cdcvs.fnal.gov/projects/lardbt-lariatutil/ || exit 1
 
-# Extract lbne_raw_data version from dunetpc product_deps
-lbne_raw_data_version=`grep lbne_raw_data $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
-echo "lbne_raw_data version: $lbne_raw_data_version"
-mrb g -r -t $lbne_raw_data_version -d lbne_raw_data lbne-raw-data || exit 1
+# Extract lariatfragments version from lariatsoft product_deps
+lariatfragments_version=`grep lariatfragments $MRB_SOURCE/lariatsoft/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+echo "ubuitil version: $lariatfragments_version"
+mrb g -d lariatfragments -t $lariatfragments_version http://cdcvs.fnal.gov/projects/lariat-online-lariatfragments/ || exit 1
 
 cd $MRB_BUILDDIR || exit 1
 mrbsetenv || exit 1
 mrb b -j$ncores || exit 1
-mrb mp -n dune -- -j$ncores || exit 1
+mrb mp -n lariat -- -j$ncores || exit 1
 
-# add dune_data to the manifest
+manifest=lariat-*_MANIFEST.txt
 
-manifest=dune-*_MANIFEST.txt
-dune_pardata_version=`grep dune_pardata $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
-dune_pardata_dot_version=`echo ${dune_pardata_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
-echo "dune_pardata         ${dune_pardata_version}       dune_pardata-${dune_pardata_dot_version}-noarch.tar.bz2" >>  $manifest
+if echo $QUAL | grep -q nobeam; then
+    echo $QUAL
+else
+# add LariatBeamFiles to the manifest
+# currently does not exist on scisoft
+    LariatBeamFiles_version=`grep LariatBeamFiles $MRB_SOURCE/lariatsoft/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+    LariatBeamFiles_dot_version=`echo ${LariatBeamFiles_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
+#    echo "LariatBeamFiles      ${LariatBeamFiles_version}          LariatBeamFiles-${LariatBeamFiles_dot_version}-noarch.tar.bz2" >>  $manifest
+fi    
+
+LariatFilters_version=`grep LariatFilters $MRB_SOURCE/lariatsoft/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+LariatFilters_dot_version=`echo ${LariatFilters_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
+echo "LariatFilters        ${LariatFilters_version}          LariatFilters-${LariatFilters_dot_version}-noarch.tar.gz" >>  $manifest
 
 # Extract larsoft version from product_deps.
 
-larsoft_version=`grep larsoft $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+larsoft_version=`grep larsoft $MRB_SOURCE/lariatsoft/ups/product_deps | grep -v qualifier | awk '{print $2}'`
 larsoft_dot_version=`echo ${larsoft_version} |  sed -e 's/_/./g' | sed -e 's/^v//'`
 
 # Extract flavor.
@@ -133,7 +140,7 @@ echo "Larsoft manifest:"
 echo $larsoft_manifest
 echo
 
-# Fetch laraoft manifest from scisoft and append to dunetpc manifest.
+# Fetch laraoft manifest from scisoft and append to lariatsoft manifest.
 
 curl --fail --silent --location --insecure http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/manifest/${larsoft_manifest} >> $manifest || exit 1
 
@@ -160,11 +167,11 @@ fi
 # Save artifacts.
 
 mv *.bz2  $WORKSPACE/copyBack/ || exit 1
-manifest=dune-*_MANIFEST.txt
+manifest=lariat-*_MANIFEST.txt
 if [ -f $manifest ]; then
   mv $manifest  $WORKSPACE/copyBack/ || exit 1
 fi
-#cp $MRB_BUILDDIR/dunetpc/releaseDB/*.html $WORKSPACE/copyBack/
+#cp $MRB_BUILDDIR/lariatsoft/releaseDB/*.html $WORKSPACE/copyBack/
 ls -l $WORKSPACE/copyBack/
 cd $WORKSPACE || exit 1
 rm -rf $WORKSPACE/temp || exit 1
