@@ -59,7 +59,7 @@ export MRB_PROJECT=dune
 echo "Mrb path:"
 which mrb
 
-set -x
+#dla set -x
 rm -rf $WORKSPACE/temp || exit 1
 mkdir -p $WORKSPACE/temp || exit 1
 mkdir -p $WORKSPACE/copyBack || exit 1
@@ -67,7 +67,7 @@ rm -f $WORKSPACE/copyBack/* || exit 1
 cd $WORKSPACE/temp || exit 1
 mrb newDev -v $DUNE -q $QUAL:$BUILDTYPE || exit 1
 
-set +x
+#dla set +x
 source localProducts*/setup || exit 1
 
 # some shenanigans so we can use getopt v1_1_6
@@ -84,7 +84,7 @@ if [ `uname` = Darwin ]; then
 #  which getopt
 fi
 
-set -x
+#dla set -x
 cd $MRB_SOURCE  || exit 1
 # make sure we get a read-only copy
 mrb g -r -t $DUNE dunetpc || exit 1
@@ -168,6 +168,6 @@ fi
 ls -l $WORKSPACE/copyBack/
 cd $WORKSPACE || exit 1
 rm -rf $WORKSPACE/temp || exit 1
-set +x
+#dla set +x
 
 exit 0
