@@ -125,6 +125,12 @@ ERROR: pull of lar_product_stack-${version} source failed
 EOF
         exit 1
       }
+./pullProducts ${blddir} source nubase-${nuver} || \
+      { cat 1>&2 <<EOF
+ERROR: pull of nubase-${nuver} source failed
+EOF
+        exit 1
+      }
 ./pullProducts ${blddir} source larbase-${version} || \
       { cat 1>&2 <<EOF
 ERROR: pull of larbase-${version} source failed
