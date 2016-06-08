@@ -57,6 +57,14 @@ case ${qual_set} in
      nuver=v1_25_05
      oldver=v06_00_00_rc2
   ;;
+  s33:e10)
+     basequal=e10
+     squal=s33
+     artver=v2_00_02
+     nuver=v2_00_00
+     objver=v1_02_00
+     oldver=v06_00_00_rc4
+  ;;
   *)
     usage
     exit 1
@@ -132,12 +140,6 @@ ERROR: pull of lar_product_stack-${version} source failed
 EOF
         exit 1
       }
-./pullProducts ${blddir} source nubase-${nuver} || \
-      { cat 1>&2 <<EOF
-ERROR: pull of nubase-${nuver} source failed
-EOF
-        exit 1
-      }
 ./pullProducts ${blddir} source larbase-${version} || \
       { cat 1>&2 <<EOF
 ERROR: pull of larbase-${version} source failed
@@ -160,6 +162,7 @@ cd ${blddir} || exit 1
 ./pullProducts ${blddir} ${flvr} lar_product_stack-${version} ${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} larbase-${oldver} ${squal}-${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} larbase-${version} ${squal}-${basequal} ${build_type} 
+./pullProducts ${blddir} ${flvr} larsoftobj-${objver} ${basequal} ${build_type} 
 echo
 echo "begin build"
 echo
