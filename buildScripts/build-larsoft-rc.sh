@@ -65,6 +65,14 @@ case ${qual_set} in
      objver=v1_02_00
      oldver=v06_00_00_rc4
   ;;
+  s36:e10)
+     basequal=e10
+     squal=s36
+     artver=v2_00_03
+     nuver=v2_00_01
+     objver=v1_02_02
+     oldver=v06_00_00_rc4
+  ;;
   *)
     usage
     exit 1
