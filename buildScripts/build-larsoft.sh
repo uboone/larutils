@@ -169,7 +169,7 @@ case ${qual_set} in
      artver=v2_00_03
      nuver=v2_01_00
      objver=v1_04_00
-     oldver=v06_00_00_rc6
+     oldver=v06_00_00
   ;;
   *)
     usage
