@@ -146,8 +146,8 @@ case ${qual_set} in
      basequal=e9
      squal=s30
      artver=v1_17_07
-     nuver=v1_24_04
-     oldver=v05_13_00
+     nuver=v1_24_05
+     oldver=v05_15_00
   ;;
   s31:e9)
      basequal=e9
@@ -162,6 +162,14 @@ case ${qual_set} in
      artver=v2_00_02
      nuver=v2_00_00
      oldver=v06_00_00_rc4
+  ;;
+  s36:e10)
+     basequal=e10
+     squal=s36
+     artver=v2_00_03
+     nuver=v2_01_00
+     objver=v1_04_00
+     oldver=v06_00_00_rc6
   ;;
   *)
     usage
@@ -258,7 +266,10 @@ cd ${blddir} || exit 1
 ./pullProducts ${blddir} ${flvr} nu-${nuver} ${squal}-${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} lar_product_stack-${oldver} ${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} lar_product_stack-${version} ${basequal} ${build_type} 
+./pullProducts ${blddir} ${flvr} larbase-${oldver} ${squal}-${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} larbase-${version} ${squal}-${basequal} ${build_type} 
+./pullProducts ${blddir} ${flvr} larsoftobj-${objver} ${basequal} ${build_type} 
+./pullProducts ${blddir} ${flvr} larsoft-${version} ${squal}-${basequal} ${build_type} 
 echo
 echo "begin build"
 echo
