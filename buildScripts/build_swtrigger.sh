@@ -76,7 +76,8 @@ set +x
 
 mkdir -p srcs
 cd srcs
-git clone https://github.com/twongjirad/fememulator
+#git clone https://github.com/twongjirad/fememulator
+git clone https://github.com/hgreenlee/fememulator
 cd fememulator
 
 # Make sure repository is up to date and check out desired tag.
@@ -93,10 +94,7 @@ source configure.sh
 
 mkdir build
 cd build
-cmake .. -DCMAKE_CXX_COMPILER=`which g++` \
-  -DCMAKE_CXX_FLAGS_DEBUG="-g -gdwarf-2 -O0" \
-  -DCMAKE_CXX_FLAGS_PROF="-g -gdwarf-2 -O3" \
-  -DCMAKE_BUILD_TYPE=$BUILDTYPE
+cmake .. -DCMAKE_CXX_COMPILER=`which g++` -DCMAKE_BUILD_TYPE=$BUILDTYPE
 
 # Run make
 
@@ -115,145 +113,6 @@ cp -r ${SWTRIGGER_HOME_DIR}/srcs/fememulator/SWTriggerBase $src_dir
 cp -r ${SWTRIGGER_HOME_DIR}/srcs/fememulator/FEMBeamTrigger $src_dir
 cp -r ${SWTRIGGER_HOME_DIR}/srcs/fememulator/ups $install_dir
 mkdir ${SWTRIGGER_HOME_DIR}/install/.upsfiles
-
-# Temprary.
-# Ignore table file in source area and make our own.
-
-rm $install_dir/ups/swtrigger.table
-cat <<EOF > $install_dir/ups/swtrigger.table
-File=Table 
-Product=swtrigger
- 
-Group:
-
-Flavor     = ANY
-Qualifiers = "e9:prof"
-
-  Action = GetFQDir
-    if ( printenv CET_SUBDIR > /dev/null )
-      envSet( \${UPS_PROD_NAME_UC}_FQ_DIR, \${\${UPS_PROD_NAME_UC}_DIR}/\${CET_SUBDIR}.e9.prof )
-    else()
-      envSet( \${UPS_PROD_NAME_UC}_FQ_DIR, \${\${UPS_PROD_NAME_UC}_DIR}/`get-directory-name subdir`.e9.prof )
-    endif ( printenv CET_SUBDIR > /dev/null )
-    fileTest( \${\${UPS_PROD_NAME_UC}_FQ_DIR}, -d, "\${\${UPS_PROD_NAME_UC}_FQ_DIR} directory not found: SETUP ABORTED")
-
-  Action = GetProducts
-    setupRequired( root v5_34_32 -q +e9:+nu:+prof )
-
-Flavor     = ANY
-Qualifiers = "e9:debug"
-
-  Action = GetFQDir
-    if ( printenv CET_SUBDIR > /dev/null )
-      envSet( \${UPS_PROD_NAME_UC}_FQ_DIR, \${\${UPS_PROD_NAME_UC}_DIR}/\${CET_SUBDIR}.e9.debug )
-    else()
-      envSet( \${UPS_PROD_NAME_UC}_FQ_DIR, \${\${UPS_PROD_NAME_UC}_DIR}/`get-directory-name subdir`.e9.debug )
-    endif ( printenv CET_SUBDIR > /dev/null )
-    fileTest( \${\${UPS_PROD_NAME_UC}_FQ_DIR}, -d, "\${\${UPS_PROD_NAME_UC}_FQ_DIR} directory not found: SETUP ABORTED")
-
-  Action = GetProducts
-    setupRequired( root v5_34_32 -q +e9:+nu:+debug )
-
-Flavor     = ANY
-Qualifiers = "e9:opt"
-
-  Action = GetFQDir
-    if ( printenv CET_SUBDIR > /dev/null )
-      envSet( \${UPS_PROD_NAME_UC}_FQ_DIR, \${\${UPS_PROD_NAME_UC}_DIR}/\${CET_SUBDIR}.e9.opt )
-    else()
-      envSet( \${UPS_PROD_NAME_UC}_FQ_DIR, \${\${UPS_PROD_NAME_UC}_DIR}/`get-directory-name subdir`.e9.opt )
-    endif ( printenv CET_SUBDIR > /dev/null )
-    fileTest( \${\${UPS_PROD_NAME_UC}_FQ_DIR}, -d, "\${\${UPS_PROD_NAME_UC}_FQ_DIR} directory not found: SETUP ABORTED")
-
-  Action = GetProducts
-    setupRequired( root v5_34_32 -q +e9:+nu:+opt )
-
-
-Flavor     = ANY
-Qualifiers = "e10:prof"
-
-  Action = GetFQDir
-    if ( printenv CET_SUBDIR > /dev/null )
-      envSet( \${UPS_PROD_NAME_UC}_FQ_DIR, \${\${UPS_PROD_NAME_UC}_DIR}/\${CET_SUBDIR}.e10.prof )
-    else()
-      envSet( \${UPS_PROD_NAME_UC}_FQ_DIR, \${\${UPS_PROD_NAME_UC}_DIR}/`get-directory-name subdir`.e10.prof )
-    endif ( printenv CET_SUBDIR > /dev/null )
-    fileTest( \${\${UPS_PROD_NAME_UC}_FQ_DIR}, -d, "\${\${UPS_PROD_NAME_UC}_FQ_DIR} directory not found: SETUP ABORTED")
-
-  Action = GetProducts
-    setupRequired( root v6_06_04b -q +e10:+nu:+prof )
-
-Flavor     = ANY
-Qualifiers = "e10:debug"
-
-  Action = GetFQDir
-    if ( printenv CET_SUBDIR > /dev/null )
-      envSet( \${UPS_PROD_NAME_UC}_FQ_DIR, \${\${UPS_PROD_NAME_UC}_DIR}/\${CET_SUBDIR}.e10.debug )
-    else()
-      envSet( \${UPS_PROD_NAME_UC}_FQ_DIR, \${\${UPS_PROD_NAME_UC}_DIR}/`get-directory-name subdir`.e10.debug )
-    endif ( printenv CET_SUBDIR > /dev/null )
-    fileTest( \${\${UPS_PROD_NAME_UC}_FQ_DIR}, -d, "\${\${UPS_PROD_NAME_UC}_FQ_DIR} directory not found: SETUP ABORTED")
-
-  Action = GetProducts
-    setupRequired( root v6_06_04b -q +e10:+nu:+debug )
-
-Flavor     = ANY
-Qualifiers = "e10:opt"
-
-  Action = GetFQDir
-    if ( printenv CET_SUBDIR > /dev/null )
-      envSet( \${UPS_PROD_NAME_UC}_FQ_DIR, \${\${UPS_PROD_NAME_UC}_DIR}/\${CET_SUBDIR}.e10.opt )
-    else()
-      envSet( \${UPS_PROD_NAME_UC}_FQ_DIR, \${\${UPS_PROD_NAME_UC}_DIR}/`get-directory-name subdir`.e10.opt )
-    endif ( printenv CET_SUBDIR > /dev/null )
-    fileTest( \${\${UPS_PROD_NAME_UC}_FQ_DIR}, -d, "\${\${UPS_PROD_NAME_UC}_FQ_DIR} directory not found: SETUP ABORTED")
-
-  Action = GetProducts
-    setupRequired( root v6_06_04b -q +e10:+nu:+opt )
-
-
-Common:
-  Action = setup
-    prodDir()
-    setupEnv()
-    envSet(\${UPS_PROD_NAME_UC}_VERSION, \${UPS_PROD_VERSION})
-
-    # cetpkgsupport has get-directory-name and find-path
-    # cetpkgsupport also defines the CET_SUBDIR variable
-    setupRequired(cetpkgsupport)
-    exeActionRequired(GetFQDir)
-
-    # Set up required products, which is root
-    exeActionRequired(GetProducts)
-
-    #envSet(\${UPS_PROD_NAME_UC}_ROOT5,1)
-    envSet(\${UPS_PROD_NAME_UC}_LIBDIR,\${\${UPS_PROD_NAME_UC}_FQ_DIR}/lib)
-    envSet(\${UPS_PROD_NAME_UC}_INCDIR,\${UPS_PROD_DIR}/source)
-
-    if ( test `uname` = "Darwin" )
-      envSet(\${UPS_PROD_NAME_UC}_CXX,clang++)
-      pathPrepend(DYLD_LIBRARY_PATH, \${\${UPS_PROD_NAME_UC}_LIBDIR})
-    else()
-      envSet(\${UPS_PROD_NAME_UC}_CXX,g++)
-      pathPrepend(LD_LIBRARY_PATH, \${\${UPS_PROD_NAME_UC}_LIBDIR})
-    endif ( test `uname` = "Darwin" )
-
-    # add the bin directory to the path
-    pathPrepend(PATH, \${UPS_PROD_DIR}/\${UPS_PROD_FLAVOR}/bin )
-    # add the python area to the pythonpath
-    pathPrepend(PYTHONPATH, \${UPS_PROD_DIR}/\${UPS_PROD_FLAVOR}/python )
-
-
-
-End:
-# End Group definition
-#*************************************************
-#
-# ups declare command that works on gpvm:
-# ups declare swtrigger v02_02_01 -r swtrigger/v02_02_01 -f Linux64bit+2.6-2.12 -m swtrigger.table -q e9:prof -U ups/
-#
-#
-EOF
 
 # Make a dbconfig file.
 
