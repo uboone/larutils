@@ -2,7 +2,7 @@
 
 # Usage function
 function usage() {
-  echo "$(basename $0) [-h] -t <modules|authors|code> <directory list>"
+  echo "$(basename $0) [-h] -t <modules|authors|code|this_year> <directory list>"
   echo "        search the listed directories for information"
 }
 
@@ -74,6 +74,13 @@ elif [ "${type}" = "code" ]; then
     echo "ERROR: cannot find the cloc utilitiy"
     exit 1
   fi
+elif [ "${type}" = "this_year" ]; then
+  for REP in ${directory_list}; do
+    cd ${REP}
+    listy=`git log --pretty='' --numstat --since 1.year origin/master | grep -v '-' | grep -v ups | cut -f 1 | paste -sd+ - | bc`
+    cd ${thisdir}
+    echo "${REP}: ${listy} lines changed in the last year"
+  done
 else
   echo "ERROR: unrecognized type ${type}"
 fi
