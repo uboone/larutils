@@ -67,8 +67,13 @@ elif [ "${type}" = "authors" ]; then
   done
   ##echo ${author_list}
 elif [ "${type}" = "code" ]; then
-  echo "lines of code excluding fcl files and anything in the test directory"
-  cloc --exclude-dir=test,ups ${directory_list}
+  if [[ `type cloc` ]]; then
+    echo "lines of code excluding fcl files and anything in the ups directory"
+    cloc --exclude-dir=ups ${directory_list}
+  else
+    echo "ERROR: cannot find the cloc utilitiy"
+    exit 1
+  fi
 else
   echo "ERROR: unrecognized type ${type}"
 fi
