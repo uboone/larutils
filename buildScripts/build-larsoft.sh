@@ -167,7 +167,7 @@ case ${qual_set} in
      basequal=e10
      squal=s36
      artver=v2_00_03
-     nuver=v2_01_00
+     nuver=v2_01_01
      objver=v1_04_00
      oldver=v06_00_00
   ;;
@@ -252,6 +252,12 @@ ERROR: pull of larbase-${version} source failed
 EOF
         exit 1
       }
+./pullProducts ${blddir} source larsoftobj-${objver} || \
+      { cat 1>&2 <<EOF
+ERROR: pull of larsoftobj-${objver} source failed
+EOF
+        exit 1
+      }
 ./pullProducts ${blddir} source larsoft-${version} || \
       { cat 1>&2 <<EOF
 ERROR: pull of larsoft-${version} failed
@@ -269,6 +275,7 @@ cd ${blddir} || exit 1
 ./pullProducts ${blddir} ${flvr} larbase-${oldver} ${squal}-${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} larbase-${version} ${squal}-${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} larsoftobj-${objver} ${basequal} ${build_type} 
+./pullProducts ${blddir} ${flvr} larsoft-${oldver} ${squal}-${basequal} ${build_type} 
 ./pullProducts ${blddir} ${flvr} larsoft-${version} ${squal}-${basequal} ${build_type} 
 echo
 echo "begin build"
@@ -278,6 +285,10 @@ echo
    exit 1 
  }
 ./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
+ { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+   exit 1 
+ }
+./buildFW -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${objver} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
