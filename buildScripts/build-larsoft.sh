@@ -167,9 +167,17 @@ case ${qual_set} in
      basequal=e10
      squal=s36
      artver=v2_00_03
-     nuver=v2_01_01
+     nuver=v2_01_03
      objver=v1_04_00
-     oldver=v06_00_00
+     oldver=v06_01_00
+  ;;
+  s39:e10)
+     basequal=e10
+     squal=s39
+     artver=v2_02_02
+     nuver=v2_03_00
+     objver=v1_05_01
+     oldver=v06_03_00
   ;;
   *)
     usage
