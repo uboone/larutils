@@ -124,6 +124,18 @@ if [ x$uboonedaq_datatypes_version != x ]; then
   echo "uboonedaq_datatypes          ${uboonedaq_datatypes_version}       uboonedaq_datatypes-${uboonedaq_datatypes_dot_version}-${os}-${plat}-${qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
 fi
 
+# add swtrigger to the manifest
+
+manifest=uboone-*_MANIFEST.txt
+swtrigger_version=`grep swtrigger $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+swtrigger_dot_version=`echo ${swtrigger_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
+os=`get-directory-name os`
+plat=`get-directory-name platform`
+qual=`echo $QUAL |  sed 's/:*noifdh:*//'`
+if [ x$swtrigger_version != x ]; then
+  echo "swtrigger          ${swtrigger_version}       swtrigger-${swtrigger_dot_version}-${os}-${plat}-${qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
+fi
+
 # Extract larsoft version from product_deps.
 
 larsoft_version=`grep larsoft $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
