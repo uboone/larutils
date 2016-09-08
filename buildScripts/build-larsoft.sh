@@ -39,6 +39,7 @@ working_dir=${WORKSPACE}
 version=${LARVER}
 qual_set="${QUAL}"
 build_type=${BUILDTYPE}
+objver=${LAROBJ}
 
 case ${qual_set} in
   s5:e5) 
@@ -168,7 +169,6 @@ case ${qual_set} in
      squal=s36
      artver=v2_00_03
      nuver=v2_01_03
-     objver=v1_04_00
      oldver=v06_01_00
   ;;
   s39:e10)
@@ -176,7 +176,6 @@ case ${qual_set} in
      squal=s39
      artver=v2_02_02
      nuver=v2_03_00
-     objver=v1_05_01
      oldver=v06_03_00
   ;;
   s41:e10)
@@ -184,8 +183,7 @@ case ${qual_set} in
      squal=s41
      artver=v2_03_00
      nuver=v2_03_01
-     objver=v1_06_00
-     oldver=v06_04_00
+     oldver=v06_05_00
   ;;
   *)
     usage
