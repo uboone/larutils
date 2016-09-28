@@ -190,7 +190,7 @@ case ${qual_set} in
      squal=s42
      artver=v2_04_00
      nuver=v2_05_00
-     oldver=v06_06_01
+     oldver=v06_07_00
   ;;
   *)
     usage
