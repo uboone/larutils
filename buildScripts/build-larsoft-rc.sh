@@ -154,6 +154,8 @@ mkdir -p $WORKSPACE/copyBack || exit 1
 cd ${blddir} || exit 1
 curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/pullProducts || exit 1
 chmod +x pullProducts
+curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/newBuild || exit 1
+chmod +x newBuild
 # source code tarballs MUST be pulled first
 ./pullProducts ${blddir} source lar_product_stack-${version} || \
       { cat 1>&2 <<EOF
@@ -185,19 +187,19 @@ cd ${blddir} || exit 1
 echo
 echo "begin build"
 echo
-${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} ${blddir} ${build_type} lar_product_stack-${version} || \
+./newBuild -t -b ${basequal} ${blddir} ${build_type} lar_product_stack-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
-${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
+./newBuild -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
-${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${objver} || \
+./newBuild -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${objver} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
-${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
+./newBuild -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
