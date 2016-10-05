@@ -295,32 +295,22 @@ EOF
 mv ${blddir}/*source* ${srcdir}/
 
 cd ${blddir} || exit 1
-# pulling binaries is allowed to fail
-./pullProducts ${blddir} ${flvr} nubase-${nuver} ${basequal} ${build_type} 
-./pullProducts ${blddir} ${flvr} nu-${nuver} ${squal}-${basequal} ${build_type} 
-./pullProducts ${blddir} ${flvr} lar_product_stack-${oldver} ${basequal} ${build_type} 
-./pullProducts ${blddir} ${flvr} lar_product_stack-${version} ${basequal} ${build_type} 
-./pullProducts ${blddir} ${flvr} larbase-${oldver} ${squal}-${basequal} ${build_type} 
-./pullProducts ${blddir} ${flvr} larbase-${version} ${squal}-${basequal} ${build_type} 
-./pullProducts ${blddir} ${flvr} larsoftobj-${objver} ${basequal} ${build_type} 
-./pullProducts ${blddir} ${flvr} larsoft-${oldver} ${squal}-${basequal} ${build_type} 
-./pullProducts ${blddir} ${flvr} larsoft-${version} ${squal}-${basequal} ${build_type} 
 echo
 echo "begin build"
 echo
-./buildFW -t -b ${basequal} ${blddir} ${build_type} lar_product_stack-${version} || \
+${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} ${blddir} ${build_type} lar_product_stack-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
-./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
+${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
-./buildFW -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${objver} || \
+${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${objver} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
-./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
+${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
