@@ -200,7 +200,6 @@ case ${qual_set} in
      oldver=v06_11_00
   ;;
   *)
-  *)
     usage
     exit 1
 esac
