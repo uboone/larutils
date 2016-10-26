@@ -192,6 +192,13 @@ case ${qual_set} in
      nuver=v2_05_00
      oldver=v06_07_00
   ;;
+  s43:e10)
+     basequal=e10
+     squal=s43
+     artver=v2_05_00
+     nuver=v2_06_02
+     oldver=v06_12_00
+  ;;
   s44:e10)
      basequal=e10
      squal=s44
