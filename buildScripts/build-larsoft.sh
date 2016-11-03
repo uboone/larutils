@@ -294,12 +294,14 @@ ERROR: pull of larbase-${version} source failed
 EOF
         exit 1
       }
+if [[ ${objver} != "none" ]]; then
 ./pullProducts ${blddir} source larsoftobj-${objver} || \
       { cat 1>&2 <<EOF
 ERROR: pull of larsoftobj-${objver} source failed
 EOF
         exit 1
       }
+fi
 ./pullProducts ${blddir} source larsoft-${version} || \
       { cat 1>&2 <<EOF
 ERROR: pull of larsoft-${version} failed
@@ -320,10 +322,12 @@ ${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} -s ${squal} ${blddi
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
+if [[ ${objver} != "none" ]]; then
 ${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${objver} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
+fi
 ${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
