@@ -114,7 +114,7 @@ cd ${blddir} || exit 1
 echo
 echo "begin build"
 echo
-${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} ${blddir} ${build_type} lar_product_stack-${version} || \
+${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${qual_set} ${blddir} ${build_type} lar_product_stack-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
