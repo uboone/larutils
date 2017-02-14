@@ -41,6 +41,8 @@ qual_set="${QUAL}"
 build_type=${BUILDTYPE}
 objver=${LAROBJ}
 
+d16_ok=false
+
 case ${qual_set} in
   s5:e5) 
      basequal=e5
@@ -155,6 +157,10 @@ case ${build_type} in
     exit 1
 esac
 
+# create copyBack so artifact copy does not fail on early exit
+rm -rf $WORKSPACE/copyBack 
+mkdir -p $WORKSPACE/copyBack || exit 1
+
 # check XCode
 if [[ `uname -s` == Darwin ]] 
 then
@@ -163,8 +169,20 @@ then
   xcver=`xcodebuild -version | grep Xcode`
   if [[ ${basequal} == e9 ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
   then
-  echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
-  exit 0
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
+  elif [[ ${basequal} == e1[04] ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
+  then
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
+  fi
+  if [[ ${d16_ok} == false ]] && [[ ${OSnum} > 15 ]]
+  then
+    echo "${basequal} build not supported on `uname -s`${OSnum}"
+    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
   fi
 fi
 
@@ -201,11 +219,9 @@ srcdir=${working_dir}/source
 # start with clean directories
 rm -rf ${blddir}
 rm -rf ${srcdir}
-rm -rf $WORKSPACE/copyBack 
 # now make the dfirectories
 mkdir -p ${srcdir} || exit 1
 mkdir -p ${blddir} || exit 1
-mkdir -p $WORKSPACE/copyBack || exit 1
 
 cd ${blddir} || exit 1
 curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/pullProducts || exit 1
