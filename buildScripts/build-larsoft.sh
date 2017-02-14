@@ -197,6 +197,7 @@ then
   if [ "${id}" = "Ubuntu" ]
   then
     flvr=u`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
+    export UPS_OVERRIDE="-H Linux64bit+3.19-2.19"
   else
     flvr=slf`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
   fi
