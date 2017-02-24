@@ -270,8 +270,8 @@ echo "move files"
 echo
 # get these out of the way
 mv ${blddir}/*source* ${srcdir}/
-mv ${blddir}/g4*noarch* ${srcdir}/
-mv ${blddir}/genie*noarch* ${srcdir}/
+mv ${blddir}/g*noarch* ${srcdir}/
+mv ${blddir}/larsoft_data*.bz2 ${srcdir}/
 # 
 mv ${blddir}/*.bz2  $WORKSPACE/copyBack/
 mv ${blddir}/*.txt  $WORKSPACE/copyBack/
