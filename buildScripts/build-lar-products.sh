@@ -14,7 +14,7 @@ Options:
 
 Arguments:
 
-  qual_set         Supported qualifier sets: e9, e10, e12
+  qual_set         Supported qualifier sets: e9, e10, e14
 
 EOF
 }
@@ -46,6 +46,22 @@ case ${build_type} in
     exit 1
 esac
 
+d16_ok=true
+basequal=${qual_set}
+
+case ${qual_set} in
+  e9) d16_ok=false ;;
+  e10) d16_ok=false ;;
+  e14) ;;
+  *)
+    usage
+    exit 1
+esac
+
+# create copyBack so artifact copy does not fail on early exit
+rm -rf $WORKSPACE/copyBack 
+mkdir -p $WORKSPACE/copyBack || exit 1
+
 # check XCode
 if [[ `uname -s` == Darwin ]] 
 then
@@ -54,14 +70,26 @@ then
   xcver=`xcodebuild -version | grep Xcode`
   if [[ ${basequal} == e9 ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
   then
-  echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
-  exit 0
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
+  elif [[ ${basequal} == e1[04] ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
+  then
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
+  fi
+  if [[ ${d16_ok} == false ]] && [[ ${OSnum} > 15 ]]
+  then
+    echo "${basequal} build not supported on `uname -s`${OSnum}"
+    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
   fi
 fi
 
 dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
-echo "building the larbase base distribution for ${version} ${dotver} ${qual_set} ${build_type}"
+echo "building the larsoft product stack for ${version} ${dotver} ${qual_set} ${build_type}"
 
 OS=`uname`
 if [ "${OS}" = "Linux" ]
@@ -92,11 +120,9 @@ srcdir=${working_dir}/source
 # start with clean directories
 rm -rf ${blddir}
 rm -rf ${srcdir}
-rm -rf $WORKSPACE/copyBack 
 # now make the dfirectories
 mkdir -p ${srcdir} || exit 1
 mkdir -p ${blddir} || exit 1
-mkdir -p $WORKSPACE/copyBack || exit 1
 
 cd ${blddir} || exit 1
 curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/pullProducts || exit 1
@@ -114,7 +140,7 @@ cd ${blddir} || exit 1
 echo
 echo "begin build"
 echo
-${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${qual_set} ${blddir} ${build_type} lar_product_stack-${version} || \
+./buildFW -t -b ${qual_set} ${blddir} ${build_type} lar_product_stack-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
@@ -122,8 +148,13 @@ ${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${qual_set} ${blddir} ${build_t
 echo
 echo "move files"
 echo
+mv ${blddir}/*source* ${srcdir}/
+mv ${blddir}/g*noarch* ${srcdir}/
 mv ${blddir}/*.bz2  $WORKSPACE/copyBack/
 mv ${blddir}/*.txt  $WORKSPACE/copyBack/
+echo
+echo "cleanup"
+echo
 rm -rf ${srcdir}
 rm -rf ${blddir}
 
