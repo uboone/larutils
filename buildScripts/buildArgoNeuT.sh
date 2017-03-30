@@ -5,7 +5,7 @@
 # designed to work on Jenkins
 # this is a proof of concept script
 df
-ls /cvmfs
+ls /cvmfs/argoneut.opensciencegrid.org
 
 echo "argoneutcode version: $ARGONEUTVER"
 echo "base qualifiers: $QUAL"
