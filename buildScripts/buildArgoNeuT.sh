@@ -24,7 +24,7 @@ if [ $ncores -lt 1 ]; then
 fi
 echo "Building using $ncores cores."
 
-source /grid/fermiapp/products/argoneut/setup_argoneut.sh || exit 1
+source /cvmfs/argoneut.opensciencegrid.org/products/argoneut/setup_argoneut.sh || exit 1
 
 if ! uname | grep -q Darwin; then
   setup git || exit 1
