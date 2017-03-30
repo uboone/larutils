@@ -4,6 +4,8 @@
 # use mrb
 # designed to work on Jenkins
 # this is a proof of concept script
+df
+ls /cvmfs
 
 echo "argoneutcode version: $ARGONEUTVER"
 echo "base qualifiers: $QUAL"
