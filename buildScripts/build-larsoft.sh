@@ -148,6 +148,10 @@ case ${qual_set} in
      basequal=e10
      squal=s46
   ;;
+  s48:e10)
+     basequal=e10
+     squal=s48
+  ;;
   *)
     usage
     exit 1
