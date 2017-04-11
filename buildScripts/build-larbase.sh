@@ -39,7 +39,6 @@ working_dir=${WORKSPACE}
 version=${LARVER}
 qual_set="${QUAL}"
 build_type=${BUILDTYPE}
-objver=${LAROBJ}
 
 d16_ok=false
 
