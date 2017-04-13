@@ -40,96 +40,109 @@ version=${LARVER}
 qual_set="${QUAL}"
 build_type=${BUILDTYPE}
 
+d16_ok=false
+
 case ${qual_set} in
   s5:e5) 
      basequal=e5
      squal=s5
-     artver=v1_12_04
-     nuver=v1_07_00
   ;;
   s5:e6) 
      basequal=e6
      squal=s5
-     artver=v1_12_04
-     nuver=v1_07_00
   ;;
   s6:e6) 
      basequal=e6
      squal=s6
-     artver=v1_12_05
-     nuver=v1_07_01
   ;;
   s7:e7) 
      basequal=e7
      squal=s7
-     artver=v1_13_01
-     nuver=v1_09_01
   ;;
   s8:e7) 
      basequal=e7
      squal=s8
-     artver=v1_13_02
-     nuver=v1_10_02
   ;;
   s11:e7) 
      basequal=e7
      squal=s11
-     artver=v1_14_02
-     nuver=v1_11_01
   ;;
   s12:e7) 
      basequal=e7
      squal=s12
-     artver=v1_14_03
-     nuver=v1_13_01
   ;;
   s14:e7) 
      basequal=e7
      squal=s14
-     artver=v1_15_01
-     nuver=v1_14_01
   ;;
   s15:e7) 
      basequal=e7
      squal=s15
-     artver=v1_15_02
-     nuver=v1_14_05
   ;;
   s18:e9) 
      basequal=e9
      squal=s18
-     artver=v1_16_02
-     nuver=v1_15_02
   ;;
   s21:e9) 
      basequal=e9
      squal=s21
-     artver=v1_17_03
-     nuver=v1_16_01
   ;;
   s24:e9)
      basequal=e9
      squal=s24
-     artver=v1_17_04
-     nuver=v1_17_01
   ;;
   s26:e9)
      basequal=e9
      squal=s26
-     artver=v1_17_05
-     nuver=v1_19_00
   ;;
   s30:e9)
      basequal=e9
      squal=s30
-     artver=v1_17_07
-     nuver=v1_24_00
   ;;
   s31:e9)
      basequal=e9
      squal=s31
-     artver=v1_18_05
-     nuver=v1_25_01
+  ;;
+  s33:e10)
+     basequal=e10
+     squal=s33
+  ;;
+  s36:e10)
+     basequal=e10
+     squal=s36
+  ;;
+  s39:e10)
+     basequal=e10
+     squal=s39
+  ;;
+  s41:e10)
+     basequal=e10
+     squal=s41
+  ;;
+  s42:e10)
+     basequal=e10
+     squal=s42
+  ;;
+  s43:e10)
+     basequal=e10
+     squal=s43
+  ;;
+  s44:e10)
+     basequal=e10
+     squal=s44
+  ;;
+  s46:e10)
+     basequal=e10
+     squal=s46
+  ;;
+  s48:e10)
+     basequal=e10
+     squal=s48
+  ;;
+  s48:e14)
+     basequal=e14
+     squal=s48
+     d16_ok=true
   ;;
   *)
     usage
@@ -144,6 +157,10 @@ case ${build_type} in
     exit 1
 esac
 
+# create copyBack so artifact copy does not fail on early exit
+rm -rf $WORKSPACE/copyBack 
+mkdir -p $WORKSPACE/copyBack || exit 1
+
 # check XCode
 if [[ `uname -s` == Darwin ]] 
 then
@@ -152,8 +169,20 @@ then
   xcver=`xcodebuild -version | grep Xcode`
   if [[ ${basequal} == e9 ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
   then
-  echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
-  exit 0
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
+  elif [[ ${basequal} == e1[04] ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
+  then
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
+  fi
+  if [[ ${d16_ok} == false ]] && [[ ${OSnum} > 15 ]]
+  then
+    echo "${basequal} build not supported on `uname -s`${OSnum}"
+    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
   fi
 fi
 
@@ -168,6 +197,7 @@ then
   if [ "${id}" = "Ubuntu" ]
   then
     flvr=u`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
+    export UPS_OVERRIDE="-H Linux64bit+3.19-2.19"
   else
     flvr=slf`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
   fi
@@ -190,11 +220,9 @@ srcdir=${working_dir}/source
 # start with clean directories
 rm -rf ${blddir}
 rm -rf ${srcdir}
-rm -rf $WORKSPACE/copyBack 
 # now make the dfirectories
 mkdir -p ${srcdir} || exit 1
 mkdir -p ${blddir} || exit 1
-mkdir -p $WORKSPACE/copyBack || exit 1
 
 cd ${blddir} || exit 1
 curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/pullProducts || exit 1
@@ -209,10 +237,6 @@ EOF
 mv ${blddir}/*source* ${srcdir}/
 
 cd ${blddir} || exit 1
-# pulling binaries is allowed to fail
-./pullProducts ${blddir} ${flvr} nubase-${nuver} ${basequal} ${build_type} 
-./pullProducts ${blddir} ${flvr} nu-${nuver} ${squal}-${basequal} ${build_type} 
-./pullProducts ${blddir} ${flvr} larbase-${version} ${squal}-${basequal} ${build_type} 
 echo
 echo "begin build"
 echo
@@ -224,6 +248,11 @@ echo
 echo
 echo "move files"
 echo
+# get these out of the way
+mv ${blddir}/*source* ${srcdir}/
+mv ${blddir}/g*noarch* ${srcdir}/
+mv ${blddir}/larsoft_data*.bz2 ${srcdir}/
+#
 mv ${blddir}/*.bz2  $WORKSPACE/copyBack/
 mv ${blddir}/*.txt  $WORKSPACE/copyBack/
 rm -rf ${srcdir}
