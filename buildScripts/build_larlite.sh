@@ -104,7 +104,13 @@ make -j$ncores || exit 1
 # Assemble ups product.
 
 install_dir=${LARLITE_HOME_DIR}/install/larlite/$UPS_VERSION
-flavor=`ups flavor`
+flavor=``
+if uname | grep -q Darwin; then
+  flvr=`ups flavor -2`
+else
+  flvr=`ups flavor`
+fi
+
 flavor_dir=${install_dir}/$flavor
 mkdir -p $flavor_dir
 cp -r . $flavor_dir
