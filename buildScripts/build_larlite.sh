@@ -11,7 +11,8 @@
 #------------------------------------------------------------------
 
 echo "larlite ups version: $UPS_VERSION"
-echo "larlite git version: $GIT_VERSION"
+echo "larlite git tag: $GIT_VERSION"
+echo "root version $ROOT_VERSION"
 echo "qualifier: $QUAL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
@@ -63,6 +64,8 @@ else
   echo "Incorrect qualifier: $QUAL"
   exit 1
 fi
+
+setup root $ROOT_VERSION -q ${QUAL}:${BUILDTYPE}:nu
 
 # Set up working area.
 
