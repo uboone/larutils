@@ -95,6 +95,7 @@ git checkout $GIT_TAG
 # Do post-checkout initialization.
 
 source config/setup.sh || exit 1
+export LARLITE_CXX=g++             # Use g++ instead of clang.
 
 # Run make
 
