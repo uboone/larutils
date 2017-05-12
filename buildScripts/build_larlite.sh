@@ -94,11 +94,11 @@ git checkout $GIT_TAG
 
 # Do post-checkout initialization.
 
-source config/setup.sh
+source config/setup.sh || exit 1
 
 # Run make
 
-make -j$ncores
+make -j$ncores || exit 1
 
 # Assemble ups product.
 

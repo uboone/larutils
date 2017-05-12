@@ -95,13 +95,13 @@ source configure.sh
 
 # Run cmake.
 
-mkdir build
+mkdir build 
 cd build
-cmake .. -DCMAKE_CXX_COMPILER=`which g++` -DCMAKE_BUILD_TYPE=$BUILDTYPE
+cmake .. -DCMAKE_CXX_COMPILER=`which g++` -DCMAKE_BUILD_TYPE=$BUILDTYPE || exit 1
 
 # Run make
 
-make -j$ncores
+make -j$ncores || exit 1
 
 # Assemble ups product.
 
