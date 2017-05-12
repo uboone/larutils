@@ -83,7 +83,8 @@ set +x
 
 mkdir -p srcs
 cd srcs
-git clone https://github.com/larlight/larlite
+#git clone https://github.com/larlight/larlite
+git clone https://github.com/hgreenlee/larlite
 cd larlite
 
 # Make sure repository is up to date and check out desired tag.
@@ -105,14 +106,8 @@ make -j$ncores || exit 1
 # Assemble ups product.
 
 install_dir=${LARLITE_HOME_DIR}/install/larlite/$UPS_VERSION
-flavor=``
-if uname | grep -q Darwin; then
-  flavor=`ups flavor -2`
-else
-  flavor=`ups flavor`
-fi
-
-flavor_dir=${install_dir}/$flavor
+subdir=`get-directory-name subdir ${QUAL}:${BUILDTYPE}`
+flavor_dir=${install_dir}/$subdir
 mkdir -p $flavor_dir
 cp -r . $flavor_dir
 cp -r ups $install_dir
@@ -130,13 +125,13 @@ EOF
 
 # Declare ups product in temporary products area.
 
+flavor=`ups flavor`
 ups declare -z ${LARLITE_HOME_DIR}/install -r larlite/$UPS_VERSION -m larlite.table -f $flavor -q ${QUAL}:${BUILDTYPE} -U ups larlite $UPS_VERSION
 
 # Make distribution tarball
 
 cd ${LARLITE_HOME_DIR}/install
 dot_version=`echo $UPS_VERSION | sed -e 's/_/\./g' | sed -e 's/^v//'`
-subdir=`get-directory-name subdir ${QUAL}:${BUILDTYPE}`
 subdir=`echo $subdir | sed -e 's/\./-/g'`
 #qual=`echo $CETPKG_QUAL | sed -e 's/:/-/g'`
 tarballname=larlite-${dot_version}-${subdir}.tar.bz2
