@@ -91,6 +91,7 @@ cd larlite
 git checkout trunk
 git pull
 git checkout $GIT_TAG
+rm -rf .git
 
 # Do post-checkout initialization.
 
@@ -135,7 +136,8 @@ ups declare -z ${LARLITE_HOME_DIR}/install -r larlite/$UPS_VERSION -m larlite.ta
 
 cd ${LARLITE_HOME_DIR}/install
 dot_version=`echo $UPS_VERSION | sed -e 's/_/\./g' | sed -e 's/^v//'`
-subdir=`echo $flavor | sed -e 's/\./-/g'`
+subdir=`get-directory-name subdir ${QUAL}:${BUILDTYPE}`
+subdir=`echo $subdir | sed -e 's/\./-/g'`
 #qual=`echo $CETPKG_QUAL | sed -e 's/:/-/g'`
 tarballname=larlite-${dot_version}-${subdir}.tar.bz2
 echo "Making ${tarballname}"
