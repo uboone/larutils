@@ -11,7 +11,7 @@
 #------------------------------------------------------------------
 
 echo "larlite ups version: $UPS_VERSION"
-echo "larlite git tag: $GIT_VERSION"
+echo "larlite git tag: $GIT_TAG"
 echo "root version $ROOT_VERSION"
 echo "qualifier: $QUAL"
 echo "build type: $BUILDTYPE"
@@ -90,7 +90,7 @@ cd larlite
 
 git checkout trunk
 git pull
-git checkout $GIT_VERSION
+git checkout $GIT_TAG
 
 # Do post-checkout initialization.
 
@@ -111,7 +111,7 @@ cp -r ups $install_dir
 
 # Make a dbconfig file.
 
-mkdir ${SWTRIGGER_HOME_DIR}/install/.upsfiles
+mkdir ${LARLITE_HOME_DIR}/install/.upsfiles
 cat <<EOF > ${LARLITE_HOME_DIR}/install/.upsfiles/dbconfig
 FILE = DBCONFIG
 AUTHORIZED_NODES = *
