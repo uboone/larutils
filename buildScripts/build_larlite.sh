@@ -106,9 +106,9 @@ make -j$ncores || exit 1
 install_dir=${LARLITE_HOME_DIR}/install/larlite/$UPS_VERSION
 flavor=``
 if uname | grep -q Darwin; then
-  flvr=`ups flavor -2`
+  flavor=`ups flavor -2`
 else
-  flvr=`ups flavor`
+  flavor=`ups flavor`
 fi
 
 flavor_dir=${install_dir}/$flavor
