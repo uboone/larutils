@@ -97,6 +97,14 @@ ubutil_version=`grep ubutil $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qu
 echo "ubuitil version: $ubutil_version"
 mrb g -r -t $ubutil_version ubutil || exit 1
 
+# Extract uboonedata version from uboonecode product_deps (if any).
+uboonedata_version=`grep uboonedata $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+echo "uboonedata version: $uboonedata_version"
+if [ x$uboonedata_version != x ]; then
+  mrb g -r -t $uboonedata_version uboonedata || exit 1
+fi
+
+
 cd $MRB_BUILDDIR || exit 1
 mrbsetenv || exit 1
 mrb b -j$ncores || exit 1
@@ -105,12 +113,25 @@ if uname | grep -q Linux; then
 fi
 mrb mp -n uboone -- -j$ncores || exit 1
 
-# add uboone_data to the manifest
+# add uboone_photon_propagation to the manifest.
+
+manifest=uboone-*_MANIFEST.txt
+if [ x$uboonedata_version != x ]; then
+  uboone_photon_propagation_version=`grep uboone_photon_propagation $MRB_SOURCE/uboonedata/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+  uboone_photon_propagation_dot_version=`echo ${uboone_photon_propagation_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
+fi
+if [ x$uboone_photon_propagation_version != x ]; then
+  echo "uboone_photon_propagation          ${uboone_photon_propagation_version}       uboone_photon_propagation-${uboone_photon_propagation_dot_version}-noarch.tar.bz2" >>  $manifest
+fi
+
+# add uboone_data to the manifest.
 
 manifest=uboone-*_MANIFEST.txt
 uboone_data_version=`grep uboone_data $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
 uboone_data_dot_version=`echo ${uboone_data_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
-echo "uboone_data          ${uboone_data_version}       uboone_data-${uboone_data_dot_version}-noarch.tar.bz2" >>  $manifest
+if [ x$uboone_data_version != x ]; then
+  echo "uboone_data          ${uboone_data_version}       uboone_data-${uboone_data_dot_version}-noarch.tar.bz2" >>  $manifest
+fi
 
 # add uboonedaq_datatypes to the manifest
 
@@ -133,7 +154,7 @@ os=`get-directory-name os`
 plat=`get-directory-name platform`
 qual=`echo $QUAL |  sed 's/:*noifdh:*//'`
 if [ x$swtrigger_version != x ]; then
-  echo "swtrigger          ${swtrigger_version}       swtrigger-${swtrigger_dot_version}-${os}-${plat}-${qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
+  echo "swtrigger            ${swtrigger_version}       swtrigger-${swtrigger_dot_version}-${os}-${plat}-${qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
 fi
 
 # Extract larsoft version from product_deps.
