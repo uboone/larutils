@@ -15,7 +15,7 @@ echo "workspace: $WORKSPACE"
 if [ `uname` = Darwin ]; then
   #ncores=`sysctl -n hw.ncpu`
   #ncores=$(( $ncores / 4 ))
-  ncores=16
+  ncores=4
 else
   ncores=`cat /proc/cpuinfo 2>/dev/null | grep -c -e '^processor'`
 fi
