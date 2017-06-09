@@ -145,12 +145,10 @@ cd ${blddir} || exit 1
 echo
 echo "begin build"
 echo
-if [[ ${objver} != "none" ]]; then
-./buildFW -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${objver} || \
+./buildFW -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
-fi
 
 echo
 echo "move files"
