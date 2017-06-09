@@ -72,6 +72,7 @@ mrb newDev  -v $UBOONE -q $QUAL:$BUILDTYPE || exit 1
 
 set +x
 source localProducts*/setup || exit 1
+echo "PRODUCTS=$PRODUCTS"
 
 # some shenanigans so we can use getopt v1_1_6
 if [ `uname` = Darwin ]; then
