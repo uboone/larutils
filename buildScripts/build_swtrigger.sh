@@ -129,7 +129,11 @@ EOF
 
 # Declare ups product in temporary products area.
 
-flavor=`ups flavor`
+if uname | grep -q Darwin; then
+  flavor=`ups flavor -2`
+else
+  flavor=`ups flavor`
+fi
 ups declare -z ${SWTRIGGER_HOME_DIR}/install -r swtrigger/$VERSION -m swtrigger.table -f $flavor -q ${QUAL}:${BUILDTYPE} -U ups swtrigger $VERSION
 
 # Make distribution tarball
