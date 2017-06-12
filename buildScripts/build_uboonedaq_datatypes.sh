@@ -87,6 +87,7 @@ mkdir -p srcs
 cd srcs
 #git clone http://cdcvs.fnal.gov/projects/uboonedaq-datatypes
 git clone https://github.com/hgreenlee/uboonedaq_datatypes
+mv uboonedaq_datatypes uboonedaq-datatypes
 cd uboonedaq-datatypes
 
 # Make sure repository is up to date and check out desired tag.
