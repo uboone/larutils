@@ -36,132 +36,17 @@ shift `expr $OPTIND - 1`
 OPTIND=1
 
 working_dir=${WORKSPACE}
-version=${LARVER}
+version=${LVER}
 qual_set="${QUAL}"
 build_type=${BUILDTYPE}
-objver=${LAROBJ}
 
-d16_ok=false
+d16_ok=true
+basequal=${qual_set}
 
 case ${qual_set} in
-  s5:e5) 
-     basequal=e5
-     squal=s5
-  ;;
-  s5:e6) 
-     basequal=e6
-     squal=s5
-  ;;
-  s6:e6) 
-     basequal=e6
-     squal=s6
-  ;;
-  s7:e7) 
-     basequal=e7
-     squal=s7
-  ;;
-  s8:e7) 
-     basequal=e7
-     squal=s8
-  ;;
-  s11:e7) 
-     basequal=e7
-     squal=s11
-  ;;
-  s12:e7) 
-     basequal=e7
-     squal=s12
-  ;;
-  s14:e7) 
-     basequal=e7
-     squal=s14
-  ;;
-  s15:e7) 
-     basequal=e7
-     squal=s15
-  ;;
-  s18:e7) 
-     basequal=e7
-     squal=s18
-  ;;
-  s18:e9) 
-     basequal=e9
-     squal=s18
-  ;;
-  s20:e9) 
-     basequal=e9
-     squal=s20
-  ;;
-  s21:e9) 
-     basequal=e9
-     squal=s21
-  ;;
-  s24:e9)
-     basequal=e9
-     squal=s24
-  ;;
-  s26:e9)
-     basequal=e9
-     squal=s26
-  ;;
-  s28:e9)
-     basequal=e9
-     squal=s28
-  ;;
-  s30:e9)
-     basequal=e9
-     squal=s30
-  ;;
-  s31:e9)
-     basequal=e9
-     squal=s31
-  ;;
-  s33:e10)
-     basequal=e10
-     squal=s33
-  ;;
-  s36:e10)
-     basequal=e10
-     squal=s36
-  ;;
-  s39:e10)
-     basequal=e10
-     squal=s39
-  ;;
-  s41:e10)
-     basequal=e10
-     squal=s41
-  ;;
-  s42:e10)
-     basequal=e10
-     squal=s42
-  ;;
-  s43:e10)
-     basequal=e10
-     squal=s43
-  ;;
-  s44:e10)
-     basequal=e10
-     squal=s44
-  ;;
-  s46:e10)
-     basequal=e10
-     squal=s46
-  ;;
-  s48:e10)
-     basequal=e10
-     squal=s48
-  ;;
-  s48:e14)
-     basequal=e14
-     squal=s48
-     d16_ok=true
-  ;;
-  s50:e14)
-     basequal=e14
-     squal=s50
-     d16_ok=true
-  ;;
+  e9) d16_ok=false ;;
+  e10) d16_ok=false ;;
+  e14) ;;
   *)
     usage
     exit 1
@@ -206,7 +91,7 @@ fi
 
 dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
-echo "building the larsoft base distribution for ${version} ${dotver} ${qual_set} ${build_type}"
+echo "building the larsoftobj distribution for ${version} ${dotver} ${qual_set} ${build_type}"
 
 OS=`uname`
 if [ "${OS}" = "Linux" ]
@@ -248,15 +133,9 @@ cd ${blddir} || exit 1
 curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/pullProducts || exit 1
 chmod +x pullProducts
 # source code tarballs MUST be pulled first
-./pullProducts ${blddir} source lar_product_stack-${version} || \
+./pullProducts ${blddir} source larsoftobj-${version} || \
       { cat 1>&2 <<EOF
-ERROR: pull of lar_product_stack-${version} source failed
-EOF
-        exit 1
-      }
-./pullProducts ${blddir} source larsoft-${version} || \
-      { cat 1>&2 <<EOF
-ERROR: pull of larsoft-${version} failed
+ERROR: pull of larsoftobj-${version} failed
 EOF
         exit 1
       }
@@ -266,21 +145,7 @@ cd ${blddir} || exit 1
 echo
 echo "begin build"
 echo
-./buildFW -t -b ${basequal} ${blddir} ${build_type} lar_product_stack-${version} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
-   exit 1 
- }
-./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
-   exit 1 
- }
-if [[ ${objver} != "none" ]]; then
-./buildFW -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${objver} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
-   exit 1 
- }
-fi
-./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
+./buildFW -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
@@ -290,8 +155,6 @@ echo "move files"
 echo
 # get these out of the way
 mv ${blddir}/*source* ${srcdir}/
-mv ${blddir}/g*noarch* ${srcdir}/
-mv ${blddir}/larsoft_data*.bz2 ${srcdir}/
 # 
 mv ${blddir}/*.bz2  $WORKSPACE/copyBack/
 mv ${blddir}/*.txt  $WORKSPACE/copyBack/
