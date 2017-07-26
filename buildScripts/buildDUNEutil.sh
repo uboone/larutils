@@ -33,8 +33,8 @@ if [ $ncores -lt 1 ]; then
 fi
 echo "Building using $ncores cores."
 
-if [ -f /grid/fermiapp/products/dune/setup_dune.sh ]; then
-  source /grid/fermiapp/products/dune/setup_dune.sh || exit 1
+if [ -f /grid/fermiapp/products/dune/setup_dune_fermiapp.sh ]; then
+  source /grid/fermiapp/products/dune/setup_dune_fermiapp.sh || exit 1
 elif [ -f /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh ]; then
   source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
 else
