@@ -12,6 +12,7 @@
 #------------------------------------------------------------------
 
 echo "uboonedaq_datatypes version: $VERSION"
+echo "Qualifier: $QUAL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
 
@@ -99,7 +100,7 @@ git checkout $VERSION
 # Initialize build area.
 
 cd ${UBOONEDAQ_HOME_DIR}/build
-source ${UBOONEDAQ_HOME_DIR}/srcs/uboonedaq-datatypes/projects/ups/setup_for_development $opt
+source ${UBOONEDAQ_HOME_DIR}/srcs/uboonedaq-datatypes/projects/ups/setup_for_development $opt $QUAL
 
 # Run cmake.
 
