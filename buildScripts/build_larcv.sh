@@ -2,16 +2,16 @@
 
 #------------------------------------------------------------------
 #
-# Name: build_larlite.sh
+# Name: build_larcv.sh
 #
-# Purpose: Build debug and prof flavors of larlite on Jenkins.
+# Purpose: Build debug and prof flavors of larcv on Jenkins.
 #
 # Created:  4-Aug-2017  H. Greenlee
 #
 #------------------------------------------------------------------
 
-echo "larlite ups version: $UPS_VERSION"
-echo "larlite git tag: $GIT_TAG"
+echo "larcv ups version: $UPS_VERSION"
+echo "larcv git tag: $GIT_TAG"
 echo "qualifier: $QUAL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
@@ -58,7 +58,7 @@ mkdir -p $WORKSPACE/temp || exit 1
 mkdir -p $WORKSPACE/copyBack || exit 1
 rm -f $WORKSPACE/copyBack/* || exit 1
 cd $WORKSPACE/temp || exit 1
-export LARLITE_HOME_DIR=`pwd`
+export LARCV_HOME_DIR=`pwd`
 
 set +x
 
@@ -66,26 +66,26 @@ set +x
 
 mkdir -p srcs
 cd srcs
-git clone https://github.com/larlight/larlite
-#git clone https://github.com/hgreenlee/larlite
-cd larlite
+git clone https://github.com/LArbys/LArCV
+#git clone https://github.com/hgreenlee/LArCV
+cd LArCV
 git checkout $GIT_TAG
 rm -rf .git
 
 # Set up the correct version of gcc.
 
-gcc_version=`ups depend -M ups -m larlite.table -q ${QUAL}:${BUILDTYPE} larlite | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
+gcc_version=`ups depend -M ups -m larcv.table -q ${QUAL}:${BUILDTYPE} larcv | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
 setup $gcc_version
 
 # Set up the correct dependent root version.
 
-root_version=`ups depend -M ups -m larlite.table -q ${QUAL}:${BUILDTYPE} larlite | sed -n 's/^.*__\(root .*\)$/\1/p'`
+root_version=`ups depend -M ups -m larcv.table -q ${QUAL}:${BUILDTYPE} larcv | sed -n 's/^.*__\(root .*\)$/\1/p'`
 setup $root_version
 
 # Do post-checkout initialization.
 
-source config/setup.sh || exit 1
-export LARLITE_CXX=g++             # Use g++ instead of clang.
+source configure.sh || exit 1
+export LARCV_CXX=g++             # Use g++ instead of clang.
 
 # Run make
 
@@ -93,7 +93,7 @@ make -j$ncores || exit 1
 
 # Assemble ups product.
 
-install_dir=${LARLITE_HOME_DIR}/install/larlite/$UPS_VERSION
+install_dir=${LARCV_HOME_DIR}/install/larcv/$UPS_VERSION
 subdir=`get-directory-name subdir ${QUAL}:${BUILDTYPE}`
 flavor_dir=${install_dir}/$subdir
 mkdir -p $flavor_dir
@@ -102,8 +102,8 @@ cp -r ups $install_dir
 
 # Make a dbconfig file.
 
-mkdir ${LARLITE_HOME_DIR}/install/.upsfiles
-cat <<EOF > ${LARLITE_HOME_DIR}/install/.upsfiles/dbconfig
+mkdir ${LARCV_HOME_DIR}/install/.upsfiles
+cat <<EOF > ${LARCV_HOME_DIR}/install/.upsfiles/dbconfig
 FILE = DBCONFIG
 AUTHORIZED_NODES = *
 VERSION_SUBDIR = 1
@@ -114,21 +114,21 @@ EOF
 # Declare ups product in temporary products area.
 
 flavor=`ups flavor`
-ups declare -z ${LARLITE_HOME_DIR}/install -r larlite/$UPS_VERSION -m larlite.table -f $flavor -q ${QUAL}:${BUILDTYPE} -U ups larlite $UPS_VERSION
+ups declare -z ${LARCV_HOME_DIR}/install -r larcv/$UPS_VERSION -m larcv.table -f $flavor -q ${QUAL}:${BUILDTYPE} -U ups larcv $UPS_VERSION
 
 # Make distribution tarball
 
-cd ${LARLITE_HOME_DIR}/install
+cd ${LARCV_HOME_DIR}/install
 dot_version=`echo $UPS_VERSION | sed -e 's/_/\./g' | sed -e 's/^v//'`
 subdir=`echo $subdir | sed -e 's/\./-/g'`
 #qual=`echo $CETPKG_QUAL | sed -e 's/:/-/g'`
-tarballname=larlite-${dot_version}-${subdir}.tar.bz2
+tarballname=larcv-${dot_version}-${subdir}.tar.bz2
 echo "Making ${tarballname}"
-tar cjf ${LARLITE_HOME_DIR}/${tarballname} larlite
+tar cjf ${LARCV_HOME_DIR}/${tarballname} larcv
 
 # Save artifacts.
 
-mv ${LARLITE_HOME_DIR}/${tarballname}  $WORKSPACE/copyBack/ || exit 1
+mv ${LARCV_HOME_DIR}/${tarballname}  $WORKSPACE/copyBack/ || exit 1
 ls -l $WORKSPACE/copyBack/
 cd $WORKSPACE || exit 1
 #rm -rf $WORKSPACE/temp || exit 1
