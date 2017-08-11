@@ -140,7 +140,11 @@ cp -r ups $install_dir
 
 # Declare larlite ups product in temporary products area.
 
-flavor=`ups flavor`
+if uname | grep -q Darwin; then
+  flavor=`ups flavor -2`
+else
+  flavor=`ups flavor`
+fi
 ups declare -z ${HOME_DIR}/install -r larlite/$LARLITE_VERSION -m larlite.table -f $flavor -q ${QUAL}:${BUILDTYPE} -U ups larlite $LARLITE_VERSION
 
 # Make distribution tarball
@@ -171,7 +175,11 @@ cp -r ups $install_dir
 
 # Declare larcv ups product in temporary products area.
 
-flavor=`ups flavor`
+if uname | grep -q Darwin; then
+  flavor=`ups flavor -2`
+else
+  flavor=`ups flavor`
+fi
 ups declare -z ${HOME_DIR}/install -r larcv/$LARCV_VERSION -m larcv.table -f $flavor -q ${QUAL}:${BUILDTYPE} -U ups larcv $LARCV_VERSION
 
 # Make distribution tarball

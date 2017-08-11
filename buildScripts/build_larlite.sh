@@ -113,7 +113,11 @@ EOF
 
 # Declare ups product in temporary products area.
 
-flavor=`ups flavor`
+if uname | grep -q Darwin; then
+  flavor=`ups flavor -2`
+else
+  flavor=`ups flavor`
+fi
 ups declare -z ${LARLITE_HOME_DIR}/install -r larlite/$UPS_VERSION -m larlite.table -f $flavor -q ${QUAL}:${BUILDTYPE} -U ups larlite $UPS_VERSION
 
 # Make distribution tarball
