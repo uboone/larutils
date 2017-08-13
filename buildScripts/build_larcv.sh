@@ -82,8 +82,8 @@ cd ${HOME_DIR}/srcs
 
 # Check out larcv.
 
-git clone https://github.com/LArbys/LArCV
-#git clone https://github.com/hgreenlee/LArCV
+#git clone https://github.com/LArbys/LArCV
+git clone https://github.com/hgreenlee/LArCV
 cd LArCV
 git checkout $LARCV_TAG
 rm -rf .git
