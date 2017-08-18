@@ -107,7 +107,7 @@ make -j$ncores || exit 1
 # Assemble larcv ups product.
 
 install_dir=${HOME_DIR}/install/larcv/$LARCV_VERSION
-subdir=`get-directory-name subdir ${QUAL}:${BUILDTYPE}
+subdir=`get-directory-name subdir ${QUAL}:${BUILDTYPE}`
 flavor_dir=${install_dir}/$subdir
 mkdir -p $flavor_dir
 cp -r . $flavor_dir
