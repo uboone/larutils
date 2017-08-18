@@ -120,7 +120,7 @@ if uname | grep -q Darwin; then
 else
   flavor=`ups flavor`
 fi
-ups declare -z ${HOME_DIR}/install -r larcv/$LARCV_VERSION -m larcv.table -f $flavor -q ${QUAL}:${BUILDTYPE} -U ups larcv $LARCV_VERSION
+ups declare -z ${HOME_DIR}/install -r larcv/$LARCV_VERSION -m larcv.table -f $flavor -q ${QUAL}:${BUILDTYPE}:nolarlite -U ups larcv $LARCV_VERSION
 
 # Make distribution tarball
 
