@@ -66,8 +66,8 @@ set +x
 
 mkdir -p srcs
 cd srcs
-#git clone https://github.com/larlight/larlite
-git clone https://github.com/hgreenlee/larlite
+git clone https://github.com/larlight/larlite
+#git clone https://github.com/hgreenlee/larlite
 cd larlite
 git checkout $GIT_TAG
 rm -rf .git
