@@ -122,7 +122,7 @@ if [ x$uboonedata_version != x ]; then
   uboone_photon_propagation_dot_version=`echo ${uboone_photon_propagation_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 fi
 if [ x$uboone_photon_propagation_version != x ]; then
-  echo "uboone_photon_propagation          ${uboone_photon_propagation_version}       uboone_photon_propagation-${uboone_photon_propagation_dot_version}-noarch.tar.bz2" >>  $manifest
+  echo "uboone_photon_propagation ${uboone_photon_propagation_version}       uboone_photon_propagation-${uboone_photon_propagation_dot_version}-noarch.tar.bz2" >>  $manifest
 fi
 
 # add uboone_data to the manifest.
@@ -143,7 +143,7 @@ os=`get-directory-name os`
 plat=`get-directory-name platform`
 qual=`echo $QUAL |  sed 's/:*noifdh:*//'`
 if [ x$uboonedaq_datatypes_version != x ]; then
-  echo "uboonedaq_datatypes          ${uboonedaq_datatypes_version}       uboonedaq_datatypes-${uboonedaq_datatypes_dot_version}-${os}-${plat}-${qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
+  echo "uboonedaq_datatypes  ${uboonedaq_datatypes_version}       uboonedaq_datatypes-${uboonedaq_datatypes_dot_version}-${os}-${plat}-${qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
 fi
 
 # add swtrigger to the manifest
@@ -156,6 +156,15 @@ plat=`get-directory-name platform`
 qual=`echo $QUAL |  sed 's/:*noifdh:*//'`
 if [ x$swtrigger_version != x ]; then
   echo "swtrigger            ${swtrigger_version}       swtrigger-${swtrigger_dot_version}-${os}-${plat}-${qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
+fi
+
+# add larbatch to the manifest.
+
+manifest=uboone-*_MANIFEST.txt
+larbatch_version=`grep larbatch $MRB_SOURCE/ubutil/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+larbatch_dot_version=`echo ${larbatch_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
+if [ x$larbatch_version != x ]; then
+  echo "larbatch             ${larbatch_version}       larbatch-${larbatch_dot_version}-noarch.tar.bz2" >>  $manifest
 fi
 
 # Extract larsoft version from product_deps.
@@ -181,8 +190,9 @@ echo $larsoft_manifest
 echo
 
 # Fetch laraoft manifest from scisoft and append to uboonecode manifest.
+# Filter out larbatch because we already added that.
 
-curl --fail --silent --location --insecure http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/manifest/${larsoft_manifest} >> $manifest || exit 1
+curl --fail --silent --location --insecure http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/manifest/${larsoft_manifest} | grep -v larbatch >> $manifest || exit 1
 
 # Special handling of noifdh builds goes here.
 
