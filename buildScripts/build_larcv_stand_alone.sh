@@ -118,7 +118,7 @@ cp -r ups $install_dir
 if uname | grep -q Darwin; then
   flavor=`ups flavor -2`
 else
-  flavor=`ups flavor`
+  flavor=`ups flavor -4`
 fi
 ups declare -z ${HOME_DIR}/install -r larcv/$LARCV_VERSION -m larcv.table -f $flavor -q ${QUAL}:${BUILDTYPE} -U ups larcv $LARCV_VERSION
 
