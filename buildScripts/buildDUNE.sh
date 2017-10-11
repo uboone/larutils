@@ -122,7 +122,7 @@ flvr=''
 if uname | grep -q Darwin; then
   flvr=`ups flavor -2`
 else
-  flvr=`ups flavor`
+  flvr=`ups flavor -4`
 fi
 
 # Construct name of larsoft manifest.
