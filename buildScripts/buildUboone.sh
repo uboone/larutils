@@ -158,6 +158,30 @@ if [ x$swtrigger_version != x ]; then
   echo "swtrigger            ${swtrigger_version}       swtrigger-${swtrigger_dot_version}-${os}-${plat}-${qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
 fi
 
+# add larlite to the manifest
+
+manifest=uboone-*_MANIFEST.txt
+larlite_version=`grep larlite $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+larlite_dot_version=`echo ${larlite_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
+os=`get-directory-name os`
+plat=`get-directory-name platform`
+qual=`echo $QUAL |  sed 's/:*noifdh:*//'`
+if [ x$larlite_version != x ]; then
+  echo "larlite            ${larlite_version}       larlite-${larlite_dot_version}-${os}-${plat}-${qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
+fi
+
+# add larcv to the manifest
+
+manifest=uboone-*_MANIFEST.txt
+larcv_version=`grep larcv $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+larcv_dot_version=`echo ${larcv_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
+os=`get-directory-name os`
+plat=`get-directory-name platform`
+qual=`echo $QUAL |  sed 's/:*noifdh:*//'`
+if [ x$larcv_version != x ]; then
+  echo "larcv            ${larcv_version}       larcv-${larcv_dot_version}-${os}-${plat}-${qual}-${BUILDTYPE}.tar.bz2" >>  $manifest
+fi
+
 # add larbatch to the manifest.
 
 manifest=uboone-*_MANIFEST.txt
