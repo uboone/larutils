@@ -40,8 +40,8 @@ echo "ls /cvmfs/uboone.opensciencegrid.org"
 ls /cvmfs/uboone.opensciencegrid.org
 echo
 
-if [ -f /grid/fermiapp/products/uboone/setup_uboone.sh ]; then
-  source /grid/fermiapp/products/uboone/setup_uboone.sh || exit 1
+if [ -f /grid/fermiapp/products/uboone/setup_uboone_bluearc.sh ]; then
+  source /grid/fermiapp/products/uboone/setup_uboone_bluearc.sh || exit 1
 elif [ -f /cvmfs/uboone.opensciencegrid.org/products/setup_uboone.sh ]; then
   if [ -x /cvmfs/grid.cern.ch/util/cvmfs-uptodate ]; then
     /cvmfs/grid.cern.ch/util/cvmfs-uptodate /cvmfs/uboone.opensciencegrid.org/products
