@@ -38,6 +38,8 @@ fi
 
 setup gcc v6_3_0
 
+g++ -v
+
 # Use system git on macos, and the one in ups for linux
 
 if ! uname | grep -q Darwin; then
