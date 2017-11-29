@@ -176,8 +176,8 @@ git checkout tags/${JJVERSION} || exit 1
 
 # copy all the files that do not need building.  Copy the headers later when we're done as they are in the install directory
 
-cp -r -L dam/source/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/source || exit 1
-cp -r -L data/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/data || exit 1
+cp -r dam/source/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/source || exit 1
+cp -r data/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/data || exit 1
 
 DIRNAME=${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}
 mkdir -p ${DIRNAME} || exit 1
@@ -214,7 +214,7 @@ for LIBFILE in $( ls ); do
 	  fi
 done
 
-cp -r -L ${CURDIR}/inputdir/proto-dune-dam-lib/install/x86_64-${SIMDQUALIFIER}-${LINDAR}/include/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/include || exit 1
+cp -r ${CURDIR}/inputdir/proto-dune-dam-lib/install/x86_64-${SIMDQUALIFIER}-${LINDAR}/include/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/include || exit 1
 
 # assemble the UPS product and declare it
 
