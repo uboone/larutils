@@ -38,7 +38,11 @@ fi
 
 setup gcc v6_3_0
 
-g++ -v
+echo "g++ version query"
+
+g++ -v 2>&1
+
+echo "end g++ version query"
 
 # Use system git on macos, and the one in ups for linux
 
