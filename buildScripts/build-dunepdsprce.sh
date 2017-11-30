@@ -213,7 +213,7 @@ fi
 cd ${CURDIR}/inputdir/proto-dune-dam-lib/dam/export/x86_64-${SIMDQUALIFIER}-${LINDAR}/lib
 for LIBFILE in $( ls ); do
 	  if [ -h ${LIBFILE} ]; then
-	    TMPVAR=`readlink -f ${LIBFILE}`
+	    TMPVAR=`readlink ${LIBFILE}`
 	    ln -s `basename ${TMPVAR}` ${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}/lib/${LIBFILE} || exit 1
 	  else
 	    cp ${LIBFILE} ${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}/lib || exit 1
