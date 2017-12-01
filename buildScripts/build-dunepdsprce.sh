@@ -56,7 +56,6 @@ mkdir -p $WORKSPACE/temp || exit 1
 mkdir -p $WORKSPACE/copyBack || exit 1
 rm -f $WORKSPACE/copyBack/* || exit 1
 cd $WORKSPACE/temp || exit 1
-
 CURDIR=`pwd`
 
 # change all dots to underscores, and capital V's to little v's in the version string
@@ -239,26 +238,30 @@ EOF
 
 ups declare ${PRODUCT_NAME} ${VERSION} -f ${FLAVOR} -m ${PRODUCT_NAME}.table -z `pwd` -r ./${PRODUCT_NAME}/${VERSION} -q ${BUILDTYPE}:${SIMDQUALIFIER}:${QUAL}
 
+# clean up
+rm -rf ${CURDIR}/inputdir || exit 1
+
+cd ${CURDIR} || exit 1
+
+ls -la
+
 FULLNAME=${PRODUCT_NAME}-${VERSION}-${FLAVOR}-${SIMDQUALIFIER}-${QUAL}-${BUILDTYPE}
-tar -cjf ${FULLNAME}.tar.bz2 *
+tar -cjf ${FULLNAME}.tar.bz2 .
 
 # Construct manifest -- need to include gcc and gdb?
 
-cat > ${FULLNAME}_MANIFEST.txt <<EOF
-${PRODUCT_NAME}         ${VERSION}         ${FULLNAME}.tar.bz2
-EOF
+#cat > ${FULLNAME}_MANIFEST.txt <<EOF
+#${PRODUCT_NAME}         ${VERSION}         ${FULLNAME}.tar.bz2
+#EOF
 
-# clean up
-
-rm -rf ${CURDIR}/inputdir || exit 1
 
 # Save artifacts.
 
 mv *.bz2  $WORKSPACE/copyBack/ || exit 1
-manifest=${FULLNAME}_MANIFEST.txt
-if [ -f $manifest ]; then
-  mv $manifest  $WORKSPACE/copyBack/ || exit 1
-fi
+#manifest=${FULLNAME}_MANIFEST.txt
+#if [ -f $manifest ]; then
+#  mv $manifest  $WORKSPACE/copyBack/ || exit 1
+#fi
 ls -l $WORKSPACE/copyBack/
 cd $WORKSPACE || exit 1
 rm -rf $WORKSPACE/temp || exit 1
