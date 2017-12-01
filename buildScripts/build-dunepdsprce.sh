@@ -182,8 +182,8 @@ git checkout tags/${JJVERSION} || exit 1
 
 # copy all the files that do not need building.  Copy the headers later when we're done as they are in the install directory
 
-cp -r dam/source/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/source || exit 1
-cp -r data/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/data || exit 1
+cp -R -L dam/source/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/source || exit 1
+cp -R -L data/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/data || exit 1
 
 DIRNAME=${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}
 mkdir -p ${DIRNAME} || exit 1
@@ -202,13 +202,15 @@ else
   make target=x86_64-${SIMDQUALIFIER}-${LINDAR} || exit 1
 fi
 
-cp ${CURDIR}/inputdir/proto-dune-dam-lib/install/x86_64-${SIMDQUALIFIER}-${LINDAR}/bin/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}/bin
+cp -R -L ${CURDIR}/inputdir/proto-dune-dam-lib/install/x86_64-${SIMDQUALIFIER}-${LINDAR}/bin/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}/bin
 
 # JJ builds a program called "reader" which probably shouldn't be in the user's PATH.  Rename it if it exists
 
 if [ -e ${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}/bin/reader ]; then
   mv ${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}/bin/reader ${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}/bin/${PRODUCT_NAME}_testreader
 fi
+
+# in the case of the shared libraries, we want to only copy the libraries once, and make new symlinks with relative paths
 
 cd ${CURDIR}/inputdir/proto-dune-dam-lib/dam/export/x86_64-${SIMDQUALIFIER}-${LINDAR}/lib
 for LIBFILE in $( ls ); do
