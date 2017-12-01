@@ -220,7 +220,7 @@ for LIBFILE in $( ls ); do
 	  fi
 done
 
-cp -r ${CURDIR}/inputdir/proto-dune-dam-lib/install/x86_64-${SIMDQUALIFIER}-${LINDAR}/include/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/include || exit 1
+cp -R -L ${CURDIR}/inputdir/proto-dune-dam-lib/install/x86_64-${SIMDQUALIFIER}-${LINDAR}/include/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/include || exit 1
 
 # assemble the UPS product and declare it
 
@@ -245,6 +245,10 @@ tar -cjf ${FULLNAME}.tar.bz2 *
 cat > ${FULLNAME}_MANIFEST.txt <<EOF
 ${PRODUCT_NAME}         ${VERSION}         ${FULLNAME}.tar.bz2
 EOF
+
+# clean up
+
+rm -rf ${CURDIR}/inputdir || exit 1
 
 # Save artifacts.
 
