@@ -79,7 +79,7 @@ mkdir ${PRODUCT_NAME}/${VERSION}/data || exit 1
 mkdir ${PRODUCT_NAME}/${VERSION}/ups || exit 1
 
 
-cat >> ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table <<EOF
+cat >> ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table <<'EOF'
 File=Table
 Product=dunepdsprce
 
