@@ -88,56 +88,56 @@ Product=dunepdsprce
 Group:
 
 Flavor=ANY
-Qualifiers=${QUAL}:gen:debug
+Qualifiers=QUALIFIER_REPLACE_STRING:gen:debug
 
   Action=DefineFQ
-    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-${QUAL}-gen-debug)
+    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-debug)
 
   Action = ExtraSetup
     setupRequired( gcc v6_3_0 )
 
 Flavor=ANY
-Qualifiers=${QUAL}:avx:debug
+Qualifiers=QUALIFIER_REPLACE_STRING:avx:debug
 
   Action=DefineFQ
-    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-${QUAL}-avx-debug)
+    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-debug)
 
   Action = ExtraSetup
     setupRequired( gcc v6_3_0 )
 
 Flavor=ANY
-Qualifiers=${QUAL}:avx2:debug
+Qualifiers=QUALIFIER_REPLACE_STRING:avx2:debug
 
   Action=DefineFQ
-    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-${QUAL}-avx2-debug)
+    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-debug)
 
   Action = ExtraSetup
     setupRequired( gcc v6_3_0 )
 
 Flavor=ANY
-Qualifiers=${QUAL}:gen:prof
+Qualifiers=QUALIFIER_REPLACE_STRING:gen:prof
 
   Action=DefineFQ
-    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-${QUAL}-gen-prof)
+    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-prof)
 
   Action = ExtraSetup
     setupRequired( gcc v6_3_0 )
 
 Flavor=ANY
-Qualifiers=${QUAL}:avx:prof
+Qualifiers=QUALIFIER_REPLACE_STRING:avx:prof
 
   Action=DefineFQ
-    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-${QUAL}-avx-prof)
+    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-prof)
 
   Action = ExtraSetup
     setupRequired( gcc v6_3_0 )
 
 Flavor=ANY
-Qualifiers=${QUAL}:avx2:prof
+Qualifiers=QUALIFIER_REPLACE_STRING:avx2:prof
 
 
   Action=DefineFQ
-    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-${QUAL}-avx2-prof)
+    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-prof)
 
   Action = ExtraSetup
     setupRequired( gcc v6_3_0 )
@@ -172,6 +172,10 @@ End:
 #*************************************************
 
 EOF
+
+# edit in the value of the compiler qualifier
+
+sed -i -e "s/QUALIFIER_REPLACE_STRING/${QUAL}/g" ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table
 
 mkdir inputdir || exit 1
 cd inputdir
