@@ -173,9 +173,11 @@ End:
 
 EOF
 
-# edit in the value of the compiler qualifier
+# edit in the value of the compiler qualifier.  sed -i has a different syntax on mac and linux so do it this roundabout way
 
-sed -i -e "s/QUALIFIER_REPLACE_STRING/${QUAL}/g" ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table
+sed -e "s/QUALIFIER_REPLACE_STRING/${QUAL}/g" < ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table > ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew || exit 1
+rm -f ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table || exit 1
+mv ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table || exit 1
 
 mkdir inputdir || exit 1
 cd inputdir
