@@ -231,14 +231,17 @@ cp -R -L ${CURDIR}/inputdir/proto-dune-dam-lib/install/x86_64-${SIMDQUALIFIER}-$
 
 cd ${CURDIR} || exit 1
 
-mkdir .upsfiles || exit 1
-cat <<EOF > .upsfiles/dbconfig
-FILE = DBCONFIG
-AUTHORIZED_NODES = *
-VERSION_SUBDIR = 1
-PROD_DIR_PREFIX = \${UPS_THIS_DB}
-UPD_USERCODE_DIR = \${UPS_THIS_DB}/.updfiles
-EOF
+# for testing the tarball, remove so we keep .upsfiles as is when
+# unwinding into a real products area
+
+#mkdir .upsfiles || exit 1
+#cat <<EOF > .upsfiles/dbconfig
+#FILE = DBCONFIG
+#AUTHORIZED_NODES = *
+#VERSION_SUBDIR = 1
+#PROD_DIR_PREFIX = \${UPS_THIS_DB}
+#UPD_USERCODE_DIR = \${UPS_THIS_DB}/.updfiles
+#EOF
 
 ups declare ${PRODUCT_NAME} ${VERSION} -f ${FLAVOR} -m ${PRODUCT_NAME}.table -z `pwd` -r ./${PRODUCT_NAME}/${VERSION} -q ${BUILDTYPE}:${SIMDQUALIFIER}:${QUAL}
 
