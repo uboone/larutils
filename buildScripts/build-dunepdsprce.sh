@@ -91,7 +91,7 @@ Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:gen:debug
 
   Action=DefineFQ
-    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-debug)
+    envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-debug)
 
   Action = ExtraSetup
     setupRequired( gcc v6_3_0 )
@@ -100,7 +100,7 @@ Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx:debug
 
   Action=DefineFQ
-    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-debug)
+    envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-debug)
 
   Action = ExtraSetup
     setupRequired( gcc v6_3_0 )
@@ -109,7 +109,7 @@ Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx2:debug
 
   Action=DefineFQ
-    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-debug)
+    envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-debug)
 
   Action = ExtraSetup
     setupRequired( gcc v6_3_0 )
@@ -118,7 +118,7 @@ Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:gen:prof
 
   Action=DefineFQ
-    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-prof)
+    envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-prof)
 
   Action = ExtraSetup
     setupRequired( gcc v6_3_0 )
@@ -127,7 +127,7 @@ Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx:prof
 
   Action=DefineFQ
-    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-prof)
+    envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-prof)
 
   Action = ExtraSetup
     setupRequired( gcc v6_3_0 )
@@ -137,7 +137,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx2:prof
 
 
   Action=DefineFQ
-    envSet (DUNEPDSPRCE_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-prof)
+    envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-prof)
 
   Action = ExtraSetup
     setupRequired( gcc v6_3_0 )
@@ -147,24 +147,25 @@ Common:
       setupenv()
       proddir()
       ExeActionRequired(DefineFQ)
+      envSet(DUNEPDSPRCE_DIR, ${UPS_PROD_DIR})
       envSet(DUNEPDSPRCE_VERSION, ${UPS_PROD_VERSION})
       envSet(DUNEPDSPRCE_INC, ${DUNEPDSPRCE_DIR}/include)
-      envSet(DUNEPDSPRCE_LIB, ${DUNEPDSPRCE_DIR}/lib)
+      envSet(DUNEPDSPRCE_LIB, ${DUNEPDSPRCE_FQ_DIR}/lib)
       # add the lib directory to LD_LIBRARY_PATH 
       if ( test `uname` = "Darwin" )
-        envPrepend(DYLD_LIBRARY_PATH, ${DUNEPDSPRCE_DIR}/lib)
+        envPrepend(DYLD_LIBRARY_PATH, ${DUNEPDSPRCE_FQ_DIR}/lib)
       else()
-        envPrepend(LD_LIBRARY_PATH, ${DUNEPDSPRCE_DIR}/lib)
+        envPrepend(LD_LIBRARY_PATH, ${DUNEPDSPRCE_FQ_DIR}/lib)
       endif ( test `uname` = "Darwin" )
       # add the bin directory to the path if it exists
-      if    ( sh -c 'for dd in bin;do [ -d ${DUNEPDSPRCE_DIR}/$dd ] && exit;done;exit 1' )
-          pathPrepend(PATH, ${DUNEPDSPRCE_DIR}/bin )
+      if    ( sh -c 'for dd in bin;do [ -d ${DUNEPDSPRCE_FQ_DIR}/$dd ] && exit;done;exit 1' )
+          pathPrepend(PATH, ${DUNEPDSPRCE_FQ_DIR}/bin )
       else ()
           execute( true, NO_UPS_ENV )
       endif ( sh -c 'for dd in bin;do [ -d ${DUNEPDSPRCE_DIR}/$dd ] && exit;done;exit 1' )
       # useful variables
-      envPrepend(CMAKE_PREFIX_PATH, ${DUNEPDSPRCE_DIR} )
-      envPrepend(PKG_CONFIG_PATH, ${DUNEPDSPRCE_DIR} )
+#      envPrepend(CMAKE_PREFIX_PATH, ${DUNEPDSPRCE_DIR} )  this package doesn't use cmake
+#      envPrepend(PKG_CONFIG_PATH, ${DUNEPDSPRCE_DIR} )
       # requirements
       exeActionRequired(ExtraSetup)
 End:
