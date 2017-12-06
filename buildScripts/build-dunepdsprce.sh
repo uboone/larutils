@@ -248,6 +248,8 @@ EOF
 
 ups declare ${PRODUCT_NAME} ${VERSION} -f ${FLAVOR} -m ${PRODUCT_NAME}.table -z `pwd` -r ./${PRODUCT_NAME}/${VERSION} -q ${BUILDTYPE}:${SIMDQUALIFIER}:${QUAL}
 
+rm -rf .upsfiles || exit 1
+
 # clean up
 rm -rf ${CURDIR}/inputdir || exit 1
 
