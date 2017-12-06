@@ -162,7 +162,7 @@ Common:
           pathPrepend(PATH, ${DUNEPDSPRCE_FQ_DIR}/bin )
       else ()
           execute( true, NO_UPS_ENV )
-      endif ( sh -c 'for dd in bin;do [ -d ${DUNEPDSPRCE_DIR}/$dd ] && exit;done;exit 1' )
+      endif ( sh -c 'for dd in bin;do [ -d ${DUNEPDSPRCE_FQ_DIR}/$dd ] && exit;done;exit 1' )
       # useful variables
 #      envPrepend(CMAKE_PREFIX_PATH, ${DUNEPDSPRCE_DIR} )  this package doesn't use cmake
 #      envPrepend(PKG_CONFIG_PATH, ${DUNEPDSPRCE_DIR} )
