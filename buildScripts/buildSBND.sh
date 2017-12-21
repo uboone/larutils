@@ -6,6 +6,7 @@
 # this is a proof of concept script
 
 echo "sbndcode version: $SBND"
+echo "base qualifiers: $QUAL"
 echo "larsoft qualifiers: $LARSOFT_QUAL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
@@ -58,7 +59,7 @@ mkdir -p $WORKSPACE/temp || exit 1
 mkdir -p $WORKSPACE/copyBack || exit 1
 rm -f $WORKSPACE/copyBack/* || exit 1
 cd $WORKSPACE/temp || exit 1
-mrb newDev  -v $SBND -q $BUILDTYPE || exit 1
+mrb newDev  -v $SBND -q $QUAL:$BUILDTYPE || exit 1
 
 set +x
 source localProducts*/setup || exit 1
@@ -126,6 +127,17 @@ echo
 # Fetch larsoft manifest from scisoft and append to sbndcode manifest.
 
 curl --fail --silent --location --insecure http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/manifest/${larsoft_manifest} >> $manifest || exit 1
+
+if echo $QUAL | grep -q noifdh; then
+  if uname | grep -q Darwin; then
+   # If this is a macos build, then rename the manifest to remove noifdh qualifier in the name
+    noifdh_manifest=`echo $manifest | sed 's/-noifdh//'`
+    mv $manifest $noifdh_manifest
+  else
+   # Otherwise (for slf builds), delete the manifest entirely.
+    rm -f $manifest
+  fi
+fi
 
 # Save artifacts.
 
