@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# build dunetpc, duneutil and lbne_raw_data
+# build dunetpc, duneutil, lbne_raw_data and dune_raw_data
 # use mrb
 # designed to work on Jenkins
 # this is a proof of concept script
