@@ -99,6 +99,11 @@ lbne_raw_data_version=`grep lbne_raw_data $MRB_SOURCE/dunetpc/ups/product_deps |
 echo "lbne_raw_data version: $lbne_raw_data_version"
 mrb g -r -t $lbne_raw_data_version -d lbne_raw_data lbne-raw-data || exit 1
 
+# Extract dune_raw_data version from dunetpc product_deps
+dune_raw_data_version=`grep dune_raw_data $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+echo "dune_raw_data version: $dune_raw_data_version"
+mrb g -r -t $dune_raw_data_version -d dune_raw_data dune-raw-data || exit 1
+
 cd $MRB_BUILDDIR || exit 1
 mrbsetenv || exit 1
 mrb b -j$ncores || exit 1
