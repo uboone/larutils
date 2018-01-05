@@ -258,7 +258,12 @@ cd ${CURDIR} || exit 1
 ls -la
 
 FULLNAME=${PRODUCT_NAME}-${VERSION}-${FLAVOR}-${SIMDQUALIFIER}-${QUAL}-${BUILDTYPE}
-tar -cjf ${FULLNAME}.tar.bz2 .
+
+# strip off the first "v" in the version number
+
+FULLNAMESTRIPPED=`echo $FULLNAME | sed -e "s/${PRODUCT_NAME}-v/${PRODUCT_NAME}-/"`
+
+tar -cjf ${FULLNAMESTRIPPED}.tar.bz2 .
 
 # Construct manifest -- need to include gcc and gdb?
 
