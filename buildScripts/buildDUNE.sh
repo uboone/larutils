@@ -116,6 +116,22 @@ dune_pardata_version=`grep dune_pardata $MRB_SOURCE/dunetpc/ups/product_deps | g
 dune_pardata_dot_version=`echo ${dune_pardata_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 echo "dune_pardata         ${dune_pardata_version}       dune_pardata-${dune_pardata_dot_version}-noarch.tar.bz2" >>  $manifest
 
+# get platform
+OS=$(uname)
+case $OS in
+    Linux)
+        PLATFORM=$(uname -r | grep -o "el[0-9]"|sed s'/el/slf/')
+        ;;
+    Darwin)
+        PLATFORM=$(uname -r | awk -F. '{print "d"$1}')
+        ;;
+esac
+
+# add dunepdsprce to the manifest
+dunepdsprce_version=`grep dunepdsprce $MRB_SOURCE/dune_raw_data/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+dunepdsprce_dot_version=`echo ${dunepdsprce_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
+echo "dunepdsprce          ${dunepdsprce_version}          dunepdsprce-${dunepdsprce_dot_version}-${PLATFORM}.x86_64-gen-${QUAL}-${BUILDTYPE}.tar.bz2" >>  $manifest
+
 # Extract larsoft version from product_deps.
 
 larsoft_version=`grep larsoft $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
