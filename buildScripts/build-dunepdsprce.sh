@@ -258,7 +258,7 @@ cd ${CURDIR} || exit 1
 ls -la
 
 VERSIONDOTS=`echo ${VERSION} | sed -e "s/_/./g"`
-SUBDIR=`get-directory-name subdir | sed -e "s/./-/g"`
+SUBDIR=`get-directory-name subdir | sed -e "s/\./-/g"`
 
 # use SUBDIR instead of FLAVOR
 
