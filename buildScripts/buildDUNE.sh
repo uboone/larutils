@@ -130,7 +130,7 @@ esac
 # add dunepdsprce to the manifest
 dunepdsprce_version=`grep dunepdsprce $MRB_SOURCE/dune_raw_data/ups/product_deps | grep -v qualifier | awk '{print $2}'`
 dunepdsprce_dot_version=`echo ${dunepdsprce_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
-echo "dunepdsprce          ${dunepdsprce_version}          dunepdsprce-${dunepdsprce_dot_version}-${PLATFORM}.x86_64-gen-${QUAL}-${BUILDTYPE}.tar.bz2" >>  $manifest
+echo "dunepdsprce          ${dunepdsprce_version}          dunepdsprce-${dunepdsprce_dot_version}-${PLATFORM}-x86_64-gen-${QUAL}-${BUILDTYPE}.tar.bz2" >>  $manifest
 
 # Extract larsoft version from product_deps.
 
