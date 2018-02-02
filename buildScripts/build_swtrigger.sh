@@ -59,7 +59,7 @@ elif [ x$QUAL = xe10 ]; then
 elif [ x$QUAL = xe14 ]; then
   setup gcc v6_3_0
 elif [ x$QUAL = xe15 ]; then
-  setup gcc v6_5_0
+  setup gcc v6_4_0
 else
   echo "Incorrect qualifier: $QUAL"
   exit 1
