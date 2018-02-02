@@ -21,7 +21,7 @@ elif [ $QUAL = e15 ]; then
   GCCVERS=v6_4_0
 fi
 
-if [ $GCCVERS = unkown ]; then
+if [ $GCCVERS = unknown ]; then
   echo "unknown compiler flag: $QUAL"
   exit 1
 fi
