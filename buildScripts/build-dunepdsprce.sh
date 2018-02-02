@@ -14,6 +14,18 @@ echo "dunepdsprce JJ github: $JJVERSION"
 # -- just the compiler flag, e.g. e14
 echo "base qualifiers: $QUAL"
 
+GCCVERS=unknown
+if [ $QUAL = e14 ]; then
+  GCCVERS=v6_3_0
+elif [ $QUAL = e15 ]; then
+  GCCVERS=v6_4_0
+fi
+
+if [ $GCCVERS = unkown ]; then
+  echo "unknown compiler flag: $QUAL"
+  exit 1
+fi
+
 # -- prof or debug
 
 echo "build type: $BUILDTYPE"
@@ -36,7 +48,7 @@ else
   exit 1
 fi
 
-setup gcc v6_3_0
+setup gcc ${GCCVERS}
 
 echo "g++ version query"
 
@@ -94,7 +106,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:gen:debug
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-debug)
 
   Action = ExtraSetup
-    setupRequired( gcc v6_3_0 )
+    setupRequired( gcc ${GCCVERS} )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx:debug
@@ -103,7 +115,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx:debug
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-debug)
 
   Action = ExtraSetup
-    setupRequired( gcc v6_3_0 )
+    setupRequired( gcc ${GCCVERS} )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx2:debug
@@ -112,7 +124,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx2:debug
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-debug)
 
   Action = ExtraSetup
-    setupRequired( gcc v6_3_0 )
+    setupRequired( gcc ${GCCVERS} )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:gen:prof
@@ -121,7 +133,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:gen:prof
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-prof)
 
   Action = ExtraSetup
-    setupRequired( gcc v6_3_0 )
+    setupRequired( gcc ${GCCVERS} )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx:prof
@@ -130,7 +142,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx:prof
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-prof)
 
   Action = ExtraSetup
-    setupRequired( gcc v6_3_0 )
+    setupRequired( gcc ${GCCVERS} )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx2:prof
@@ -140,7 +152,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx2:prof
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-prof)
 
   Action = ExtraSetup
-    setupRequired( gcc v6_3_0 )
+    setupRequired( gcc ${GCCVERS} )
 
 Common:
    Action=setup
