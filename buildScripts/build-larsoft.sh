@@ -181,6 +181,11 @@ case ${qual_set} in
      squal=s62
      d16_ok=true
   ;;
+  s62:e15)
+     basequal=e15
+     squal=s62
+     d16_ok=true
+  ;;
   *)
     usage
     exit 1
@@ -214,6 +219,10 @@ then
     echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
     echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > $WORKSPACE/copyBack/skipping_build
     exit 0
+  elif [[ ${basequal} == e1[045] ]] && [[ ${OSnum} > 16 ]]
+  then
+    echo "${basequal} build not supported on `uname -s`${OSnum}"
+    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
   fi
   if [[ ${d16_ok} == false ]] && [[ ${OSnum} > 15 ]]
   then
