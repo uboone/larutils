@@ -40,9 +40,9 @@ echo "ls /cvmfs/uboone.opensciencegrid.org"
 ls /cvmfs/uboone.opensciencegrid.org
 echo
 
-if [ -f /grid/fermiapp/products/uboone/setup_uboone_bluearc.sh ]; then
-  source /grid/fermiapp/products/uboone/setup_uboone_bluearc.sh || exit 1
-elif [ -f /cvmfs/uboone.opensciencegrid.org/products/setup_uboone.sh ]; then
+#if [ -f /grid/fermiapp/products/uboone/setup_uboone_bluearc.sh ]; then
+#  source /grid/fermiapp/products/uboone/setup_uboone_bluearc.sh || exit 1
+if [ -f /cvmfs/uboone.opensciencegrid.org/products/setup_uboone.sh ]; then
   if [ -x /cvmfs/grid.cern.ch/util/cvmfs-uptodate ]; then
     /cvmfs/grid.cern.ch/util/cvmfs-uptodate /cvmfs/uboone.opensciencegrid.org/products
   fi
@@ -88,7 +88,7 @@ if [ `uname` = Darwin ]; then
 #  which getopt
 fi
 
-set -x
+#set -x
 cd $MRB_SOURCE  || exit 1
 # make sure we get a read-only copy
 mrb g -r -t $UBOONE uboonecode || exit 1
