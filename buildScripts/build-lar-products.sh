@@ -53,6 +53,7 @@ case ${qual_set} in
   e9) d16_ok=false ;;
   e10) d16_ok=false ;;
   e14) ;;
+  e15) ;;
   *)
     usage
     exit 1

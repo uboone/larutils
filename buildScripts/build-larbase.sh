@@ -149,6 +149,11 @@ case ${qual_set} in
      squal=s62
      d16_ok=true
   ;;
+  s65:e15)
+     basequal=e15
+     squal=s65
+     d16_ok=true
+  ;;
   *)
     usage
     exit 1
