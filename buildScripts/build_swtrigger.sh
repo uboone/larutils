@@ -52,18 +52,11 @@ fi
 # Other required setups.
 
 setup cetbuildtools v5_04_02
-if [ x$QUAL = xe9 ]; then
-  setup gcc v4_9_3
-elif [ x$QUAL = xe10 ]; then
-  setup gcc v4_9_3a
-elif [ x$QUAL = xe14 ]; then
-  setup gcc v6_3_0
-elif [ x$QUAL = xe15 ]; then
-  setup gcc v6_4_0
-else
-  echo "Incorrect qualifier: $QUAL"
-  exit 1
-fi
+
+# Set up the correct version of gcc.
+
+gcc_version=`ups depend -M ${HOME_DIR}/srcs/fememulator/ups -m swtrigger.table -q ${QUAL}:${BUILDTYPE} swtrigger | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
+setup $gcc_version
 
 # Set up working area.
 
