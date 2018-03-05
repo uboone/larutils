@@ -53,11 +53,6 @@ fi
 
 setup cetbuildtools v5_04_02
 
-# Set up the correct version of gcc.
-
-gcc_version=`ups depend -M ${HOME_DIR}/srcs/fememulator/ups -m swtrigger.table -q ${QUAL}:${BUILDTYPE} swtrigger | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
-setup $gcc_version
-
 # Set up working area.
 
 set -x
@@ -83,6 +78,11 @@ cd fememulator
 git checkout master
 git pull
 git checkout $VERSION
+
+# Set up the correct version of gcc.
+
+gcc_version=`ups depend -M ${HOME_DIR}/srcs/fememulator/ups -m swtrigger.table -q ${QUAL}:${BUILDTYPE} swtrigger | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
+setup $gcc_version
 
 # Do post-checkout initialization.
 
