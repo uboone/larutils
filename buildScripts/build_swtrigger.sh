@@ -81,7 +81,7 @@ git checkout $VERSION
 
 # Set up the correct version of gcc.
 
-gcc_version=`ups depend -M ${HOME_DIR}/srcs/fememulator/ups -m swtrigger.table -q ${QUAL}:${BUILDTYPE} swtrigger | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
+gcc_version=`ups depend -M ${SWTRIGGER_HOME_DIR}/srcs/fememulator/ups -m swtrigger.table -q ${QUAL}:${BUILDTYPE} swtrigger | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
 setup $gcc_version
 
 # Do post-checkout initialization.
