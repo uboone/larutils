@@ -134,6 +134,15 @@ if [ x$uboone_data_version != x ]; then
   echo "uboone_data          ${uboone_data_version}       uboone_data-${uboone_data_dot_version}-noarch.tar.bz2" >>  $manifest
 fi
 
+# add uboone_example_data to the manifest.
+
+manifest=uboone-*_MANIFEST.txt
+uboone_example_data_version=`grep uboone_example_data $MRB_SOURCE/uboonecode/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+uboone_example_data_dot_version=`echo ${uboone_example_data_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
+if [ x$uboone_example_data_version != x ]; then
+  echo "uboone_example_data          ${uboone_example_data_version}       uboone_example_data-${uboone_example_data_dot_version}-noarch.tar.bz2" >>  $manifest
+fi
+
 # add uboonedaq_datatypes to the manifest
 
 manifest=uboone-*_MANIFEST.txt
