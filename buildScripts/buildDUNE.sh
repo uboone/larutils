@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# build dunetpc, duneutil, lbne_raw_data and dune_raw_data
+# build dunetpc, duneutil
+# trj Feb 23, 2018: skip building lbne_raw_data and dune_raw_data
 # use mrb
 # designed to work on Jenkins
-# this is a proof of concept script
 
 echo "dunetpc version: $DUNE"
 echo "base qualifiers: $QUAL"
@@ -40,10 +40,10 @@ echo "ls /cvmfs/dune.opensciencegrid.org/products/dune/"
 ls /cvmfs/dune.opensciencegrid.org/products/dune/
 echo
 
-if [ -f /grid/fermiapp/products/dune/setup_dune_fermiapp.sh ]; then
-  source /grid/fermiapp/products/dune/setup_dune_fermiapp.sh || exit 1
-elif [ -f /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh ]; then
+if [ -f /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh ]; then
   source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
+elif [ -f /grid/fermiapp/products/dune/setup_dune_fermiapp.sh ]; then
+  source /grid/fermiapp/products/dune/setup_dune_fermiapp.sh || exit 1
 else
   echo "No setup file found."
   exit 1
@@ -94,15 +94,11 @@ duneutil_version=`grep duneutil $MRB_SOURCE/dunetpc/ups/product_deps | grep -v q
 echo "lariatuitil version: $duneutil_version"
 mrb g -r -t $duneutil_version duneutil || exit 1
 
-# Extract lbne_raw_data version from dunetpc product_deps
-lbne_raw_data_version=`grep lbne_raw_data $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
-echo "lbne_raw_data version: $lbne_raw_data_version"
-mrb g -r -t $lbne_raw_data_version -d lbne_raw_data lbne-raw-data || exit 1
+# # Extract lbne_raw_data version from dunetpc product_deps
+# lbne_raw_data_version=`grep lbne_raw_data $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+# echo "lbne_raw_data version: $lbne_raw_data_version"
+# mrb g -r -t $lbne_raw_data_version -d lbne_raw_data lbne-raw-data || exit 1
 
-# Extract dune_raw_data version from dunetpc product_deps
-dune_raw_data_version=`grep dune_raw_data $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
-echo "dune_raw_data version: $dune_raw_data_version"
-mrb g -r -t $dune_raw_data_version -d dune_raw_data dune-raw-data || exit 1
 
 cd $MRB_BUILDDIR || exit 1
 mrbsetenv || exit 1
@@ -126,6 +122,15 @@ case $OS in
         PLATFORM=$(uname -r | awk -F. '{print "d"$1}')
         ;;
 esac
+
+# need to check out dune_raw_data to get the dunepdsrpce version -- do it here, after the build
+
+cd $MRB_SOURCE || exit 1
+# Extract dune_raw_data version from dunetpc product_deps
+ dune_raw_data_version=`grep dune_raw_data $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+ echo "dune_raw_data version: $dune_raw_data_version"
+ mrb g -r -t $dune_raw_data_version -d dune_raw_data dune-raw-data || exit 1
+cd $MRB_BUILDDIR
 
 # add dunepdsprce to the manifest
 dunepdsprce_version=`grep dunepdsprce $MRB_SOURCE/dune_raw_data/ups/product_deps | grep -v qualifier | awk '{print $2}'`
