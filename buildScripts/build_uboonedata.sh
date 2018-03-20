@@ -89,7 +89,7 @@ fi
 #set -x
 cd $MRB_SOURCE  || exit 1
 # make sure we get a read-only copy
-mrb g -r -t $UBOONEDATA uboonecode || exit 1
+mrb g -r -t $UBOONEDATA uboonedata || exit 1
 
 cd $MRB_BUILDDIR || exit 1
 mrbsetenv || exit 1
