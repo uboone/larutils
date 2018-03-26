@@ -46,6 +46,7 @@ case ${build_type} in
     exit 1
 esac
 
+d14_ok=true
 d16_ok=true
 basequal=${qual_set}
 
@@ -54,6 +55,7 @@ case ${qual_set} in
   e10) d16_ok=false ;;
   e14) ;;
   e15) ;;
+  c2) d14_ok=false ;;
   *)
     usage
     exit 1
@@ -79,8 +81,20 @@ then
     echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
     echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > $WORKSPACE/copyBack/skipping_build
     exit 0
+  elif [[ ${basequal} == e1[045] ]] && [[ ${OSnum} > 16 ]]
+  then
+    echo "${basequal} build not supported on `uname -s`${OSnum}"
+    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
   fi
   if [[ ${d16_ok} == false ]] && [[ ${OSnum} > 15 ]]
+  then
+    echo "${basequal} build not supported on `uname -s`${OSnum}"
+    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
+  fi
+  # using this to disable unsupported El Capitan c2 builds
+  if [[ ${d14_ok} == false ]] && [[ ${OSnum} < 16 ]]
   then
     echo "${basequal} build not supported on `uname -s`${OSnum}"
     echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
