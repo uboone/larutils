@@ -130,7 +130,7 @@ cd $MRB_SOURCE || exit 1
  dune_raw_data_version=`grep dune_raw_data $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
  echo "dune_raw_data version: $dune_raw_data_version"
  mrb g -r -t $dune_raw_data_version -d dune_raw_data dune-raw-data || exit 1
- artqual=`grep defaultqual $MRB_SOURCE/dune-raw-data/ups/product_deps | sed -e "s/${QUAL}//g" -sed -e "s/nu//g" | sed -e "s/://g"`
+ artqual=`grep defaultqual $MRB_SOURCE/dune-raw-data/ups/product_deps | sed -e 's/${QUAL}//g' -sed -e 's/nu//g' | sed -e 's/://g'`
 # also get lbne_raw_data version from dunetpc's product_deps
  lbne_raw_data_version=`grep lbne_raw_data $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
 cd $MRB_BUILDDIR
