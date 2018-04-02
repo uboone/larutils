@@ -59,6 +59,11 @@ export MRB_PROJECT=dune
 echo "Mrb path:"
 which mrb
 
+# make the timeouts longer and accept low-speed transfers
+
+git config --global http.lowSpeedLimit 1000 || exit 1
+git config --global http.lowSpeedTime 600 || exit 1
+
 #dla set -x
 rm -rf $WORKSPACE/temp || exit 1
 mkdir -p $WORKSPACE/temp || exit 1
