@@ -138,9 +138,9 @@ cd $MRB_BUILDDIR
 # also add dune_raw_data and lbne_raw_data to the manifest
 
 dune_raw_data_dot_version=`echo ${dune_raw_data_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
-echo "dune_raw_data         ${dune_raw_data_version}       dune_raw_data-${dune_raw_data_dot_version}-${QUAL}-nu-${artqual}-${BUILDTYPE}.tar.bz2" >>  $manifest
+echo "dune_raw_data         ${dune_raw_data_version}       dune_raw_data-${dune_raw_data_dot_version}-${PLATFORM}-x86_64-${QUAL}-nu-${artqual}-${BUILDTYPE}.tar.bz2" >>  $manifest
 lbne_raw_data_dot_version=`echo ${lbne_raw_data_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
-echo "lbne_raw_data         ${lbne_raw_data_version}       lbne_raw_data-${lbne_raw_data_dot_version}-${QUAL}-nu-${artqual}-${BUILDTYPE}.tar.bz2" >>  $manifest
+echo "lbne_raw_data         ${lbne_raw_data_version}       lbne_raw_data-${lbne_raw_data_dot_version}-${PLATFORM}-x86_64-${QUAL}-nu-${artqual}-${BUILDTYPE}.tar.bz2" >>  $manifest
 
 # add dunepdsprce to the manifest
 dunepdsprce_version=`grep dunepdsprce $MRB_SOURCE/dune_raw_data/ups/product_deps | grep -v qualifier | awk '{print $2}'`
