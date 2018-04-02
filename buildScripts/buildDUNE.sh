@@ -61,8 +61,8 @@ which mrb
 
 # make the timeouts longer and accept low-speed transfers
 
-git config --global http.lowSpeedLimit 1000 || exit 1
-git config --global http.lowSpeedTime 600 || exit 1
+export GIT_HTTP_LOW_SPEED_LIMIT=1000
+export GIT_HTTP_LOW_SPEED_TIME=600
 
 #dla set -x
 rm -rf $WORKSPACE/temp || exit 1
