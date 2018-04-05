@@ -182,6 +182,12 @@ case ${qual_set} in
      squal=s65
      d16_ok=true
   ;;
+  s65:c2)
+     basequal=c2
+     squal=s65
+     d16_ok=true
+     d14_ok=false
+  ;;
   *)
     usage
     exit 1
@@ -213,6 +219,13 @@ then
     echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
   fi
   if [[ ${d16_ok} == false ]] && [[ ${OSnum} > 15 ]]
+  then
+    echo "${basequal} build not supported on `uname -s`${OSnum}"
+    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
+  fi
+  # using this to disable unsupported El Capitan c2 builds
+  if [[ ${d14_ok} == false ]] && [[ ${OSnum} < 16 ]]
   then
     echo "${basequal} build not supported on `uname -s`${OSnum}"
     echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
