@@ -29,6 +29,8 @@ fi
 echo "Compiler and version string: " $COMPILERVERS
 echo "Compiler command: " $COMPILERCOMMAND
 
+echo "COMPILERQUAL_LIST: " $COMPILERQUAL_LIST
+
 if [ "$COMPILERVERS" = unknown ]; then
   echo "unknown compiler flag: $QUAL"
   exit 1
@@ -94,7 +96,10 @@ mkdir ${PRODUCT_NAME}/${VERSION}/data || exit 1
 mkdir ${PRODUCT_NAME}/${VERSION}/ups || exit 1
 
 
-cat >> ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table <<'EOF'
+TABLEFILENAME=${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table
+touch ${TABLEFILENAME} || exit 1
+rm -rf ${TABLEFILENAME} || exit 1
+cat > ${TABLEFILENAME} <<EOF
 File=Table
 Product=dunepdsprce
 
@@ -102,14 +107,18 @@ Product=dunepdsprce
 # Starting Group definition
 Group:
 
+EOF
+
+for CQ in $COMPILERQUAL_LIST; do
+  touch tablefrag.txt || exit 1
+  rm -rf tablefrag.txt || exit 1
+  cat > tablefrag.txt <<'EOF'
+
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:gen:debug
 
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-debug)
-
-  Action = ExtraSetup
-    setupRequired( COMPILERVERS_REPLACE_STRING )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx:debug
@@ -117,17 +126,11 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx:debug
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-debug)
 
-  Action = ExtraSetup
-    setupRequired( COMPILERVERS_REPLACE_STRING )
-
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx2:debug
 
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-debug)
-
-  Action = ExtraSetup
-    setupRequired( COMPILERVERS_REPLACE_STRING )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:gen:prof
@@ -135,28 +138,26 @@ Qualifiers=QUALIFIER_REPLACE_STRING:gen:prof
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-prof)
 
-  Action = ExtraSetup
-    setupRequired( COMPILERVERS_REPLACE_STRING )
-
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx:prof
 
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-prof)
 
-  Action = ExtraSetup
-    setupRequired( COMPILERVERS_REPLACE_STRING )
-
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx2:prof
-
 
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-prof)
 
-  Action = ExtraSetup
-    setupRequired( gcc COMPILERVERS_REPLACE_STRING )
 
+EOF
+sed -e "s/QUALIFIER_REPLACE_STRING/${CQ}/g" < tablefrag.txt >> ${TABLEFILENAME} || exit 1
+rm -f tablefrag.txt || exit 1
+
+done
+
+cat >> ${TABLEFILENAME} <<'EOF'
 Common:
    Action=setup
       setupenv()
@@ -182,24 +183,12 @@ Common:
 #      envPrepend(CMAKE_PREFIX_PATH, ${DUNEPDSPRCE_DIR} )  this package doesn't use cmake
 #      envPrepend(PKG_CONFIG_PATH, ${DUNEPDSPRCE_DIR} )
       # requirements
-      exeActionRequired(ExtraSetup)
+#      exeActionRequired(ExtraSetup)
 End:
 # End Group definition
 #*************************************************
 
 EOF
-
-# edit in the value of the compiler qualifier.  sed -i has a different syntax on mac and linux so do it this roundabout way
-
-sed -e "s/QUALIFIER_REPLACE_STRING/${QUAL}/g" < ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table > ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew || exit 1
-rm -f ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table || exit 1
-mv ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table || exit 1
-
-# edit in the value of the compiler version.  
-
-sed -e "s/COMPILERVERS_REPLACE_STRING/${COMPILERVERS}/g" < ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table > ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew || exit 1
-rm -f ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table || exit 1
-mv ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table || exit 1
 
 mkdir inputdir || exit 1
 cd inputdir
