@@ -86,9 +86,9 @@ mkdir -p install
 
 mkdir -p srcs
 cd srcs
-git clone http://cdcvs.fnal.gov/projects/uboonedaq-datatypes
-#git clone https://github.com/hgreenlee/uboonedaq_datatypes
-#mv uboonedaq_datatypes uboonedaq-datatypes
+#git clone http://cdcvs.fnal.gov/projects/uboonedaq-datatypes
+git clone https://github.com/hgreenlee/uboonedaq_datatypes
+mv uboonedaq_datatypes uboonedaq-datatypes
 cd uboonedaq-datatypes
 
 # Make sure repository is up to date and check out desired tag.
@@ -104,7 +104,11 @@ source ${UBOONEDAQ_HOME_DIR}/srcs/uboonedaq-datatypes/projects/ups/setup_for_dev
 
 # Run cmake.
 
-env CC=gcc CXX=g++ FC=gfortran cmake -DCMAKE_INSTALL_PREFIX="${UBOONEDAQ_HOME_DIR}/install" -DCMAKE_BUILD_TYPE=${CETPKG_TYPE} "${CETPKG_SOURCE}"
+if [[ $QUAL =~ ^c ]]; then
+  env CC=clang CXX=clang++ FC=gfortran cmake -DCMAKE_INSTALL_PREFIX="${UBOONEDAQ_HOME_DIR}/install" -DCMAKE_BUILD_TYPE=${CETPKG_TYPE} "${CETPKG_SOURCE}"
+else
+  env CC=gcc CXX=g++ FC=gfortran cmake -DCMAKE_INSTALL_PREFIX="${UBOONEDAQ_HOME_DIR}/install" -DCMAKE_BUILD_TYPE=${CETPKG_TYPE} "${CETPKG_SOURCE}"
+fi
 
 # Run make
 
