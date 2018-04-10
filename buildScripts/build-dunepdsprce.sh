@@ -5,7 +5,6 @@
 PRODUCT_NAME=dunepdsprce
 
 # designed to work on Jenkins
-# this is a proof of concept script
 
 # for checking out from JJ's github repo
 
@@ -14,14 +13,23 @@ echo "dunepdsprce JJ github: $JJVERSION"
 # -- just the compiler flag, e.g. e14
 echo "base qualifiers: $QUAL"
 
-GCCVERS=unknown
+COMPILERVERS=unknown
+COMPILERCOMMAND=unknown
 if [ $QUAL = e14 ]; then
-  GCCVERS=v6_3_0
+  COMPILERVERS="gcc v6_3_0"
+  COMPILERCOMMAND=g++
 elif [ $QUAL = e15 ]; then
-  GCCVERS=v6_4_0
+  COMPILERVERS="gcc v6_4_0"
+  COMPILERCOMMAND=g++
+elif [ $QUAL = c2 ]; then
+  COMPILERVERS="clang v5_0_1"
+  COMPILERCOMMAND=clang++
 fi
 
-if [ $GCCVERS = unknown ]; then
+echo "Compiler and version string: " $COMPILERVERS
+echo "Compiler command: " $COMPILERCOMMAND
+
+if [ "$COMPILERVERS" = unknown ]; then
   echo "unknown compiler flag: $QUAL"
   exit 1
 fi
@@ -48,7 +56,7 @@ else
   exit 1
 fi
 
-setup gcc ${GCCVERS}
+setup ${COMPILERVERS}
 
 echo "g++ version query"
 
@@ -71,8 +79,9 @@ cd $WORKSPACE/temp || exit 1
 CURDIR=`pwd`
 
 # change all dots to underscores, and capital V's to little v's in the version string
+# add our own suffix as the compiler version moves more rapidly than the product version
 
-VERSION=`echo ${JJVERSION} | sed -e "s/V/v/g" | sed -e "s/\./_/g"`
+VERSION=`echo ${JJVERSION} | sed -e "s/V/v/g" | sed -e "s/\./_/g"`${VERSIONSUFFIX}
 
 LINDAR=linux
 FLAVOR=`ups flavor -4`
@@ -106,7 +115,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:gen:debug
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-debug)
 
   Action = ExtraSetup
-    setupRequired( gcc GCCVERS_REPLACE_STRING )
+    setupRequired( COMPILERVERS_REPLACE_STRING )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx:debug
@@ -115,7 +124,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx:debug
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-debug)
 
   Action = ExtraSetup
-    setupRequired( gcc GCCVERS_REPLACE_STRING )
+    setupRequired( COMPILERVERS_REPLACE_STRING )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx2:debug
@@ -124,7 +133,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx2:debug
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-debug)
 
   Action = ExtraSetup
-    setupRequired( gcc GCCVERS_REPLACE_STRING )
+    setupRequired( COMPILERVERS_REPLACE_STRING )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:gen:prof
@@ -133,7 +142,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:gen:prof
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-prof)
 
   Action = ExtraSetup
-    setupRequired( gcc GCCVERS_REPLACE_STRING )
+    setupRequired( COMPILERVERS_REPLACE_STRING )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx:prof
@@ -142,7 +151,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx:prof
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-prof)
 
   Action = ExtraSetup
-    setupRequired( gcc GCCVERS_REPLACE_STRING )
+    setupRequired( COMPILERVERS_REPLACE_STRING )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx2:prof
@@ -152,7 +161,7 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx2:prof
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-prof)
 
   Action = ExtraSetup
-    setupRequired( gcc GCCVERS_REPLACE_STRING )
+    setupRequired( gcc COMPILERVERS_REPLACE_STRING )
 
 Common:
    Action=setup
@@ -194,7 +203,7 @@ mv ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew ${PRODUCT_NAME}/${VER
 
 # edit in the value of the compiler version.  
 
-sed -e "s/GCCVERS_REPLACE_STRING/${GCCVERS}/g" < ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table > ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew || exit 1
+sed -e "s/COMPILERVERS_REPLACE_STRING/${COMPILERVERS}/g" < ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table > ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew || exit 1
 rm -f ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table || exit 1
 mv ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table || exit 1
 
@@ -220,10 +229,10 @@ make clean || exit 1
 
 if [ $BUILDTYPE = prof ]; then
   echo "Making optimized version"
-  make PROD=1 target=x86_64-${SIMDQUALIFIER}-${LINDAR} || exit 1
+  make CC=${COMPILERCOMMAND} CXX=${COMPILERCOMMAND} LD=${COMPILERCOMMAND} PROD=1 target=x86_64-${SIMDQUALIFIER}-${LINDAR} || exit 1
 else
   echo "Making debug version"
-  make target=x86_64-${SIMDQUALIFIER}-${LINDAR} || exit 1
+  make CC=${COMPILERCOMMAND} CXX=${COMPILERCOMMAND} LD=${COMPILERCOMMAND} target=x86_64-${SIMDQUALIFIER}-${LINDAR} || exit 1
 fi
 
 cp -R -L ${CURDIR}/inputdir/proto-dune-dam-lib/install/x86_64-${SIMDQUALIFIER}-${LINDAR}/bin/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}/bin
@@ -286,25 +295,10 @@ FULLNAME=${PRODUCT_NAME}-${VERSIONDOTS}-${SUBDIR}-${SIMDQUALIFIER}-${QUAL}-${BUI
 
 FULLNAMESTRIPPED=`echo $FULLNAME | sed -e "s/${PRODUCT_NAME}-v/${PRODUCT_NAME}-/"`
 
-tar -cjf ${FULLNAMESTRIPPED}.tar.bz2 .
+tar -cjf $WORKSPACE/copyBack/${FULLNAMESTRIPPED}.tar.bz2 .
 
-# Construct manifest -- need to include gcc and gdb? -- no manifest for this product.
-
-#cat > ${FULLNAME}_MANIFEST.txt <<EOF
-#${PRODUCT_NAME}         ${VERSION}         ${FULLNAME}.tar.bz2
-#EOF
-
-
-# Save artifacts.
-
-mv *.bz2  $WORKSPACE/copyBack/ || exit 1
-#manifest=${FULLNAME}_MANIFEST.txt
-#if [ -f $manifest ]; then
-#  mv $manifest  $WORKSPACE/copyBack/ || exit 1
-#fi
 ls -l $WORKSPACE/copyBack/
 cd $WORKSPACE || exit 1
 rm -rf $WORKSPACE/temp || exit 1
-#dla set +x
 
 exit 0
