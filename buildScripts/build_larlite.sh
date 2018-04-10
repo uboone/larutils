@@ -89,7 +89,11 @@ setup $root_version
 # Do post-checkout initialization.
 
 source config/setup.sh || exit 1
-export LARLITE_CXX=g++             # Use g++ instead of clang.
+if [[ $QUAL =~ ^c ]]; then
+  export LARLITE_CXX=clang++
+else
+  export LARLITE_CXX=g++
+fi
 
 # Run make
 
