@@ -10,8 +10,13 @@ PRODUCT_NAME=dunepdsprce
 
 echo "dunepdsprce JJ github: $JJVERSION"
 
-# -- just the compiler flag, e.g. e14
+# -- the base qualifier is only the compiler version qualifier:  e.g. "e15"
+
 echo "base qualifiers: $QUAL"
+
+# note -- this script knows about the correspondence between compiler qualifiers and compiler versions.
+# there is another if-block later on with the same information (apologies for the duplication).  If a new compiler
+# version is added here, it must also be added where CV is set.
 
 COMPILERVERS=unknown
 COMPILERCOMMAND=unknown
