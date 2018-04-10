@@ -58,12 +58,6 @@ fi
 
 setup ${COMPILERVERS}
 
-echo "g++ version query"
-
-g++ -v 2>&1
-
-echo "end g++ version query"
-
 # Use system git on macos, and the one in ups for linux
 
 if ! uname | grep -q Darwin; then
