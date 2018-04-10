@@ -120,11 +120,17 @@ Qualifiers=QUALIFIER_REPLACE_STRING:gen:debug
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-debug)
 
+  Action = ExtraSetup
+    setupRequired( COMPILERVERS_REPLACE_STRING )
+
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx:debug
 
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-debug)
+
+  Action = ExtraSetup
+    setupRequired( COMPILERVERS_REPLACE_STRING )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx2:debug
@@ -132,11 +138,17 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx2:debug
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-debug)
 
+  Action = ExtraSetup
+    setupRequired( COMPILERVERS_REPLACE_STRING )
+
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:gen:prof
 
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-gen-prof)
+
+  Action = ExtraSetup
+    setupRequired( COMPILERVERS_REPLACE_STRING )
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx:prof
@@ -144,15 +156,34 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx:prof
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx-prof)
 
+  Action = ExtraSetup
+    setupRequired( COMPILERVERS_REPLACE_STRING )
+
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx2:prof
 
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-prof)
 
+  Action = ExtraSetup
+    setupRequired( COMPILERVERS_REPLACE_STRING )
 
 EOF
-sed -e "s/QUALIFIER_REPLACE_STRING/${CQ}/g" < tablefrag.txt >> ${TABLEFILENAME} || exit 1
+
+CV=unknown
+if [ $CQ = e14 ]; then
+  CV="gcc v6_3_0"
+elif [ $CQ = e15 ]; then
+  CV="gcc v6_4_0"
+elif [ $CQ = c2 ]; then
+  CV="clang v5_0_1"
+fi
+if [ "$CV" = unknown ]; then
+  echo "unknown compiler flag in COMPILERQUAL_LIST : $CQ"
+  exit 1
+fi
+
+sed -e "s/QUALIFIER_REPLACE_STRING/${CQ}/g" < tablefrag.txt | sed -e "s/COMPILERVERS_REPLACE_STRING/${CV}/g" >> ${TABLEFILENAME} || exit 1
 rm -f tablefrag.txt || exit 1
 
 done
@@ -183,7 +214,7 @@ Common:
 #      envPrepend(CMAKE_PREFIX_PATH, ${DUNEPDSPRCE_DIR} )  this package doesn't use cmake
 #      envPrepend(PKG_CONFIG_PATH, ${DUNEPDSPRCE_DIR} )
       # requirements
-#      exeActionRequired(ExtraSetup)
+      exeActionRequired(ExtraSetup)
 End:
 # End Group definition
 #*************************************************
