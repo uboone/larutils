@@ -74,8 +74,12 @@ rm -rf .git
 
 # Set up the correct version of gcc.
 
-gcc_version=`ups depend -M ups -m larlite.table -q ${QUAL}:${BUILDTYPE} larlite | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
-setup $gcc_version
+if [[ $QUAL =~ ^c ]]; then
+  compiler_version=`ups depend -M ups -m larlite.table -q ${QUAL}:${BUILDTYPE} larlite | sed -n 's/^.*__\(clang .*\)$/\1/p'`
+else
+  compiler_version=`ups depend -M ups -m larlite.table -q ${QUAL}:${BUILDTYPE} larlite | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
+fi
+setup $compiler_version
 
 # Set up the correct dependent root version.
 
