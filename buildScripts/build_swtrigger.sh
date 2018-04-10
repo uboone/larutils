@@ -69,8 +69,8 @@ set +x
 
 mkdir -p srcs
 cd srcs
-git clone https://github.com/twongjirad/fememulator
-#git clone https://github.com/hgreenlee/fememulator
+#git clone https://github.com/twongjirad/fememulator
+git clone https://github.com/hgreenlee/fememulator
 cd fememulator
 
 # Make sure repository is up to date and check out desired tag.
@@ -79,10 +79,14 @@ git checkout master
 git pull
 git checkout $VERSION
 
-# Set up the correct version of gcc.
+# Set up the correct version of compiler ups product.
 
-gcc_version=`ups depend -M ${SWTRIGGER_HOME_DIR}/srcs/fememulator/ups -m swtrigger.table -q ${QUAL}:${BUILDTYPE} swtrigger | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
-setup $gcc_version
+if [[ $QUAL =~ ^c ]]; then
+  compiler_version=`ups depend -M ${SWTRIGGER_HOME_DIR}/srcs/fememulator/ups -m swtrigger.table -q ${QUAL}:${BUILDTYPE} swtrigger | sed -n 's/^.*__\(clang .*\)$/\1/p'`
+else
+  compiler_version=`ups depend -M ${SWTRIGGER_HOME_DIR}/srcs/fememulator/ups -m swtrigger.table -q ${QUAL}:${BUILDTYPE} swtrigger | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
+fi
+setup $compiler_version
 
 # Do post-checkout initialization.
 
@@ -92,7 +96,11 @@ source configure.sh
 
 mkdir build 
 cd build
-cmake .. -DCMAKE_CXX_COMPILER=`which g++` -DCMAKE_BUILD_TYPE=$BUILDTYPE || exit 1
+if [[ $QUAL =~ ^c ]]; then
+  cmake .. -DCMAKE_CXX_COMPILER=`which clang++` -DCMAKE_BUILD_TYPE=$BUILDTYPE || exit 1
+else
+  cmake .. -DCMAKE_CXX_COMPILER=`which g++` -DCMAKE_BUILD_TYPE=$BUILDTYPE || exit 1
+fi
 
 # Run make
 

@@ -80,17 +80,21 @@ cd ${HOME_DIR}/srcs
 
 # Check out larcv.
 
-git clone https://github.com/LArbys/LArCV
-#git clone https://github.com/hgreenlee/LArCV
+#git clone https://github.com/LArbys/LArCV
+git clone https://github.com/hgreenlee/LArCV
 cd LArCV
 git checkout $LARCV_TAG
 rm -rf .git
 cd ..
 
-# Set up the correct version of gcc.
+# Set up the correct version of compiler.
 
-gcc_version=`ups depend -M ${HOME_DIR}/srcs/LArCV/ups -m larcv.table -q ${QUAL}:${BUILDTYPE} larcv | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
-setup $gcc_version
+if [[ $QUAL =~ ^c ]]; then
+  compiler_version=`ups depend -M ${HOME_DIR}/srcs/LArCV/ups -m larcv.table -q ${QUAL}:${BUILDTYPE} larcv | sed -n 's/^.*__\(clang .*\)$/\1/p'`
+else
+  compiler_version=`ups depend -M ${HOME_DIR}/srcs/LArCV/ups -m larcv.table -q ${QUAL}:${BUILDTYPE} larcv | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
+fi
+setup $compiler_version
 
 # Set up the correct version of root.
 
@@ -101,7 +105,11 @@ setup $root_version
 
 cd ${HOME_DIR}/srcs/LArCV
 source configure.sh || exit 1
-export LARCV_CXX=g++             # Use g++ instead of clang.
+if [[ $QUAL =~ ^c ]]; then
+  export LARLITE_CXX=clang++
+else
+  export LARLITE_CXX=g++
+fi
 make -j$ncores || exit 1
 
 # Assemble larcv ups product.

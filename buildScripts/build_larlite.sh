@@ -66,16 +66,20 @@ set +x
 
 mkdir -p srcs
 cd srcs
-git clone https://github.com/larlight/larlite
-#git clone https://github.com/hgreenlee/larlite
+#git clone https://github.com/larlight/larlite
+git clone https://github.com/hgreenlee/larlite
 cd larlite
 git checkout $GIT_TAG
 rm -rf .git
 
 # Set up the correct version of gcc.
 
-gcc_version=`ups depend -M ups -m larlite.table -q ${QUAL}:${BUILDTYPE} larlite | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
-setup $gcc_version
+if [[ $QUAL =~ ^c ]]; then
+  compiler_version=`ups depend -M ups -m larlite.table -q ${QUAL}:${BUILDTYPE} larlite | sed -n 's/^.*__\(clang .*\)$/\1/p'`
+else
+  compiler_version=`ups depend -M ups -m larlite.table -q ${QUAL}:${BUILDTYPE} larlite | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
+fi
+setup $compiler_version
 
 # Set up the correct dependent root version.
 
@@ -85,7 +89,11 @@ setup $root_version
 # Do post-checkout initialization.
 
 source config/setup.sh || exit 1
-export LARLITE_CXX=g++             # Use g++ instead of clang.
+if [[ $QUAL =~ ^c ]]; then
+  export LARLITE_CXX=clang++
+else
+  export LARLITE_CXX=g++
+fi
 
 # Run make
 
