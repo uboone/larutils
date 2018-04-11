@@ -10,8 +10,13 @@ PRODUCT_NAME=dunepdsprce
 
 echo "dunepdsprce JJ github: $JJVERSION"
 
-# -- just the compiler flag, e.g. e14
+# -- the base qualifier is only the compiler version qualifier:  e.g. "e15"
+
 echo "base qualifiers: $QUAL"
+
+# note -- this script knows about the correspondence between compiler qualifiers and compiler versions.
+# there is another if-block later on with the same information (apologies for the duplication).  If a new compiler
+# version is added here, it must also be added where CV is set.
 
 COMPILERVERS=unknown
 COMPILERCOMMAND=unknown
@@ -28,6 +33,8 @@ fi
 
 echo "Compiler and version string: " $COMPILERVERS
 echo "Compiler command: " $COMPILERCOMMAND
+
+echo "COMPILERQUAL_LIST: " $COMPILERQUAL_LIST
 
 if [ "$COMPILERVERS" = unknown ]; then
   echo "unknown compiler flag: $QUAL"
@@ -94,13 +101,23 @@ mkdir ${PRODUCT_NAME}/${VERSION}/data || exit 1
 mkdir ${PRODUCT_NAME}/${VERSION}/ups || exit 1
 
 
-cat >> ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table <<'EOF'
+TABLEFILENAME=${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table
+touch ${TABLEFILENAME} || exit 1
+rm -rf ${TABLEFILENAME} || exit 1
+cat > ${TABLEFILENAME} <<EOF
 File=Table
 Product=dunepdsprce
 
 #*************************************************
 # Starting Group definition
 Group:
+
+EOF
+
+for CQ in $COMPILERQUAL_LIST; do
+  touch tablefrag.txt || exit 1
+  rm -rf tablefrag.txt || exit 1
+  cat > tablefrag.txt <<'EOF'
 
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:gen:debug
@@ -150,13 +167,33 @@ Qualifiers=QUALIFIER_REPLACE_STRING:avx:prof
 Flavor=ANY
 Qualifiers=QUALIFIER_REPLACE_STRING:avx2:prof
 
-
   Action=DefineFQ
     envSet (DUNEPDSPRCE_FQ_DIR, ${UPS_PROD_DIR}/${UPS_PROD_FLAVOR}-QUALIFIER_REPLACE_STRING-avx2-prof)
 
   Action = ExtraSetup
-    setupRequired( gcc COMPILERVERS_REPLACE_STRING )
+    setupRequired( COMPILERVERS_REPLACE_STRING )
 
+EOF
+
+CV=unknown
+if [ $CQ = e14 ]; then
+  CV="gcc v6_3_0"
+elif [ $CQ = e15 ]; then
+  CV="gcc v6_4_0"
+elif [ $CQ = c2 ]; then
+  CV="clang v5_0_1"
+fi
+if [ "$CV" = unknown ]; then
+  echo "unknown compiler flag in COMPILERQUAL_LIST : $CQ"
+  exit 1
+fi
+
+sed -e "s/QUALIFIER_REPLACE_STRING/${CQ}/g" < tablefrag.txt | sed -e "s/COMPILERVERS_REPLACE_STRING/${CV}/g" >> ${TABLEFILENAME} || exit 1
+rm -f tablefrag.txt || exit 1
+
+done
+
+cat >> ${TABLEFILENAME} <<'EOF'
 Common:
    Action=setup
       setupenv()
@@ -188,18 +225,6 @@ End:
 #*************************************************
 
 EOF
-
-# edit in the value of the compiler qualifier.  sed -i has a different syntax on mac and linux so do it this roundabout way
-
-sed -e "s/QUALIFIER_REPLACE_STRING/${QUAL}/g" < ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table > ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew || exit 1
-rm -f ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table || exit 1
-mv ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table || exit 1
-
-# edit in the value of the compiler version.  
-
-sed -e "s/COMPILERVERS_REPLACE_STRING/${COMPILERVERS}/g" < ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table > ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew || exit 1
-rm -f ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table || exit 1
-mv ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.tablenew ${PRODUCT_NAME}/${VERSION}/ups/${PRODUCT_NAME}.table || exit 1
 
 mkdir inputdir || exit 1
 cd inputdir
