@@ -69,8 +69,8 @@ set +x
 
 mkdir -p srcs
 cd srcs
-#git clone https://github.com/twongjirad/fememulator
-git clone https://github.com/hgreenlee/fememulator
+git clone https://github.com/twongjirad/fememulator
+#git clone https://github.com/hgreenlee/fememulator
 cd fememulator
 
 # Make sure repository is up to date and check out desired tag.
