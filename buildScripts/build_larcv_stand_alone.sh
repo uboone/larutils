@@ -94,11 +94,13 @@ if [[ $QUAL =~ ^c ]]; then
 else
   compiler_version=`ups depend -M ${HOME_DIR}/srcs/LArCV/ups -m larcv.table -q ${QUAL}:${BUILDTYPE} larcv | sed -n 's/^.*__\(gcc .*\)$/\1/p'`
 fi
+echo "setup $compiler_version"
 setup $compiler_version
 
 # Set up the correct version of root.
 
 root_version=`ups depend -M ${HOME_DIR}/srcs/LArCV/ups -m larcv.table -q ${QUAL}:${BUILDTYPE} larcv | sed -n 's/^.*__\(root .*\)$/\1/p'`
+echo "setup $root_version"
 setup $root_version
 
 # Build larcv.
@@ -110,6 +112,7 @@ if [[ $QUAL =~ ^c ]]; then
 else
   export LARLITE_CXX=g++
 fi
+echo "LARLITE_CXX=$LARLITE_CXX"
 make -j$ncores || exit 1
 
 # Assemble larcv ups product.
