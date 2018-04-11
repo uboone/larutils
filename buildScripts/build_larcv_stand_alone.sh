@@ -108,11 +108,11 @@ setup $root_version
 cd ${HOME_DIR}/srcs/LArCV
 source configure.sh || exit 1
 if [[ $QUAL =~ ^c ]]; then
-  export LARLITE_CXX=clang++
+  export LARCV_CXX=clang++
 else
-  export LARLITE_CXX=g++
+  export LARCV_CXX=g++
 fi
-echo "LARLITE_CXX=$LARLITE_CXX"
+echo "LARCV_CXX=$LARCV_CXX"
 make -j$ncores || exit 1
 
 # Assemble larcv ups product.
