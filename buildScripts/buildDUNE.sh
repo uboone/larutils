@@ -96,7 +96,7 @@ mrb g -r -t $DUNE dunetpc || exit 1
 
 # Extract duneutil version from dunetpc product_deps
 duneutil_version=`grep duneutil $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
-echo "lariatuitil version: $duneutil_version"
+echo "duneutil version: $duneutil_version"
 mrb g -r -t $duneutil_version duneutil || exit 1
 
 
@@ -133,7 +133,7 @@ dune_raw_data_version=`ups active | grep dune_raw_data | awk '{print $2}'`
 echo "dune_raw_data version: $dune_raw_data_version"
 artqual=`ups active | grep dune_raw_data | awk '{print $6}'   | sed -e "s/${QUAL}//g" | sed -e "s/nu//g" | sed -e "s/://g" | sed -e "s/${BUILDTYPE}//g"`
 lbne_raw_data_version=`ups active | grep lbne_raw_data | awk '{print $2}'`
-echo "lbne_raw_data version: $dune_raw_data_version"
+echo "lbne_raw_data version: $lbne_raw_data_version"
 
 cd $MRB_BUILDDIR
 
@@ -199,7 +199,12 @@ fi
 
 # Save artifacts.
 
+echo "Moving tarballs to copyBack"
+
 mv *.bz2  $WORKSPACE/copyBack/ || exit 1
+
+echo "Moving manifest to copyBack"
+
 manifest=dune-*_MANIFEST.txt
 if [ -f $manifest ]; then
   mv $manifest  $WORKSPACE/copyBack/ || exit 1
