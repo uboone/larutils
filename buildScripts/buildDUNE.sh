@@ -177,6 +177,8 @@ echo
 
 curl --fail --silent --location --insecure http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/manifest/${larsoft_manifest} >> $manifest || exit 1
 
+echo "Done with the curl command."
+
 # Special handling of noifdh builds goes here.
 
 if echo $QUAL | grep -q noifdh; then
