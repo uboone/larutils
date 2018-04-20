@@ -175,6 +175,8 @@ echo
 
 # Fetch laraoft manifest from scisoft and append to dunetpc manifest.
 
+echo "curl --fail --silent --location --insecure http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/manifest/${larsoft_manifest} >> $manifest || exit 1"
+
 curl --fail --silent --location --insecure http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/manifest/${larsoft_manifest} >> $manifest || exit 1
 
 echo "Done with the curl command."
