@@ -225,6 +225,8 @@ echo
 # Fetch laraoft manifest from scisoft and append to uboonecode manifest.
 # Filter out larbatch because we already added that.
 
+echo "curl --fail --silent --location --insecure http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/manifest/${larsoft_manifest} | grep -v larbatch >> $manifest || exit 1"
+
 curl --fail --silent --location --insecure http://scisoft.fnal.gov/scisoft/bundles/larsoft/${larsoft_version}/manifest/${larsoft_manifest} | grep -v larbatch >> $manifest || exit 1
 
 # Special handling of noifdh builds goes here.
