@@ -189,7 +189,8 @@ case ${qual_set} in
   s65:e15)
      basequal=e15
      squal=s65
-     d16_ok=true
+     d16_ok=false
+     d14_ok=false
   ;;
   s65:c2)
      basequal=c2
