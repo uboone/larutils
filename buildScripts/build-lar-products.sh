@@ -71,6 +71,12 @@ then
   OSnum=`uname -r | cut -f1 -d"."`
   xver=`xcodebuild -version | grep Xcode | cut -f2 -d" " | cut -f1 -d"."`
   xcver=`xcodebuild -version | grep Xcode`
+  # not supporting gcc on macOS
+  if  [[ "$basequal" == e* ]]; then
+    echo "${basequal} build not supported on `uname -s`${OSnum}"
+    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
+  fi
   if [[ ${basequal} == e9 ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
   then
     echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
