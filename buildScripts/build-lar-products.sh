@@ -55,6 +55,7 @@ case ${qual_set} in
   e10) d16_ok=false ;;
   e14) ;;
   e15) ;;
+  e17) ;;
   c2) d14_ok=false ;;
   *)
     usage
