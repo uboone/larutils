@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# build dunetpc, duneutil
+# build dunetpc
 # trj Feb 23, 2018: skip building lbne_raw_data and dune_raw_data
+# trj May 3, 2018: skip building duneutil
 # use mrb
 # designed to work on Jenkins
 
@@ -95,12 +96,23 @@ fi
 #dla set -x
 cd $MRB_SOURCE  || exit 1
 # make sure we get a read-only copy
-mrb g -r -t $DUNE dunetpc || exit 1
+# put some retry logic here instead
 
-# Extract duneutil version from dunetpc product_deps
-duneutil_version=`grep duneutil $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
-echo "duneutil version: $duneutil_version"
-mrb g -r -t $duneutil_version duneutil || exit 1
+ntries=0
+until [ $ntries -ge 10 ]
+do
+  mrb g -r -t $DUNE dunetpc && break
+  ntries=$[$ntries+1]
+done
+if [ $ntries = 10 ]; then
+  echo "Could not clone dunetpc using mrb g.  Quitting."
+  exit 1
+fi
+
+## Extract duneutil version from dunetpc product_deps
+#duneutil_version=`grep duneutil $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
+#echo "duneutil version: $duneutil_version"
+#mrb g -r -t $duneutil_version duneutil || exit 1
 
 
 cd $MRB_BUILDDIR || exit 1
