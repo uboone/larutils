@@ -34,8 +34,11 @@ mkdir -p $WORKSPACE/copyBack || exit 1
 
 # Create build directory and go there.
 blddir=${WORKSPACE}/build
+logdir=${WORKSPACE}/log
 rm -rf $blddir
+rm -rf $logdir
 mkdir -p $blddir || exit 1
+mkdir -p $logdir || exit 1
 cd $blddir || exit 1
 
 # Fetch buildFW script.
@@ -54,9 +57,18 @@ echo
 
 # Save artifacts.
 
-mv *.bz2  $WORKSPACE/copyBack/ || exit 1
+mv ub*.bz2  $WORKSPACE/copyBack/ || exit 1
+mv larlite*.bz2  $WORKSPACE/copyBack/ || exit 1
+mv larcv*.bz2  $WORKSPACE/copyBack/ || exit 1
+mv swtrigger*.bz2  $WORKSPACE/copyBack/ || exit 1
 mv *.txt $WORKSPACE/copyBack/ || exit 1
-ls -l $WORKSPACE/copyBack/
+
+# Save log files.
+
+mv *.log $WORKSPACE/log/ || exit 1
+
+# Clean up.
+
 cd $WORKSPACE || exit 1
 rm -rf $blddir || exit 1
 
