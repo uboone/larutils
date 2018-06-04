@@ -28,30 +28,6 @@ if [ $ncores -lt 1 ]; then
 fi
 echo "Building using $ncores cores."
 
-# Environment setup, uses /grid/fermiapp or cvmfs.
-# For now, use bluearc setup for macos, cvmfs for linux.
-
-if [ `uname` = Darwin -a -f /grid/fermiapp/products/uboone/setup_uboone_bluearc.sh ]; then
-  source /grid/fermiapp/products/uboone/setup_uboone_bluearc.sh || exit 1
-elif [ -f /cvmfs/uboone.opensciencegrid.org/products/setup_uboone.sh ]; then
-  source /cvmfs/uboone.opensciencegrid.org/products/setup_uboone.sh || exit 1
-else
-  echo "No setup file found."
-  exit 1
-fi
-
-# Use system git on macos.
-
-if ! uname | grep -q Darwin; then
-  setup git || exit 1
-fi
-setup gitflow || exit 1
-
-# use getopt v1_1_6 on macos (not sure if this is needed).
-if [ `uname` = Darwin ]; then
-  setup getopt v1_1_6  || exit 1
-fi
-
 # Create area for biuld artifacts.
 rm -f $WORKSPACE/copyBack
 mkdir -p $WORKSPACE/copyBack || exit 1
