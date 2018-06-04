@@ -58,8 +58,8 @@ mkdir -p $WORKSPACE/copyBack || exit 1
 
 # Create build directory and go there.
 blddir=${WORKSPACE}/build
-rm -rf $builddir
-mkdir -p $builddir || exit 1
+rm -rf $blddir
+mkdir -p $blddir || exit 1
 cd $blddir || exit 1
 
 # Fetch buildFW script.
@@ -71,8 +71,8 @@ chmod +x buildFW
 echo
 echo "Begin build."
 echo
-./buildFW -t -b $QUAL -s $SQUAL $builddir $BUILDTYPE uboone-$VERSION || \
- { mv ${builddir}/*.log $WORKSPACE/copyBack
+./buildFW -t -b $QUAL -s $SQUAL $blddir $BUILDTYPE uboone-$VERSION || \
+ { mv ${blddir}/*.log $WORKSPACE/copyBack
    exit 1
  }
 
@@ -82,6 +82,6 @@ mv *.bz2  $WORKSPACE/copyBack/ || exit 1
 mv *.txt $WORKSPACE/copyBack/ || exit 1
 ls -l $WORKSPACE/copyBack/
 cd $WORKSPACE || exit 1
-rm -rf $builddir || exit 1
+rm -rf $blddir || exit 1
 
 exit 0
