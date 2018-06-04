@@ -29,7 +29,7 @@ fi
 echo "Building using $ncores cores."
 
 # Create area for biuld artifacts.
-rm -f $WORKSPACE/copyBack
+rm -rf $WORKSPACE/copyBack
 mkdir -p $WORKSPACE/copyBack || exit 1
 
 # Create build directory and go there.
@@ -51,9 +51,13 @@ echo
 echo "Begin build."
 echo
 ./buildFW -t -b $QUAL -s $SQUAL $blddir $BUILDTYPE uboone-$VERSION || \
- { mv ${blddir}/*.log $WORKSPACE/copyBack
+ { mv *.log $logdir
    exit 1
  }
+
+# Save log files.
+
+mv *.log $logdir || exit 1
 
 # Save artifacts.
 
@@ -62,10 +66,6 @@ mv larlite*.bz2  $WORKSPACE/copyBack/ || exit 1
 mv larcv*.bz2  $WORKSPACE/copyBack/ || exit 1
 mv swtrigger*.bz2  $WORKSPACE/copyBack/ || exit 1
 mv *.txt $WORKSPACE/copyBack/ || exit 1
-
-# Save log files.
-
-mv *.log $WORKSPACE/log/ || exit 1
 
 # Clean up.
 
