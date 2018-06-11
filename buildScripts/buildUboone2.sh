@@ -14,23 +14,16 @@ echo "set qualifier: $SQUAL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
 
-# Get number of cores to use.
-
-if [ `uname` = Darwin ]; then
-  #ncores=`sysctl -n hw.ncpu`
-  #ncores=$(( $ncores / 4 ))
-  ncores=1
-else
-  ncores=`cat /proc/cpuinfo 2>/dev/null | grep -c -e '^processor'`
-fi
-if [ $ncores -lt 1 ]; then
-  ncores=1
-fi
-echo "Building using $ncores cores."
-
 # Create area for biuld artifacts.
 rm -rf $WORKSPACE/copyBack
 mkdir -p $WORKSPACE/copyBack || exit 1
+
+# Check for supported combination of base qualifier and OS.
+if [[ `uname -s` = Darwim ]] && [[ $QUAL == e* ]]; then
+  echo "${QUAL} build not supported on `uname -s`"
+  echo "${QUAL} build not supported on `uname -s`" > $WORKSPACE/copyBack/skipping_build
+  exit 0
+fi
 
 # Create build directory and go there.
 blddir=${WORKSPACE}/build
