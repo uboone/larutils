@@ -19,7 +19,7 @@ rm -rf $WORKSPACE/copyBack
 mkdir -p $WORKSPACE/copyBack || exit 1
 
 # Check for supported combination of base qualifier and OS.
-if [[ `uname -s` == Darwim ]] && [[ $QUAL == e* ]]; then
+if [[ `uname -s` == Darwin ]] && [[ $QUAL == e* ]]; then
   echo "${QUAL} build not supported on `uname -s`"
   echo "${QUAL} build not supported on `uname -s`" > $WORKSPACE/copyBack/skipping_build
   exit 0
