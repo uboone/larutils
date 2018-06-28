@@ -227,6 +227,12 @@ then
   OSnum=`uname -r | cut -f1 -d"."`
   xver=`xcodebuild -version | grep Xcode | cut -f2 -d" " | cut -f1 -d"."`
   xcver=`xcodebuild -version | grep Xcode`
+  # not supporting gcc on macOS
+  if  [[ "$basequal" == e* ]]; then
+    echo "${basequal} build not supported on `uname -s`${OSnum}"
+    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
+    exit 0
+  fi
   if [[ ${basequal} == e9 ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
   then
     echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
@@ -298,22 +304,8 @@ mkdir -p ${srcdir} || exit 1
 mkdir -p ${blddir} || exit 1
 
 cd ${blddir} || exit 1
-curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/pullProducts || exit 1
-chmod +x pullProducts
-# source code tarballs MUST be pulled first
-./pullProducts ${blddir} source lar_product_stack-${version} || \
-      { cat 1>&2 <<EOF
-ERROR: pull of lar_product_stack-${version} source failed
-EOF
-        exit 1
-      }
-./pullProducts ${blddir} source larsoft-${version} || \
-      { cat 1>&2 <<EOF
-ERROR: pull of larsoft-${version} failed
-EOF
-        exit 1
-      }
-mv ${blddir}/*source* ${srcdir}/
+curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/buildFW || exit 1
+chmod +x buildFW
 
 cd ${blddir} || exit 1
 echo
