@@ -113,7 +113,16 @@ fi
 # Run make
 
 make -j$ncores
+stat=$?
+if [ $stat -ne 0 ]; then
+  exit $stat
+fi
 make install
+stat=$?
+if [ $stat -ne 0 ]; then
+  exit $stat
+fi
+
 
 # Make distribution tarball
 
