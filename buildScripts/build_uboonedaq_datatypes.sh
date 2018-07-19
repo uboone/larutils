@@ -16,6 +16,12 @@ echo "Qualifier: $QUAL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
 
+# Make a workspace without colons.
+
+export WORKSPACE2=`echo $WORKSPACE | tr : -`
+echo "workspace 2: $WORKSPACE2"
+
+
 # Get number of cores to use.
 
 if [ `uname` = Darwin ]; then
@@ -65,11 +71,11 @@ fi
 # Set up working area.
 
 set -x
-rm -rf $WORKSPACE/temp || exit 1
-mkdir -p $WORKSPACE/temp || exit 1
+rm -rf $WORKSPACE2/temp || exit 1
+mkdir -p $WORKSPACE2/temp || exit 1
 mkdir -p $WORKSPACE/copyBack || exit 1
 rm -f $WORKSPACE/copyBack/* || exit 1
-cd $WORKSPACE/temp || exit 1
+cd $WORKSPACE2/temp || exit 1
 export UBOONEDAQ_HOME_DIR=`pwd`
 
 set +x
@@ -138,8 +144,8 @@ tar cjf ${UBOONEDAQ_HOME_DIR}/${tarballname} uboonedaq_datatypes
 
 mv ${UBOONEDAQ_HOME_DIR}/${tarballname}  $WORKSPACE/copyBack/ || exit 1
 ls -l $WORKSPACE/copyBack/
-cd $WORKSPACE || exit 1
-rm -rf $WORKSPACE/temp || exit 1
+cd $WORKSPACE2 || exit 1
+rm -rf $WORKSPACE2/temp || exit 1
 set +x
 
 exit 0
