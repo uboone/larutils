@@ -106,7 +106,7 @@ git checkout $VERSION
 # Initialize build area.
 
 cd ${UBOONEDAQ_HOME_DIR}/build
-source ${UBOONEDAQ_HOME_DIR}/srcs/uboonedaq-datatypes/projects/ups/setup_for_development $opt $QUAL
+source ${UBOONEDAQ_HOME_DIR}/srcs/uboonedaq-datatypes/projects/ups/setup_for_development $opt ${QUAL}:offline
 
 # Run cmake.
 
