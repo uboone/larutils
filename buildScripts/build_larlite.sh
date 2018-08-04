@@ -60,6 +60,13 @@ rm -f $WORKSPACE/copyBack/* || exit 1
 cd $WORKSPACE/temp || exit 1
 export LARLITE_HOME_DIR=`pwd`
 
+# Check for supported combination of base qualifier and OS.
+if [[ `uname -s` == Darwin ]] && [[ $QUAL == e* ]]; then
+  echo "${QUAL} build not supported on `uname -s`"
+  echo "${QUAL} build not supported on `uname -s`" > $WORKSPACE/copyBack/skipping_build
+  exit 0
+fi
+
 set +x
 
 # Make source area and check out sources.
