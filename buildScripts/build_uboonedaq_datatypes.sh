@@ -78,6 +78,13 @@ rm -f $WORKSPACE/copyBack/* || exit 1
 cd $WORKSPACE2/temp || exit 1
 export UBOONEDAQ_HOME_DIR=`pwd`
 
+# Check for supported combination of base qualifier and OS.
+if [[ `uname -s` == Darwin ]] && [[ $QUAL == e* ]]; then
+  echo "${QUAL} build not supported on `uname -s`"
+  echo "${QUAL} build not supported on `uname -s`" > $WORKSPACE/copyBack/skipping_build
+  exit 0
+fi
+
 set +x
 
 # Make build area.
