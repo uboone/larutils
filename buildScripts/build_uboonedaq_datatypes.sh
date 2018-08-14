@@ -142,7 +142,7 @@ fi
 cd ${UBOONEDAQ_HOME_DIR}/install
 dot_version=`echo $VERSION | sed -e 's/_offline//' | sed -e 's/_/\./g' | sed -e 's/^v//'`
 subdir=`echo $CET_SUBDIR | sed -e 's/\./-/g'`
-qual=`echo $CETPKG_QUAL | sed -e 's/:/-/g'`
+qual=`echo $CETPKG_QUAL | sed -e 's/:offline//' | sed -e 's/:/-/g'`
 tarballname=uboonedaq_datatypes-${dot_version}-${subdir}-${qual}.tar.bz2
 echo "Making ${tarballname}"
 tar cjf ${UBOONEDAQ_HOME_DIR}/${tarballname} uboonedaq_datatypes
