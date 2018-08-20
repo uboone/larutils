@@ -240,7 +240,10 @@ git checkout tags/${JJVERSION} || exit 1
 # copy all the files that do not need building.  Copy the headers later when we're done as they are in the install directory
 
 cp -R -L dam/source/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/source || exit 1
-cp -R -L data/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/data || exit 1
+
+# skip the example data files
+
+# cp -R -L data/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/data || exit 1
 
 DIRNAME=${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}
 mkdir -p ${DIRNAME} || exit 1
