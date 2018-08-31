@@ -6,9 +6,13 @@
 # use mrb
 # designed to work on Jenkins
 
+# Extract set qualifier from $LARSOFT_QUAL (we don't care about anything else in $LARSOFT_QUAL).
+
+SQUAL=`echo $LARSOFT_QUAL | tr : '\n' | grep ^s`
+
 echo "dunetpc version: $DUNE"
 echo "base qualifiers: $QUAL"
-echo "larsoft qualifiers: $LARSOFT_QUAL"
+echo "set qualifier: $SQUAL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
 
@@ -182,8 +186,8 @@ fi
 
 # Construct name of larsoft manifest.
 
-larsoft_hyphen_qual=`echo $LARSOFT_QUAL | tr : - | sed 's/-noifdh//'`
-larsoft_manifest=larsoft-${larsoft_dot_version}-${flvr}-${larsoft_hyphen_qual}-${BUILDTYPE}_MANIFEST.txt
+#larsoft_hyphen_qual=`echo $LARSOFT_QUAL | tr : - | sed 's/-noifdh//'`
+larsoft_manifest=larsoft-${larsoft_dot_version}-${flvr}-${SQUAL}-${BUILDTYPE}_MANIFEST.txt
 echo "Larsoft manifest:"
 echo $larsoft_manifest
 echo
