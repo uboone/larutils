@@ -220,6 +220,37 @@ if echo $QUAL | grep -q noifdh; then
   fi
 fi
 
+# edit the manifest's artdaq_core version
+
+# version of artdaq_core with underscores
+ARDC_UVERSION=`ups active | grep artdaq_core | awk '{print $2}'`
+
+# version of artdaq_core with dots
+ARDC_DVERSION=`echo $ARDC_UVERSION | sed -e 's/_/./g' | sed -e 's/^v//'`
+
+# we're assuming the qualifiers match up between what we want and what we have for artdaq_core
+
+if [ `grep artdaq_core $manifest | wc -l` = 1 ]; then
+  ARDCLINE=`grep artdaq_core $manifest`
+  ARDCOLDVER=`echo $ARDCLINE | awk '{print $2}'`
+  ARDCOLDVERD=`echo $ARDCOLDVER | sed -e 's/_/./g' | sed -e 's/^v//'`
+  ARDCNEWLINE=`echo $ARDCLINE | sed -e "s/${ARDCOLDVER}/${ARDC_UVERSION}/g" | sed -e "s/${ARDCOLDVERD}/${ARDC_DVERSION}/g"`
+
+  echo "Replacing this line in the manifest:"
+  echo $ARDCLINE
+  echo "with this one:"
+  echo $ARDCNEWLINE
+
+  touch newmanifest.txt || exit 1
+  rm newmanifest.txt || exit 1
+  grep -v artdaq_core $manifest > newmanifest.txt || exit 1
+  echo $ARDCNEWLINE >> newmanifest.txt
+  mv newmanifest.txt $manifest || exit 1
+else
+  echo "Manifest doesn't have the right number (1) of artdaq_core lines"
+  exit 1
+fi
+
 # Save artifacts.
 
 echo "Moving tarballs to copyBack"
