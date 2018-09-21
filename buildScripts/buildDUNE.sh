@@ -102,12 +102,14 @@ cd $MRB_SOURCE  || exit 1
 # make sure we get a read-only copy
 # put some retry logic here instead
 
-maxtries=100
+maxtries=20
 ntries=0
 until [ $ntries -ge $maxtries ]
 do
+  date
   mrb g -r -t $DUNE dunetpc && break
   ntries=$[$ntries+1]
+  sleep 60
 done
 if [ $ntries = $maxtries ]; then
   echo "Could not clone dunetpc using mrb g.  Quitting."
