@@ -236,7 +236,7 @@ ARDC_DVERSION=`echo $ARDC_UVERSION | sed -e 's/_/./g' | sed -e 's/^v//'`
 if [ `grep artdaq_core $manifest | wc -l` = 1 ]; then
   ARDCLINE=`grep artdaq_core $manifest`
   ARDCOLDVER=`echo $ARDCLINE | awk '{print $2}'`
-  ARDCOLDVERD=`echo $ARDCOLDVER | sed -e 's/_/./g' | sed -e 's/^v//'`
+  ARDCOLDVERD=`echo $ARDCOLDVER | sed -e 's/_/\\\./g' | sed -e 's/^v//'`
   ARDCNEWLINE=`echo $ARDCLINE | sed -e "s/${ARDCOLDVER}/${ARDC_UVERSION}/g" | sed -e "s/${ARDCOLDVERD}/${ARDC_DVERSION}/g"`
 
   echo "Replacing this line in the manifest:"
