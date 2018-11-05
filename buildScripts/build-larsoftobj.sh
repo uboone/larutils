@@ -46,7 +46,7 @@ basequal=${qual_set}
 case ${qual_set} in
   e9) d16_ok=false ;;
   e10) d16_ok=false ;;
-  e1[45]) ;;
+  e1[457]) ;;
   c2) d14_ok=false ;;
   *)
     usage
