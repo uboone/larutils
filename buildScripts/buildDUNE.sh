@@ -61,6 +61,10 @@ fi
 
 if ! uname | grep -q Darwin; then
   setup git || exit 1
+  if [[ x`which mrb | grep v1_17_02` != x ]]; then
+    unsetup mrb
+    setup mrb v1_16_02
+  fi
 fi
 setup gitflow || exit 1
 export MRB_PROJECT=dune
