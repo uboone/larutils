@@ -57,13 +57,13 @@ else
   exit 1
 fi
 
-# Use system git on macos.
+# Use system git on macos, and skip around a version of mrb that does not work on macOS
 
 if ! uname | grep -q Darwin; then
   setup git || exit 1
   if [[ x`which mrb | grep v1_17_02` != x ]]; then
-    unsetup mrb
-    setup mrb v1_16_02
+    unsetup mrb || exit 1
+    setup mrb v1_16_02 || exit 1
   fi
 fi
 setup gitflow || exit 1
