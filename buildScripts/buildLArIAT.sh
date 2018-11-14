@@ -46,6 +46,14 @@ else
   echo "No setup file found."
   exit 1
 fi
+# skip around a version of mrb that does not work on macOS
+
+if [ `uname` = Darwin ]; then
+  if [[ x`which mrb | grep v1_17_02` != x ]]; then
+    unsetup mrb || exit 1
+    setup mrb v1_16_02 || exit 1
+  fi
+fi
 
 # Use system git on macos.
 

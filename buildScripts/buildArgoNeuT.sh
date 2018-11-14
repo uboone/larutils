@@ -27,6 +27,16 @@ echo "Building using $ncores cores."
 #source /grid/fermiapp/products/argoneut/setup_argoneut_fermiapp.sh || exit 1
 source /grid/fermiapp/products/argoneut/setup_argoneut.sh || exit 1
 
+# skip around a version of mrb that does not work on macOS
+
+if [ `uname` = Darwin ]; then
+  if [[ x`which mrb | grep v1_17_02` != x ]]; then
+    unsetup mrb || exit 1
+    setup mrb v1_16_02 || exit 1
+  fi
+fi
+
+
 if ! uname | grep -q Darwin; then
   setup git || exit 1
 fi

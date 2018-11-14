@@ -58,6 +58,15 @@ if ! uname | grep -q Darwin; then
   setup git || exit 1
 fi
 setup gitflow || exit 1
+# skip around a version of mrb that does not work on macOS
+
+if [ `uname` = Darwin ]; then
+  if [[ x`which mrb | grep v1_17_02` != x ]]; then
+    unsetup mrb || exit 1
+    setup mrb v1_16_02 || exit 1
+  fi
+fi
+
 export MRB_PROJECT=uboone
 echo "Mrb path:"
 which mrb
