@@ -39,23 +39,13 @@ if [ $ncores -lt 1 ]; then
 fi
 echo "Building using $ncores cores."
 
-# Environment setup, uses /grid/fermiapp or cvmfs.
+# Environment setup.  Just use cvmfs.  larsoft builds are not supported on /grid/fermiapp anymore
 
 echo "ls /cvmfs/dune.opensciencegrid.org/products/dune/"
 ls /cvmfs/dune.opensciencegrid.org/products/dune/
 echo
 
-if [ `uname` = Darwin -a -f /grid/fermiapp/products/dune/setup_dune_fermiapp.sh ]; then
-  source /grid/fermiapp/products/dune/setup_dune_fermiapp.sh || exit 1
-elif [ -f /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh ]; then
-  if [ -x /cvmfs/grid.cern.ch/util/cvmfs-uptodate ]; then
-    /cvmfs/grid.cern.ch/util/cvmfs-uptodate /cvmfs/dune.opensciencegrid.org/products
-  fi
-  source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
-else
-  echo "No setup file found."
-  exit 1
-fi
+source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh || exit 1
 
 # Use git out of ups except use the system git on macos
 
