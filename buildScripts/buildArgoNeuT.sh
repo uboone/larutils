@@ -25,7 +25,17 @@ fi
 echo "Building using $ncores cores."
 
 #source /grid/fermiapp/products/argoneut/setup_argoneut_fermiapp.sh || exit 1
-source /grid/fermiapp/products/argoneut/setup_argoneut.sh || exit 1
+#source /grid/fermiapp/products/argoneut/setup_argoneut.sh || exit 1
+
+if [ `uname` = Darwin -a -f /grid/fermiapp/products/argoneut/setup_argoneut_fermiapp.sh ]; then
+  source /grid/fermiapp/products/argoneut/setup_argoneut_fermiapp.sh || exit 1
+elif [ -f /cvmfs/argoneut.opensciencegrid.org/products/argoneut/setup_argoneut.sh ]; then
+  source /cvmfs/argoneut.opensciencegrid.org/products/argoneut/setup_argoneut.sh || exit 1
+else
+  echo "No setup file found."
+  exit 1
+fi
+
 
 # skip around a version of mrb that does not work on macOS
 
