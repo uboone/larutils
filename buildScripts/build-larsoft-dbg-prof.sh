@@ -242,6 +242,18 @@ case ${qual_set} in
      d16_ok=true
      d14_ok=false
   ;;
+  s71:e17)
+     basequal=e17
+     squal=s71
+     d16_ok=true
+     d14_ok=false
+  ;;
+  s71:c2)
+     basequal=c2
+     squal=s71
+     d16_ok=true
+     d14_ok=false
+  ;;
   *)
     usage
     exit 1
