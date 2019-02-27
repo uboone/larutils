@@ -137,7 +137,7 @@ mrbsetenv || exit 1
 mrb b -j$ncores || exit 1
 mrb mp -n dune -- -j$ncores || exit 1
 
-# add dune_data to the manifest
+# add dune_pardata to the manifest
 
 manifest=dune-*_MANIFEST.txt
 dune_pardata_version=`grep dune_pardata $MRB_SOURCE/dunetpc/ups/product_deps | grep -v qualifier | awk '{print $2}'`
@@ -182,6 +182,13 @@ dunepdsprce_version=`ups active | grep dunepdsprce | awk '{print $2}'`
 echo "dunepdsprce version: $dunepdsprce_version"
 dunepdsprce_dot_version=`echo ${dunepdsprce_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 echo "dunepdsprce          ${dunepdsprce_version}          dunepdsprce-${dunepdsprce_dot_version}-${PLATFORM}-x86_64-gen-${QUAL}-${BUILDTYPE}.tar.bz2" >>  $manifest
+
+# add dune_oslibs to the manifest
+
+dune_oslibs_version=`ups active | grep dune_oslibs | awk '{print $2}'`
+echo "dune_oslibs version: $dune_oslibs_version"
+dune_oslibs_dot_version=`echo ${dune_oslibs_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
+echo "dune_oslibs    ${dune_oslibs_version}   dune_oslibs-${dune_oslibs_dot_version}-${PLATFORM}-x86_64.tar.bz2" >> $manifest
 
 # Extract larsoft version from product_deps.
 
