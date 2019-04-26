@@ -6,13 +6,13 @@
 # use mrb
 # designed to work on Jenkins
 
+# ignores LARSOFT_QUAL now.
 # Extract set qualifier from $LARSOFT_QUAL (we don't care about anything else in $LARSOFT_QUAL).
-
-SQUAL=`echo $LARSOFT_QUAL | tr : '\n' | grep ^s`
+#SQUAL=`echo $LARSOFT_QUAL | tr : '\n' | grep ^s`
+#echo "set qualifier: $SQUAL"
 
 echo "dunetpc version: $DUNE"
 echo "base qualifiers: $QUAL"
-echo "set qualifier: $SQUAL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
 
@@ -203,6 +203,11 @@ if uname | grep -q Darwin; then
 else
   flvr=`ups flavor -4`
 fi
+
+# find our set qualifier from artdaq_core's qualifier
+
+SQUAL=`ups active | grep artdaq_core | tr : '\n' | grep ^s | awk '{print $1}'`
+echo "Set qualifier from artdaq_core:  $SQUAL"
 
 # Construct name of larsoft manifest.
 
