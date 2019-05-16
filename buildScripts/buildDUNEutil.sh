@@ -10,6 +10,15 @@ echo "base qualifiers: $QUAL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
 
+echo "----------------------------"
+echo "ls /grid/fermiapp/products/dune"
+ls /grid/fermiapp/products/dune
+echo "----------------------------"
+echo "ls /cvmfs/dune.opensciencegrid.org/products/dune"
+ls /cvmfs/dune.opensciencegrid.org/products/dune
+echo "----------------------------"
+
+
 # Don't do ifdh build on macos.
 
 #if uname | grep -q Darwin; then
