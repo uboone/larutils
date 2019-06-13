@@ -40,166 +40,19 @@ version=${LARVER}
 qual_set="${QUAL}"
 build_type=${BUILDTYPE}
 
-d16_ok=false
-
-case ${qual_set} in
-  s5:e5) 
-     basequal=e5
-     squal=s5
-  ;;
-  s5:e6) 
-     basequal=e6
-     squal=s5
-  ;;
-  s6:e6) 
-     basequal=e6
-     squal=s6
-  ;;
-  s7:e7) 
-     basequal=e7
-     squal=s7
-  ;;
-  s8:e7) 
-     basequal=e7
-     squal=s8
-  ;;
-  s11:e7) 
-     basequal=e7
-     squal=s11
-  ;;
-  s12:e7) 
-     basequal=e7
-     squal=s12
-  ;;
-  s14:e7) 
-     basequal=e7
-     squal=s14
-  ;;
-  s15:e7) 
-     basequal=e7
-     squal=s15
-  ;;
-  s18:e9) 
-     basequal=e9
-     squal=s18
-  ;;
-  s21:e9) 
-     basequal=e9
-     squal=s21
-  ;;
-  s24:e9)
-     basequal=e9
-     squal=s24
-  ;;
-  s26:e9)
-     basequal=e9
-     squal=s26
-  ;;
-  s30:e9)
-     basequal=e9
-     squal=s30
-  ;;
-  s31:e9)
-     basequal=e9
-     squal=s31
-  ;;
-  s33:e10)
-     basequal=e10
-     squal=s33
-  ;;
-  s36:e10)
-     basequal=e10
-     squal=s36
-  ;;
-  s39:e10)
-     basequal=e10
-     squal=s39
-  ;;
-  s41:e10)
-     basequal=e10
-     squal=s41
-  ;;
-  s42:e10)
-     basequal=e10
-     squal=s42
-  ;;
-  s43:e10)
-     basequal=e10
-     squal=s43
-  ;;
-  s44:e10)
-     basequal=e10
-     squal=s44
-  ;;
-  s46:e10)
-     basequal=e10
-     squal=s46
-  ;;
-  s48:e10)
-     basequal=e10
-     squal=s48
-  ;;
-  s48:e14)
-     basequal=e14
-     squal=s48
-     d16_ok=true
-  ;;
-  s62:e15)
-     basequal=e15
-     squal=s62
-     d16_ok=true
-  ;;
-  s65:e15)
-     basequal=e15
-     squal=s65
-     d16_ok=true
-  ;;
-  s65:c2)
-     basequal=c2
-     squal=s65
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s67:e15)
-     basequal=e15
-     squal=s67
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s67:c2)
-     basequal=c2
-     squal=s67
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s68:e15)
-     basequal=e15
-     squal=s68
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s68:c2)
-     basequal=c2
-     squal=s68
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s84:e17)
-     basequal=e17
-     squal=s84
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s84:c2)
-     basequal=c2
-     squal=s84
-     d16_ok=true
-     d14_ok=false
-  ;;
-  *)
-    usage
-    exit 1
-esac
+oIFS=${IFS}; IFS=:; quals=(${qual_set//-/:}); IFS=$oIFS; unset oIFS
+for onequal in "${quals[@]}"; do
+  case ${onequal} in
+    e[679]|e1[0-9]|c[0-9])
+      basequal=${onequal}
+      ;;
+    s7[0-9]|s8[0-9])
+      squal=${onequal}
+      ;;
+    *)
+      labels+=${onequal}
+  esac
+done
 
 case ${build_type} in
   debug) ;;
@@ -213,39 +66,30 @@ esac
 rm -rf $WORKSPACE/copyBack 
 mkdir -p $WORKSPACE/copyBack || exit 1
 
-# check XCode
-if [[ `uname -s` == Darwin ]] 
-then
+# Check supported builds.
+if [[ `uname -s` == Darwin ]]; then
   OSnum=`uname -r | cut -f1 -d"."`
   xver=`xcodebuild -version | grep Xcode | cut -f2 -d" " | cut -f1 -d"."`
   xcver=`xcodebuild -version | grep Xcode`
-  if [[ ${basequal} == e9 ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
-  then
+  if { [[ ${basequal} =~ ^e(9$|[1-9][0-9]) ]] && \
+    [[ ${xver} < 7 ]] && \
+    [[ ${OSnum} > 13 ]]; }; then
+    # XCode too old on this platform.
     echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
-    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > $WORKSPACE/copyBack/skipping_build
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > \
+      "${working_dir}/copyBack/skipping_build"
     exit 0
-  elif [[ ${basequal} == e1[04] ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
-  then
-    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
-    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > $WORKSPACE/copyBack/skipping_build
-    exit 0
-  elif [[ ${basequal} == e1[045] ]] && [[ ${OSnum} > 16 ]]
-  then
-    echo "${basequal} build not supported on `uname -s`${OSnum}"
-    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
-  fi
-  if [[ ${d16_ok} == false ]] && [[ ${OSnum} > 15 ]]
-  then
-    echo "${basequal} build not supported on `uname -s`${OSnum}"
-    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
-    exit 0
-  fi
-  # using this to disable unsupported El Capitan c2 builds
-  if [[ ${d14_ok} == false ]] && [[ ${OSnum} < 16 ]]
-  then
-    echo "${basequal} build not supported on `uname -s`${OSnum}"
-    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
-    exit 0
+  elif { [[ "$basequal" == e* ]] || \
+    { [[ "$basequal" == c* ]] && (( $OSnum < 15 )); }; }; then
+    if want_unsupported; then
+      echo "Building unsupported ${basequal} on `uname -s`${OSnum} due to \$CET_BUILD_UNSUPPORTED=${CET_BUILD_UNSUPPORTED}"
+    else
+      # Don't normally support GCC builds on MacOS.
+      msg="${basequal} build not supported on `uname -s`${OSnum} -- export CET_BUILD_UNSUPPORTED=1 to override."
+      echo "$msg"
+      echo "$msg" > "${working_dir}/copyBack/skipping_build"
+      exit 0
+    fi
   fi
 fi
 
@@ -260,7 +104,9 @@ then
   if [ "${id}" = "Ubuntu" ]
   then
     flvr=u`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
-    export UPS_OVERRIDE="-H Linux64bit+3.19-2.19"
+    if [ "${flvr}" = "u14" ]; then
+      export UPS_OVERRIDE="-H Linux64bit+3.19-2.19"
+    fi
   else
     flvr=slf`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
   fi
@@ -288,21 +134,16 @@ mkdir -p ${srcdir} || exit 1
 mkdir -p ${blddir} || exit 1
 
 cd ${blddir} || exit 1
-curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/pullProducts || exit 1
-chmod +x pullProducts
-# source code tarballs MUST be pulled first
-./pullProducts ${blddir} source larbase-${version} || \
-      { cat 1>&2 <<EOF
-ERROR: pull of larbase-${version} failed
-EOF
-        exit 1
-      }
-mv ${blddir}/*source* ${srcdir}/
+curl --fail --silent --location --insecure -O http://scisoft.fnal.gov/scisoft/bundles/tools/buildFW || exit 1
+chmod +x buildFW
 
-cd ${blddir} || exit 1
 echo
 echo "begin build"
 echo
+./buildFW -t -b ${basequal} ${blddir} ${build_type} lar_product_stack-${version} || \
+ { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+   exit 1 
+ }
 ./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
