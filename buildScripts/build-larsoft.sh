@@ -96,7 +96,7 @@ fi
 
 dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
-echo "building the larsoft base distribution for ${version} ${dotver} ${qual_set} ${build_type}"
+echo "building the larsoft distribution for ${version} ${dotver} ${qual_set} ${build_type}"
 
 OS=`uname`
 if [ "${OS}" = "Linux" ]
