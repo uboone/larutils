@@ -21,6 +21,16 @@ Arguments:
 EOF
 }
 
+have_label() {
+  for label in "${labels[@]}"; do
+    for wanted in "$@"; do
+      [[ "${label}" == "${wanted}" ]] && return 0
+    done
+  done
+  return 1
+}
+
+
 while getopts :h OPT; do
   case ${OPT} in
     h)
@@ -35,13 +45,14 @@ done
 shift `expr $OPTIND - 1`
 OPTIND=1
 
-working_dir=${WORKSPACE}
-version=${LARVER}
-qual_set="${QUAL}"
-build_type=${BUILDTYPE}
+working_dir="${WORKSPACE:-$(pwd)}"
+version="${1:-${LARVER}}"
 objver=${LAROBJ}
-
+qual_set="${2:-${QUAL}}"
 oIFS=${IFS}; IFS=:; quals=(${qual_set//-/:}); IFS=$oIFS; unset oIFS
+build_type="${3:-${BUILDTYPE}}"
+
+labels=()
 for onequal in "${quals[@]}"; do
   case ${onequal} in
     e[679]|e1[0-9]|c[0-9])
@@ -56,8 +67,8 @@ for onequal in "${quals[@]}"; do
 done
 
 case ${build_type} in
-  debug) ;;
-  prof) ;;
+  debug) qflag="-d" ;;
+  prof) qflag="-p" ;;
   *)
     usage
     exit 1
