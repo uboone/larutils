@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# pull source code in $WORKSPACE/source
-# build in $WORKSPACE/build
-# copyback directory is $WORKSPACE/copyBack
+# pull source code in ${working_dir}/source
+# build in ${working_dir}/build
+# copyback directory is ${working_dir}/copyBack
 
 usage()
 {
@@ -13,10 +13,6 @@ Usage: $(basename ${0}) [-h]
 Options:
 
   -h    This help.
-
-Arguments:
-
-  qual_set         Supported qualifier sets: s8:e7, s11:e7
 
 EOF
 }
@@ -75,8 +71,35 @@ case ${build_type} in
 esac
 
 # create copyBack so artifact copy does not fail on early exit
-rm -rf $WORKSPACE/copyBack 
-mkdir -p $WORKSPACE/copyBack || exit 1
+rm -rf "${working_dir}/copyBack"
+mkdir -p "${working_dir}/copyBack" || exit 1
+
+# Find platform flavor.
+OS=`uname`
+if [ "${OS}" = "Linux" ]
+then
+  id=`lsb_release -is`
+  if [ "${id}" = "Ubuntu" ]
+  then
+    flvr=u`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
+  else
+    flvr=slf`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
+  fi
+elif [ "${OS}" = "Darwin" ]
+then
+  flvr=d`uname -r | cut -f1 -d"."`
+  # set locale
+  echo
+  locale
+  echo
+  export LANG=C
+  export LC_ALL=$LANG
+  locale
+  echo
+else 
+  echo "ERROR: unrecognized operating system ${OS}"
+  exit 1
+fi
 
 # Check supported builds.
 if [[ `uname -s` == Darwin ]]; then
@@ -108,27 +131,6 @@ fi
 dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
 echo "building the larsoft distribution for ${version} ${dotver} ${qual_set} ${build_type}"
-
-OS=`uname`
-if [ "${OS}" = "Linux" ]
-then
-  id=`lsb_release -is`
-  if [ "${id}" = "Ubuntu" ]
-  then
-    flvr=u`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
-    if [ "${flvr}" = "u14" ]; then
-      export UPS_OVERRIDE="-H Linux64bit+3.19-2.19"
-    fi
-  else
-    flvr=slf`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
-  fi
-elif [ "${OS}" = "Darwin" ]
-then
-  flvr=d`uname -r | cut -f1 -d"."`
-else 
-  echo "ERROR: unrecognized operating system ${OS}"
-  exit 1
-fi
 echo "build flavor is ${flvr}"
 echo ""
 
@@ -153,22 +155,29 @@ cd ${blddir} || exit 1
 echo
 echo "begin build"
 echo
-./buildFW -t -b ${basequal} ${blddir} ${build_type} lar_product_stack-${version} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+(( ${#labels[@]} > 0 )) && lopt=-l
+./buildFW -t -b ${basequal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} lar_product_stack-${version} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1 
  }
-./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+./buildFW -t -b ${basequal} -s ${squal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larbase-${version} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1 
  }
-if [[ ${objver} != "none" ]]; then
-./buildFW -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${objver} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+./buildFW -t -b ${basequal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larsoftobj-${objver} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1 
  }
-fi
-./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+./buildFW -t -b ${basequal} -s ${squal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larsoft-${version} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1 
  }
 
@@ -180,8 +189,8 @@ mv ${blddir}/*source* ${srcdir}/
 mv ${blddir}/g*noarch* ${srcdir}/
 mv ${blddir}/larsoft_data*.bz2 ${srcdir}/
 # 
-mv ${blddir}/*.bz2  $WORKSPACE/copyBack/
-mv ${blddir}/*.txt  $WORKSPACE/copyBack/
+mv ${blddir}/*.bz2  "${working_dir}/copyBack/"
+mv ${blddir}/*.txt  "${working_dir}/copyBack/"
 rm -rf ${srcdir}
 rm -rf ${blddir}
 
