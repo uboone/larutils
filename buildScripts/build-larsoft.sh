@@ -126,6 +126,11 @@ if [[ `uname -s` == Darwin ]]; then
       exit 0
     fi
   fi
+elif [[ "${flvr}" == slf6 ]] && have_label py3; then
+    msg="Python3 builds not supported on SLF6."
+    echo "${msg}"
+    echo "${msg}" > "${working_dir}/copyBack/skipping_build"
+    exit 0
 fi
 
 dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
