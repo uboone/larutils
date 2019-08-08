@@ -126,6 +126,12 @@ if [[ `uname -s` == Darwin ]]; then
       exit 0
     fi
   fi
+  if have_label py3; then
+    msg="We are not building for Python3 on Darwin."
+    echo "${msg}"
+    echo "${msg}" > "${working_dir}/copyBack/skipping_build"
+    exit 0
+  fi
 elif [[ "${flvr}" == slf6 ]] && have_label py3; then
     msg="Python3 builds not supported on SLF6."
     echo "${msg}"
