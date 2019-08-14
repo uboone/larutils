@@ -166,6 +166,7 @@ cd ${blddir} || exit 1
 echo
 echo "begin build"
 echo
+(( ${#labels[@]} > 0 )) && lopt=-l
 ./buildFW -t -b ${basequal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} larsoftobj-${version} || \
