@@ -8,17 +8,22 @@ usage()
 {
   cat 1>&2 <<EOF
 Usage: $(basename ${0}) [-h]
-       $(basename ${0}) <version> <qual_set> <build_type>
+       env WORKSPACE=<workspace> LARVER=<larsoft version> QUAL=<qualifier> BUILDTYPE=<debug|prof> $(basename ${0}) 
 
 Options:
 
   -h    This help.
 
-Arguments:
-
-  qual_set         Supported qualifier sets: s8:e7, s11:e7
-
 EOF
+}
+
+have_label() {
+  for label in "${labels[@]}"; do
+    for wanted in "$@"; do
+      [[ "${label}" == "${wanted}" ]] && return 0
+    done
+  done
+  return 1
 }
 
 while getopts :h OPT; do
@@ -35,18 +40,19 @@ done
 shift `expr $OPTIND - 1`
 OPTIND=1
 
-working_dir=${WORKSPACE}
-version=${LARVER}
-qual_set="${QUAL}"
-build_type=${BUILDTYPE}
+working_dir="${WORKSPACE:-$(pwd)}"
+version="${1:-${LARVER}}"
+qual_set="${2:-${QUAL}}"
+build_type="${3:-${BUILDTYPE}}"
 
 oIFS=${IFS}; IFS=:; quals=(${qual_set//-/:}); IFS=$oIFS; unset oIFS
+labels=()
 for onequal in "${quals[@]}"; do
   case ${onequal} in
     e[679]|e1[0-9]|c[0-9])
       basequal=${onequal}
       ;;
-    s7[0-9]|s8[0-9])
+    s7[0-9]|s8[0-9]|s9[0-9])
       squal=${onequal}
       ;;
     *)
@@ -55,16 +61,43 @@ for onequal in "${quals[@]}"; do
 done
 
 case ${build_type} in
-  debug) ;;
-  prof) ;;
+  debug) qflag="-d" ;;
+  prof) qflag="-p" ;;
   *)
     usage
     exit 1
 esac
 
 # create copyBack so artifact copy does not fail on early exit
-rm -rf $WORKSPACE/copyBack 
-mkdir -p $WORKSPACE/copyBack || exit 1
+rm -rf "${working_dir}/copyBack"
+mkdir -p "${working_dir}/copyBack" || exit 1
+
+# Find platform flavor.
+OS=`uname`
+if [ "${OS}" = "Linux" ]
+then
+  id=`lsb_release -is`
+  if [ "${id}" = "Ubuntu" ]
+  then
+    flvr=u`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
+  else
+    flvr=slf`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
+  fi
+elif [ "${OS}" = "Darwin" ]
+then
+  flvr=d`uname -r | cut -f1 -d"."`
+  # set locale
+  echo
+  locale
+  echo
+  export LANG=C
+  export LC_ALL=$LANG
+  locale
+  echo
+else 
+  echo "ERROR: unrecognized operating system ${OS}"
+  exit 1
+fi
 
 # Check supported builds.
 if [[ `uname -s` == Darwin ]]; then
@@ -91,32 +124,23 @@ if [[ `uname -s` == Darwin ]]; then
       exit 0
     fi
   fi
+  if have_label py3; then
+    msg="We are not building for Python3 on Darwin."
+    echo "${msg}"
+    echo "${msg}" > "${working_dir}/copyBack/skipping_build"
+    exit 0
+  fi
+elif [[ "${flvr}" == slf6 ]] && have_label py3; then
+    msg="Python3 builds not supported on SLF6."
+    echo "${msg}"
+    echo "${msg}" > "${working_dir}/copyBack/skipping_build"
+    exit 0
 fi
 
 dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
 echo "building the larbase base distribution for ${version} ${dotver} ${qual_set} ${build_type}"
 
-OS=`uname`
-if [ "${OS}" = "Linux" ]
-then
-  id=`lsb_release -is`
-  if [ "${id}" = "Ubuntu" ]
-  then
-    flvr=u`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
-    if [ "${flvr}" = "u14" ]; then
-      export UPS_OVERRIDE="-H Linux64bit+3.19-2.19"
-    fi
-  else
-    flvr=slf`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
-  fi
-elif [ "${OS}" = "Darwin" ]
-then
-  flvr=d`uname -r | cut -f1 -d"."`
-else 
-  echo "ERROR: unrecognized operating system ${OS}"
-  exit 1
-fi
 echo "build flavor is ${flvr}"
 echo ""
 
@@ -140,12 +164,17 @@ chmod +x buildFW
 echo
 echo "begin build"
 echo
-./buildFW -t -b ${basequal} ${blddir} ${build_type} lar_product_stack-${version} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+(( ${#labels[@]} > 0 )) && lopt=-l
+./buildFW -t -b ${basequal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} lar_product_stack-${version} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1 
  }
-./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+./buildFW -t -b ${basequal} -s ${squal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larbase-${version} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1 
  }
 
