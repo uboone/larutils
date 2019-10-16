@@ -8,7 +8,7 @@ usage()
 {
   cat 1>&2 <<EOF
 Usage: $(basename ${0}) [-h]
-       env WORSPACE=<workspace> LARVER=<larsoft version> LAROBJ=<larsoftobj version> QUAL=<qualifier> $(basename ${0}) 
+       env WORSPACE=<workspace> LARVER=<larsoft version> QUAL=<qualifier> $(basename ${0}) 
 
 Options:
 
@@ -34,7 +34,7 @@ OPTIND=1
 working_dir=${WORKSPACE}
 version=${LARVER}
 qual_set="${QUAL}"
-objver=${LAROBJ}
+#objver=${LAROBJ}
 
 d16_ok=false
 
@@ -411,13 +411,12 @@ do
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
-if [[ ${objver} != "none" ]]; then
-./buildFW -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${objver} || \
+./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
-fi
-./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
+objver=`ls larsoftobj-cfg* | cut -f3 -d"-" | sed -e 's/\./_/g'`
+./buildFW -t -b ${basequal} ${blddir} ${build_type} larsoftobj-v${objver} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
    exit 1 
  }
