@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# pull source code in $WORKSPACE/source
-# build in $WORKSPACE/build
-# copyback directory is $WORKSPACE/copyBack
+# pull source code in ${working_dir}/source
+# build in ${working_dir}/build
+# copyback directory is ${working_dir}/copyBack
 
 usage()
 {
   cat 1>&2 <<EOF
 Usage: $(basename ${0}) [-h]
-       env WORSPACE=<workspace> LARVER=<larsoft version> QUAL=<qualifier> $(basename ${0}) 
+       env WORKSPACE=<workspace> LARVER=<larsoft version> QUAL=<qualifier> $(basename ${0}) 
 
 Options:
 
@@ -16,6 +16,16 @@ Options:
 
 EOF
 }
+
+have_label() {
+  for label in "${labels[@]}"; do
+    for wanted in "$@"; do
+      [[ "${label}" == "${wanted}" ]] && return 0
+    done
+  done
+  return 1
+}
+
 
 while getopts :h OPT; do
   case ${OPT} in
@@ -31,332 +41,32 @@ done
 shift `expr $OPTIND - 1`
 OPTIND=1
 
-working_dir=${WORKSPACE}
-version=${LARVER}
-qual_set="${QUAL}"
+working_dir="${WORKSPACE:-$(pwd)}"
+version="${1:-${LARVER}}"
 #objver=${LAROBJ}
+qual_set="${2:-${QUAL}}"
+oIFS=${IFS}; IFS=:; quals=(${qual_set//-/:}); IFS=$oIFS; unset oIFS
+#build_type="${3:-${BUILDTYPE}}"
 
-d16_ok=false
-
-case ${qual_set} in
-  s5:e5) 
-     basequal=e5
-     squal=s5
-  ;;
-  s5:e6) 
-     basequal=e6
-     squal=s5
-  ;;
-  s6:e6) 
-     basequal=e6
-     squal=s6
-  ;;
-  s7:e7) 
-     basequal=e7
-     squal=s7
-  ;;
-  s8:e7) 
-     basequal=e7
-     squal=s8
-  ;;
-  s11:e7) 
-     basequal=e7
-     squal=s11
-  ;;
-  s12:e7) 
-     basequal=e7
-     squal=s12
-  ;;
-  s14:e7) 
-     basequal=e7
-     squal=s14
-  ;;
-  s15:e7) 
-     basequal=e7
-     squal=s15
-  ;;
-  s18:e7) 
-     basequal=e7
-     squal=s18
-  ;;
-  s18:e9) 
-     basequal=e9
-     squal=s18
-  ;;
-  s20:e9) 
-     basequal=e9
-     squal=s20
-  ;;
-  s21:e9) 
-     basequal=e9
-     squal=s21
-  ;;
-  s24:e9)
-     basequal=e9
-     squal=s24
-  ;;
-  s26:e9)
-     basequal=e9
-     squal=s26
-  ;;
-  s28:e9)
-     basequal=e9
-     squal=s28
-  ;;
-  s30:e9)
-     basequal=e9
-     squal=s30
-  ;;
-  s31:e9)
-     basequal=e9
-     squal=s31
-  ;;
-  s33:e10)
-     basequal=e10
-     squal=s33
-  ;;
-  s36:e10)
-     basequal=e10
-     squal=s36
-  ;;
-  s39:e10)
-     basequal=e10
-     squal=s39
-  ;;
-  s41:e10)
-     basequal=e10
-     squal=s41
-  ;;
-  s42:e10)
-     basequal=e10
-     squal=s42
-  ;;
-  s43:e10)
-     basequal=e10
-     squal=s43
-  ;;
-  s44:e10)
-     basequal=e10
-     squal=s44
-  ;;
-  s46:e10)
-     basequal=e10
-     squal=s46
-  ;;
-  s48:e10)
-     basequal=e10
-     squal=s48
-  ;;
-  s48:e14)
-     basequal=e14
-     squal=s48
-     d16_ok=true
-  ;;
-  s50:e14)
-     basequal=e14
-     squal=s50
-     d16_ok=true
-  ;;
-  s54:e14)
-     basequal=e14
-     squal=s54
-     d16_ok=true
-  ;;
-  s56:e14)
-     basequal=e14
-     squal=s56
-     d16_ok=true
-  ;;
-  s62:e14)
-     basequal=e14
-     squal=s62
-     d16_ok=true
-  ;;
-  s62:e15)
-     basequal=e15
-     squal=s62
-     d16_ok=true
-  ;;
-  s65:e15)
-     basequal=e15
-     squal=s65
-     d16_ok=true
-  ;;
-  s65:c2)
-     basequal=c2
-     squal=s65
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s67:e15)
-     basequal=e15
-     squal=s67
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s67:c2)
-     basequal=c2
-     squal=s67
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s68:e15)
-     basequal=e15
-     squal=s68
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s68:c2)
-     basequal=c2
-     squal=s68
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s69:e17)
-     basequal=e17
-     squal=s69
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s69:c2)
-     basequal=c2
-     squal=s69
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s70:e17)
-     basequal=e17
-     squal=s70
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s70:e15)
-     basequal=e15
-     squal=s70
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s70:c2)
-     basequal=c2
-     squal=s70
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s71:e17)
-     basequal=e17
-     squal=s71
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s71:c2)
-     basequal=c2
-     squal=s71
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s75:e17)
-     basequal=e17
-     squal=s75
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s75:c2)
-     basequal=c2
-     squal=s75
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s78:e17)
-     basequal=e17
-     squal=s78
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s78:c2)
-     basequal=c2
-     squal=s78
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s78-e17)
-     basequal=e17
-     squal=s78
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s78-c2)
-     basequal=c2
-     squal=s78
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s81-e17)
-     basequal=e17
-     squal=s81
-     d16_ok=true
-     d14_ok=false
-  ;;
-  s81-c2)
-     basequal=c2
-     squal=s81
-     d16_ok=true
-     d14_ok=false
-  ;;
-  *)
-    usage
-    exit 1
-esac
+labels=()
+for onequal in "${quals[@]}"; do
+  case ${onequal} in
+    e[679]|e1[0-9]|c[0-9])
+      basequal=${onequal}
+      ;;
+    s7[0-9]|s8[0-9]|s9[0-9])
+      squal=${onequal}
+      ;;
+    *)
+      labels+=${onequal}
+  esac
+done
 
 # create copyBack so artifact copy does not fail on early exit
-rm -rf $WORKSPACE/copyBack 
-mkdir -p $WORKSPACE/copyBack || exit 1
+rm -rf "${working_dir}/copyBack"
+mkdir -p "${working_dir}/copyBack" || exit 1
 
-# check XCode
-if [[ `uname -s` == Darwin ]] 
-then
-  OSnum=`uname -r | cut -f1 -d"."`
-  xver=`xcodebuild -version | grep Xcode | cut -f2 -d" " | cut -f1 -d"."`
-  xcver=`xcodebuild -version | grep Xcode`
-  # not supporting gcc on macOS
-  if  [[ "$basequal" == e* ]]; then
-    echo "${basequal} build not supported on `uname -s`${OSnum}"
-    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
-    exit 0
-  fi
-  if [[ ${basequal} == e9 ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
-  then
-    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
-    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > $WORKSPACE/copyBack/skipping_build
-    exit 0
-  elif [[ ${basequal} == e1[04] ]] && [[ ${xver} < 7 ]] && [[ ${OSnum} > 13 ]]
-  then
-    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
-    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > $WORKSPACE/copyBack/skipping_build
-    exit 0
-  elif [[ ${basequal} == e1[045] ]] && [[ ${OSnum} > 16 ]]
-  then
-    echo "${basequal} build not supported on `uname -s`${OSnum}"
-    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
-  fi
-  if [[ ${d16_ok} == false ]] && [[ ${OSnum} > 15 ]]
-  then
-    echo "${basequal} build not supported on `uname -s`${OSnum}"
-    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
-    exit 0
-  fi
-  # using this to disable unsupported El Capitan c2 builds
-  if [[ ${d14_ok} == false ]] && [[ ${OSnum} < 16 ]]
-  then
-    echo "${basequal} build not supported on `uname -s`${OSnum}"
-    echo "${basequal} build not supported on `uname -s`${OSnum}" > $WORKSPACE/copyBack/skipping_build
-    exit 0
-  fi
-fi
-
-dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
-
-echo "building the larsoft base distribution for ${version} ${dotver} ${qual_set}"
-
+# Find platform flavor.
 OS=`uname`
 if [ "${OS}" = "Linux" ]
 then
@@ -364,19 +74,66 @@ then
   if [ "${id}" = "Ubuntu" ]
   then
     flvr=u`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
-    if [ "${flvr}" = "u14" ]; then
-      export UPS_OVERRIDE="-H Linux64bit+3.19-2.19"
-    fi
   else
     flvr=slf`lsb_release -r | sed -e 's/[[:space:]]//g' | cut -f2 -d":" | cut -f1 -d"."`
   fi
 elif [ "${OS}" = "Darwin" ]
 then
   flvr=d`uname -r | cut -f1 -d"."`
+  # set locale
+  echo
+  locale
+  echo
+  export LANG=C
+  export LC_ALL=$LANG
+  locale
+  echo
 else 
   echo "ERROR: unrecognized operating system ${OS}"
   exit 1
 fi
+
+# Check supported builds.
+if [[ `uname -s` == Darwin ]]; then
+  OSnum=`uname -r | cut -f1 -d"."`
+  xver=`xcodebuild -version | grep Xcode | cut -f2 -d" " | cut -f1 -d"."`
+  xcver=`xcodebuild -version | grep Xcode`
+  if { [[ ${basequal} =~ ^e(9$|[1-9][0-9]) ]] && \
+    [[ ${xver} < 7 ]] && \
+    [[ ${OSnum} > 13 ]]; }; then
+    # XCode too old on this platform.
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}"
+    echo "${basequal} build not supported on `uname -s`${OSnum} with ${xcver}" > \
+      "${working_dir}/copyBack/skipping_build"
+    exit 0
+  elif { [[ "$basequal" == e* ]] || \
+    { [[ "$basequal" == c* ]] && (( $OSnum < 15 )); }; }; then
+    if want_unsupported; then
+      echo "Building unsupported ${basequal} on `uname -s`${OSnum} due to \$CET_BUILD_UNSUPPORTED=${CET_BUILD_UNSUPPORTED}"
+    else
+      # Don't normally support GCC builds on MacOS.
+      msg="${basequal} build not supported on `uname -s`${OSnum} -- export CET_BUILD_UNSUPPORTED=1 to override."
+      echo "$msg"
+      echo "$msg" > "${working_dir}/copyBack/skipping_build"
+      exit 0
+    fi
+  fi
+  if have_label py3; then
+    msg="We are not building for Python3 on Darwin."
+    echo "${msg}"
+    echo "${msg}" > "${working_dir}/copyBack/skipping_build"
+    exit 0
+  fi
+elif [[ "${flvr}" == slf6 ]] && have_label py3; then
+    msg="Python3 builds not supported on SLF6."
+    echo "${msg}"
+    echo "${msg}" > "${working_dir}/copyBack/skipping_build"
+    exit 0
+fi
+
+dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
+
+echo "building the larsoft distribution for ${version} ${dotver} ${qual_set}"
 echo "build flavor is ${flvr}"
 echo ""
 
@@ -403,21 +160,30 @@ echo "begin build"
 echo
 for build_type in prof debug
 do
-./buildFW -t -b ${basequal} ${blddir} ${build_type} lar_product_stack-${version} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+(( ${#labels[@]} > 0 )) && lopt=-l
+./buildFW -t -b ${basequal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} lar_product_stack-${version} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1 
  }
-./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+./buildFW -t -b ${basequal} -s ${squal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larbase-${version} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1 
  }
-./buildFW -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+./buildFW -t -b ${basequal} -s ${squal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larsoft-${version} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1 
  }
 objver=`ls larsoftobj-cfg* | cut -f3 -d"-" | sed -e 's/\./_/g'`
-./buildFW -t -b ${basequal} ${blddir} ${build_type} larsoftobj-v${objver} || \
- { mv ${blddir}/*.log  $WORKSPACE/copyBack/
+./buildFW -t -b ${basequal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larsoftobj-${objver} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1 
  }
 done
@@ -430,8 +196,8 @@ mv ${blddir}/*source* ${srcdir}/
 mv ${blddir}/g*noarch* ${srcdir}/
 mv ${blddir}/larsoft_data*.bz2 ${srcdir}/
 # 
-mv ${blddir}/*.bz2  $WORKSPACE/copyBack/
-mv ${blddir}/*.txt  $WORKSPACE/copyBack/
+mv ${blddir}/*.bz2  "${working_dir}/copyBack/"
+mv ${blddir}/*.txt  "${working_dir}/copyBack/"
 rm -rf ${srcdir}
 rm -rf ${blddir}
 
