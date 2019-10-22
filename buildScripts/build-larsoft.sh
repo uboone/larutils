@@ -8,7 +8,7 @@ usage()
 {
   cat 1>&2 <<EOF
 Usage: $(basename ${0}) [-h]
-       env WORKSPACE=<workspace> LARVER=<larsoft version> LAROBJ=<larsoftobj version> QUAL=<qualifier> BUILDTYPE=<debug|prof> $(basename ${0}) 
+       env WORKSPACE=<workspace> LARVER=<larsoft version> QUAL=<qualifier> BUILDTYPE=<debug|prof> $(basename ${0}) 
 
 Options:
 
@@ -43,7 +43,7 @@ OPTIND=1
 
 working_dir="${WORKSPACE:-$(pwd)}"
 version="${1:-${LARVER}}"
-objver=${LAROBJ}
+#objver=${LAROBJ}
 qual_set="${2:-${QUAL}}"
 oIFS=${IFS}; IFS=:; quals=(${qual_set//-/:}); IFS=$oIFS; unset oIFS
 build_type="${3:-${BUILDTYPE}}"
@@ -63,8 +63,8 @@ for onequal in "${quals[@]}"; do
 done
 
 case ${build_type} in
-  debug) qflag="-d" ;;
-  prof) qflag="-p" ;;
+  debug)  ;;
+  prof)  ;;
   *)
     usage
     exit 1
@@ -179,15 +179,16 @@ echo
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1 
  }
-./buildFW -t -b ${basequal} \
-  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
-  ${blddir} ${build_type} larsoftobj-${objver} || \
- { mv ${blddir}/*.log  "${working_dir}/copyBack/"
-   exit 1 
- }
 ./buildFW -t -b ${basequal} -s ${squal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} larsoft-${version} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
+   exit 1 
+ }
+objver=`ls larsoftobj-cfg* | cut -f3 -d"-" | sed -e 's/\./_/g'`
+./buildFW -t -b ${basequal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larsoftobj-${objver} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1 
  }
