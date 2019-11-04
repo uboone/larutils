@@ -139,6 +139,8 @@ echo "Set qualifier from artdaq_core:  $SQUAL"
 
 echo "Moving tarballs to copyBack"
 
+cd $MRB_BUILDDIR || exit 1
+
 mv *.bz2  $WORKSPACE/copyBack/ || exit 1
 
 echo "Moving manifest to copyBack"
