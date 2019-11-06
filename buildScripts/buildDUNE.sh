@@ -254,27 +254,29 @@ ARDC_UVERSION=`ups active | grep artdaq_core | awk '{print $2}'`
 ARDC_DVERSION=`echo $ARDC_UVERSION | sed -e 's/_/./g' | sed -e 's/^v//'`
 
 # we're assuming the qualifiers match up between what we want and what we have for artdaq_core
+# replace artdaq_core line in manifest with our new version
 
-if [ `grep artdaq_core $manifest | wc -l` = 1 ]; then
-  ARDCLINE=`grep artdaq_core $manifest`
-  ARDCOLDVER=`echo $ARDCLINE | awk '{print $2}'`
-  ARDCOLDVERD=`echo $ARDCOLDVER | sed -e 's/_/\\\./g' | sed -e 's/^v//'`
-  ARDCNEWLINE=`echo $ARDCLINE | sed -e "s/${ARDCOLDVER}/${ARDC_UVERSION}/g" | sed -e "s/${ARDCOLDVERD}/${ARDC_DVERSION}/g"`
-
-  echo "Replacing this line in the manifest:"
-  echo $ARDCLINE
-  echo "with this one:"
-  echo $ARDCNEWLINE
-
-  touch newmanifest.txt || exit 1
-  rm newmanifest.txt || exit 1
-  grep -v artdaq_core $manifest > newmanifest.txt || exit 1
-  echo $ARDCNEWLINE >> newmanifest.txt
-  mv newmanifest.txt $manifest || exit 1
-else
-  echo "Manifest doesn't have the right number (1) of artdaq_core lines"
+if [ `grep artdaq_core $manifest | wc -l` = 0 ]; then
+  echo "LArSoft manifest lacks an artdaq_core line"
   exit 1
 fi
+
+ARDCLINE=`grep artdaq_core $manifest | head -1`
+ARDCOLDVER=`echo $ARDCLINE | awk '{print $2}'`
+ARDCOLDVERD=`echo $ARDCOLDVER | sed -e 's/_/\\\./g' | sed -e 's/^v//'`
+ARDCNEWLINE=`echo $ARDCLINE | sed -e "s/${ARDCOLDVER}/${ARDC_UVERSION}/g" | sed -e "s/${ARDCOLDVERD}/${ARDC_DVERSION}/g"`
+
+echo "Replacing artdaq_core line the manifest:"
+echo $ARDCLINE
+echo "with this one:"
+echo $ARDCNEWLINE
+echo "and deleting others."
+
+touch newmanifest.txt || exit 1
+rm newmanifest.txt || exit 1
+grep -v artdaq_core $manifest > newmanifest.txt || exit 1
+echo $ARDCNEWLINE >> newmanifest.txt
+mv newmanifest.txt $manifest || exit 1
 
 # Save artifacts.
 
