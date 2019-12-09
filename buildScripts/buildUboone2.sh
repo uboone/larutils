@@ -60,6 +60,7 @@ mv larcv*.bz2  $WORKSPACE/copyBack/ || exit 1
 mv swtrigger*.bz2  $WORKSPACE/copyBack/ || exit 1
 mv *.txt $WORKSPACE/copyBack/ || exit 1
 mv wcp*.bz2  $WORKSPACE/copyBack/ || echo "No wcp tarball"
+mv glpk*.bz2  $WORKSPACE/copyBack/ || echo "No wcp tarball"
 
 # Clean up.
 
