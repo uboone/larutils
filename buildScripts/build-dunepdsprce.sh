@@ -32,6 +32,12 @@ elif [ $QUAL = e17 ]; then
 elif [ $QUAL = c2 ]; then
   COMPILERVERS="clang v5_0_1"
   COMPILERCOMMAND=clang++
+elif [ $QUAL = e19 ]; then
+  COMPILERVERS="gcc v8_2_0"
+  COMPILERCOMMAND=g++
+elif [ $QUAL = c7 ]; then
+  COMPILERVERS="clang v7_0_0"
+  COMPILERCOMMAND=clang++
 fi
 
 echo "Compiler and version string: " $COMPILERVERS
@@ -187,6 +193,10 @@ elif [ $CQ = e17 ]; then
   CV="gcc v7_3_0"
 elif [ $CQ = c2 ]; then
   CV="clang v5_0_1"
+elif [ $CQ = e19 ]; then
+  CV="gcc v8_2_0"
+elif [ $CQ = c7 ]; then
+  CV="clang v7_0_0"
 fi
 if [ "$CV" = unknown ]; then
   echo "unknown compiler flag in COMPILERQUAL_LIST : $CQ"
