@@ -243,8 +243,8 @@ EOF
 
 mkdir inputdir || exit 1
 cd inputdir
-git clone https://github.com/slaclab/proto-dune-dam-lib.git || exit 1
-cd proto-dune-dam-lib || exit 1
+git clone https://github.com/dune/dunepdsprce.git || exit 1
+cd dunepdsprce || exit 1
 git checkout tags/${JJVERSION} || exit 1
 
 # copy all the files that do not need building.  Copy the headers later when we're done as they are in the install directory
@@ -261,7 +261,7 @@ rm -rf ${DIRNAME}/* || exit 1
 mkdir ${DIRNAME}/bin || exit 1
 mkdir ${DIRNAME}/lib || exit 1
 
-cd ${CURDIR}/inputdir/proto-dune-dam-lib/dam/source/cc/make || exit 1
+cd ${CURDIR}/inputdir/dunepdsprce/dam/source/cc/make || exit 1
 make clean || exit 1
 
 if [ $BUILDTYPE = prof ]; then
@@ -272,7 +272,7 @@ else
   make CC=${COMPILERCOMMAND} CXX=${COMPILERCOMMAND} LD=${COMPILERCOMMAND} target=x86_64-${SIMDQUALIFIER}-${LINDAR} || exit 1
 fi
 
-cp -R -L ${CURDIR}/inputdir/proto-dune-dam-lib/install/x86_64-${SIMDQUALIFIER}-${LINDAR}/bin/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}/bin
+cp -R -L ${CURDIR}/inputdir/dunepdsprce/install/x86_64-${SIMDQUALIFIER}-${LINDAR}/bin/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/${FLAVOR}-${QUAL}-${SIMDQUALIFIER}-${BUILDTYPE}/bin
 
 # JJ builds a program called "reader" which probably shouldn't be in the user's PATH.  Rename it if it exists
 
@@ -282,7 +282,7 @@ fi
 
 # in the case of the shared libraries, we want to only copy the libraries once, and make new symlinks with relative paths
 
-cd ${CURDIR}/inputdir/proto-dune-dam-lib/dam/export/x86_64-${SIMDQUALIFIER}-${LINDAR}/lib
+cd ${CURDIR}/inputdir/dunepdsprce/dam/export/x86_64-${SIMDQUALIFIER}-${LINDAR}/lib
 for LIBFILE in $( ls ); do
 	  if [ -h ${LIBFILE} ]; then
 	    TMPVAR=`readlink ${LIBFILE}`
@@ -292,7 +292,7 @@ for LIBFILE in $( ls ); do
 	  fi
 done
 
-cp -R -L ${CURDIR}/inputdir/proto-dune-dam-lib/install/x86_64-${SIMDQUALIFIER}-${LINDAR}/include/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/include || exit 1
+cp -R -L ${CURDIR}/inputdir/dunepdsprce/install/x86_64-${SIMDQUALIFIER}-${LINDAR}/include/* ${CURDIR}/${PRODUCT_NAME}/${VERSION}/include || exit 1
 
 # assemble the UPS product and declare it
 
