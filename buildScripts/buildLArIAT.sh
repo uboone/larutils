@@ -120,7 +120,7 @@ else
     LariatBeamFiles_version=`grep LariatBeamFiles $MRB_SOURCE/lariatsoft/ups/product_deps | grep -v qualifier | awk '{print $2}'`
     LariatBeamFiles_dot_version=`echo ${LariatBeamFiles_version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 #    echo "LariatBeamFiles      ${LariatBeamFiles_version}          LariatBeamFiles-${LariatBeamFiles_dot_version}-noarch.tar.bz2" >>  $manifest
-fi    
+fi
 
 LariatFilters_version=`grep LariatFilters $MRB_SOURCE/lariatsoft/ups/product_deps | grep -v qualifier | awk '{print $2}'`
 LariatFilters_dot_version=`echo ${LariatFilters_version} | sed -e 's/_/./g' | sed -e 's/^v//'`

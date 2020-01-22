@@ -101,7 +101,7 @@ source configure.sh
 
 # Run cmake.
 
-mkdir build 
+mkdir build
 cd build
 if [[ $QUAL =~ ^c ]]; then
   cmake .. -DCMAKE_CXX_COMPILER=`which clang++` -DCMAKE_BUILD_TYPE=$BUILDTYPE || exit 1

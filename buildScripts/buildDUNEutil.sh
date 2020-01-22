@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# build dunecode 
+# build dunecode
 # use mrb
 # designed to work on Jenkins
 # this is a proof of concept script

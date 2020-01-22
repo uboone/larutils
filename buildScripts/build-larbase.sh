@@ -8,7 +8,7 @@ usage()
 {
   cat 1>&2 <<EOF
 Usage: $(basename ${0}) [-h]
-       env WORKSPACE=<workspace> LARVER=<larsoft version> QUAL=<qualifier> BUILDTYPE=<debug|prof> $(basename ${0}) 
+       env WORKSPACE=<workspace> LARVER=<larsoft version> QUAL=<qualifier> BUILDTYPE=<debug|prof> $(basename ${0})
 
 Options:
 
@@ -94,7 +94,7 @@ then
   export LC_ALL=$LANG
   locale
   echo
-else 
+else
   echo "ERROR: unrecognized operating system ${OS}"
   exit 1
 fi
@@ -169,13 +169,13 @@ echo
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} lar_product_stack-${version} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
-   exit 1 
+   exit 1
  }
 ./buildFW -t -b ${basequal} -s ${squal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} larbase-${version} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
-   exit 1 
+   exit 1
  }
 
 echo

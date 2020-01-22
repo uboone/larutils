@@ -8,7 +8,7 @@ usage()
 {
   cat 1>&2 <<EOF
 Usage: $(basename ${0}) [-h]
-       env WORKSPACE=<workspace> LVER=<larsoftobj version> QUAL=<qualifier> BUILDTYPE=<debug|prof> $(basename ${0}) 
+       env WORKSPACE=<workspace> LVER=<larsoftobj version> QUAL=<qualifier> BUILDTYPE=<debug|prof> $(basename ${0})
        $(basename ${0}) <version> <qual_set> <build_type>
 
 Options:
@@ -96,7 +96,7 @@ then
   export LC_ALL=$LANG
   locale
   echo
-else 
+else
   echo "ERROR: unrecognized operating system ${OS}"
   exit 1
 fi
@@ -175,7 +175,7 @@ echo
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} larsoftobj-${version} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
-   exit 1 
+   exit 1
  }
 
 echo
@@ -183,7 +183,7 @@ echo "move files"
 echo
 # get these out of the way
 mv ${blddir}/*source* ${srcdir}/
-# 
+#
 mv ${blddir}/*.bz2  $WORKSPACE/copyBack/
 mv ${blddir}/*.txt  $WORKSPACE/copyBack/
 rm -rf ${srcdir}

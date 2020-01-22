@@ -100,7 +100,7 @@ case ${build_type} in
 esac
 
 # check XCode
-if [[ `uname -s` == Darwin ]] 
+if [[ `uname -s` == Darwin ]]
 then
   OSnum=`uname -r | cut -f1 -d"."`
   xver=`xcodebuild -version | grep Xcode | cut -f2 -d" " | cut -f1 -d"."`
@@ -129,7 +129,7 @@ then
 elif [ "${OS}" = "Darwin" ]
 then
   flvr=d`uname -r | cut -f1 -d"."`
-else 
+else
   echo "ERROR: unrecognized operating system ${OS}"
   exit 1
 fi
@@ -145,7 +145,7 @@ srcdir=${working_dir}/source
 # start with clean directories
 rm -rf ${blddir}
 rm -rf ${srcdir}
-rm -rf $WORKSPACE/copyBack 
+rm -rf $WORKSPACE/copyBack
 # now make the dfirectories
 mkdir -p ${srcdir} || exit 1
 mkdir -p ${blddir} || exit 1
@@ -187,19 +187,19 @@ echo "begin build"
 echo
 ${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} ${blddir} ${build_type} lar_product_stack-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
-   exit 1 
+   exit 1
  }
 ${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larbase-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
-   exit 1 
+   exit 1
  }
 ${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} ${blddir} ${build_type} larsoftobj-${objver} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
-   exit 1 
+   exit 1
  }
 ${WORKSPACE}/artutilscripts/tools/newBuild -t -b ${basequal} -s ${squal} ${blddir} ${build_type} larsoft-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
-   exit 1 
+   exit 1
  }
 
 echo

@@ -8,7 +8,7 @@ usage()
 {
   cat 1>&2 <<EOF
 Usage: $(basename ${0}) [-h]
-       env WORKSPACE=<workspace> LARVER=<larsoft version> QUAL=<qualifier> $(basename ${0}) 
+       env WORKSPACE=<workspace> LARVER=<larsoft version> QUAL=<qualifier> $(basename ${0})
 
 Options:
 
@@ -88,7 +88,7 @@ then
   export LC_ALL=$LANG
   locale
   echo
-else 
+else
   echo "ERROR: unrecognized operating system ${OS}"
   exit 1
 fi
@@ -169,26 +169,26 @@ do
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} lar_product_stack-${version} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
-   exit 1 
+   exit 1
  }
 ./buildFW -t -b ${basequal} -s ${squal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} larbase-${version} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
-   exit 1 
+   exit 1
  }
 ./buildFW -t -b ${basequal} -s ${squal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} larsoft-${version} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
-   exit 1 
+   exit 1
  }
 objver=`ls larsoftobj-cfg* | cut -f3 -d"-" | sed -e 's/\./_/g'`
 ./buildFW -t -b ${basequal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} larsoftobj-${objver} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
-   exit 1 
+   exit 1
  }
 done
 
@@ -199,7 +199,7 @@ echo
 mv ${blddir}/*source* ${srcdir}/
 mv ${blddir}/g*noarch* ${srcdir}/
 mv ${blddir}/larsoft_data*.bz2 ${srcdir}/
-# 
+#
 mv ${blddir}/*.bz2  "${working_dir}/copyBack/"
 mv ${blddir}/*.txt  "${working_dir}/copyBack/"
 rm -rf ${srcdir}
