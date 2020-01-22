@@ -33,7 +33,7 @@ if [ $# -lt 1 ]; then
 fi
 directory_list=$@
 for REP in ${directory_list}
-do 
+do
   if [ ! -d ${REP} ]; then
      echo "ERROR: ${REP} is not a directory"
      exit 1

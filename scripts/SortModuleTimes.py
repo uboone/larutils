@@ -1,11 +1,11 @@
 #!/usr/bin/env python2
-# 
+#
 # Brief:  parses and outputs timing information from art logs
 # Author: petrillo@fnal.gov
 # Date:   201403??
 #
 # Run with '--help' argument for usage instructions.
-# 
+#
 # Version:
 # 1.0 (petrillo@fnal.gov)
 #   first version
@@ -44,7 +44,7 @@ def signed_sqrt(value):
 
 class Stats:
 	"""Statistics collector.
-	
+
 	This class accumulates statistics on a single variable.
 	A new entry is added by add(), that allowes an optional weight.
 	At any time, the following information about the sample of x is available:
@@ -60,14 +60,14 @@ class Stats:
 	- rms2():    the square of the RMS (including weights)
 	- stdev():   standard deviation (0 if less than two events)
 	- stdevp():  an alias for rms()
-	
+
 	The construction allows to specify bFloat = false, in which case the
 	accumulators are integral types (int) until a real type value or weight is
 	add()ed.
 	"""
 	def __init__(self, bFloat = True):
 		self.clear(bFloat)
-	
+
 	def clear(self, bFloat = True):
 		self.e_n = 0
 		if bFloat:
@@ -81,10 +81,10 @@ class Stats:
 		self.e_min = None
 		self.e_max = None
 	# clear()
-	
+
 	def add(self, value, weight=1):
 		"""Add a new item.
-		
+
 		The addition is treated as integer only if both value and weight are
 		integrals.
 		"""
@@ -95,7 +95,7 @@ class Stats:
 		if (self.e_min is None) or (value < self.e_min): self.e_min = value
 		if (self.e_max is None) or (value > self.e_max): self.e_max = value
 	# add()
-	
+
 	def n(self): return self.e_n
 	def weights(self): return self.e_w
 	def sum(self): return self.e_sum
@@ -122,7 +122,7 @@ class EventKeyClass(tuple):
 	def run(self): return self[0]
 	def subRun(self): return self[1]
 	def event(self): return self[2]
-	
+
 	def __str__(self):
 		return "run %d subRun %d event %d" \
 		  % (self.run(), self.subRun(), self.event())
@@ -134,14 +134,14 @@ class ModuleKeyClass(tuple):
 	"""Module instance identifier: module label and instance name."""
 	def name(self): return self[1]
 	def instance(self): return self[0]
-	
+
 	def __str__(self): return "%s[%s]" % (self.name(), self.instance())
 # class ModuleKeyClass
 
 
 class EntryDataClass(object):
 	"""A flexible data structure for per-event information.
-	
+
 	The object is associated to a specific, unique event.
 	It can represent either the execution of the full event, or of a specific
 	module on that event.
@@ -157,29 +157,29 @@ class EntryDataClass(object):
 		self.data.setdefault('time', None)
 		self.eventKey = eventKey
 	# __init__()
-	
+
 	def __getattr__(self, attrName):
 		# we expect this will be called only if no attrName already exists
 		try: return self.data[attrName]
 		except KeyError: raise AttributeError(attrName)
 	# __getattr__()
-	
+
 	def time(self):
 		try: return self.data['time']
 		except KeyError: return None
 	# time()
-	
+
 	def isModule(self):
 		try: return bool(self.module)
 		except AttributeError: return False
 	# isEvent()
-	
+
 	def isEvent(self): return not self.isModule()
-	
+
 	def isMissing(self): return self.time() is None
-	
+
 	def SetMissing(self): self.data['time'] = None
-	
+
 	def __str__(self):
 		s = str(self.eventKey)
 		if self.isModule(): s += " module " + str(self.module)
@@ -189,13 +189,13 @@ class EntryDataClass(object):
 		else: s += "%g s" % self.time()
 		return s
 	# __str__()
-	
+
 # class EntryDataClass
 
 
 class TimeModuleStatsClass(Stats):
 	"""Collects statistics about execution time.
-	
+
 	This class collects statistics about execution time of a module or the whole
 	event.
 	The timing information is added by add() function, with as argument an
@@ -203,7 +203,7 @@ class TimeModuleStatsClass(Stats):
 	Optionally, the object can keep track of all the entries separately.
 	The order of insertion of the events is also recorded.
 	By default, this does not happen and only statistics are stored.
-	
+
 	The sample can be forcibly filled with empty entries. The idea is that one
 	event is added to the sample only when the information about its timing is
 	available. If we are tracking the event keys, we can check if we have all
@@ -218,17 +218,17 @@ class TimeModuleStatsClass(Stats):
 	"""
 	def __init__(self, moduleKey, bTrackEntries = False):
 		"""Constructor: specifies the module we collect information about.
-		
+
 		If the flag bTrackEntries is true, all the added events are stored singly.
 		"""
 		Stats.__init__(self)
 		self.key = moduleKey
 		self.entries = OrderedDict() if bTrackEntries else None
 	# __init__()
-	
+
 	def add(self, data):
 		"""Adds a time to the sample.
-		
+
 		The argument data is an instance of EntryDataClass, that includes both
 		event identification and timing information.
 		Its time() is used as the value of the statistic; if the entry has no time
@@ -241,15 +241,15 @@ class TimeModuleStatsClass(Stats):
 		if not data.isMissing(): Stats.add(self, data.time())
 		return True
 	# add()
-	
+
 	def complete(self, eventKeys):
 		"""Makes sure that an entry for each of the keys in eventKeys is present.
-		
+
 		For event keys already known, nothing happens. For new event keys, an
 		empty entry is added at the end of the list, with no time information.
 		Note that the events are added at the bottom of the list, in the relative
 		order in eventKeys.
-		
+
 		If we are not tracking the events, nothing happens ever.
 		"""
 		if self.entries is None: return 0
@@ -259,42 +259,42 @@ class TimeModuleStatsClass(Stats):
 			if self.add(EntryDataClass(eventKey)): res += 1
 		return res
 	# complete()
-	
+
 	def getEvents(self):
 		"""Returns the list of known event keys (if tracking the events)."""
 		return [] if self.entries is None else self.entries.keys()
 	# getEvents()
-	
+
 	def getEntries(self):
 		"""Returns a list of the event statistics (if tracking the events)."""
 		return [] if self.entries is None else self.entries.values()
 	# getEntries()
-	
+
 	def nEntries(self):
 		"""Returns the number of recorded entries (throws if not tracking)."""
 		return len(self.entries)
 	# nEntries()
-	
+
 	def nEvents(self):
 		"""Returns the number of valid entries (events with timing)."""
 		return self.n()
 	# nEvents()
-	
+
 	def hasEmptyData(self):
 		"""Returns whethere there are entries without timing information.
-		
+
 		Note: throws if not tracking events.
 		"""
 		return self.nEntries() > self.nEvents()
 	# hasEmptyData()
-	
+
 	def FormatStatsAsList(self, format_ = None):
 		"""Prints the collected information into a list.
-		
+
 		The list of strings includes a statistics ID (based on the key), an
 		average time, a relative RMS in percent, the total time and the recorded
 		the number of events with timing information and the timing extrema.
-		
+
 		The format dictionary can contain format directives, for future use (no
 		format directive is currently supported).
 		"""
@@ -303,7 +303,7 @@ class TimeModuleStatsClass(Stats):
 		if (self.n() == 0) or (self.sum() == 0.):
 			return [ name, "n/a" ]
 		RMS = self.rms() if (self.n() != 0) else 0.
-		return [ 
+		return [
 			name,
 			"%g\"" % self.average(),
 			"(RMS %4.1f%%)" % (RMS / self.average() * 100.),
@@ -311,10 +311,10 @@ class TimeModuleStatsClass(Stats):
 			"%g" % self.min(), "- %g)" % self.max(),
 			]
 	# FormatStatsAsList()
-	
+
 	def FormatTimesAsList(self, format_ = {}):
 		"""Prints the collected information into a list.
-		
+
 		The list of strings includes a statistics ID (based on the key), and
 		a time entry for each of the events stored (with holes for the events
 		with missing time).
@@ -327,11 +327,11 @@ class TimeModuleStatsClass(Stats):
 		"""
 		if isinstance(self.key, basestring): name = str(self.key)
 		else: name = str(self.key)
-		
+
 		n = min(self.nEntries(), format_.get('max_events', self.nEntries()))
 		format_str = format_.get('format', '%g')
 		if not self.entries: return [ name, ] + [ "n/a", ] * n
-		
+
 		output = [ name, ]
 		for i, entry in enumerate(self.entries.values()):
 			if i >= n: break
@@ -340,13 +340,13 @@ class TimeModuleStatsClass(Stats):
 		# for
 		return output
 	# FormatTimesAsList()
-	
+
 # class TimeModuleStatsClass
 
 
 class JobStatsClass:
 	"""A class collecting timing information from different modules.
-	
+
 	This is mostly a dictionary structure, but it is sorted.
 	The supported interface includes access by key (dictionary-like) or by
 	position (list-like).
@@ -356,18 +356,18 @@ class JobStatsClass:
 		self.moduleList = []
 		self.moduleStats = {}
 	# __init__()
-	
+
 	def MaxEvents(self):
 		if not self.moduleList: return 0
 		return max(map(Stats.n, self.moduleList))
 	# MaxEvents()
-	
+
 	def MinEvents(self):
 		if not self.moduleList: return 0
 		return min(map(Stats.n, self.moduleList))
 	# MinEvents()
-	
-	
+
+
 	# replicate some list/dictionary interface
 	def __iter__(self): return iter(self.moduleList)
 	def __len__(self): return len(self.moduleList)
@@ -415,21 +415,21 @@ class FormatError(RuntimeError):
 
 def ParseTimeModuleLine(line):
 	"""Parses a line to extract module timing information.
-	
+
 	The line must be known to contain module timing information.
 	The function returns a EntryDataClass including the timing information, or
 	raises a FormatError if the line has no valid format.
-	
+
 	Format 1 (20140226):
-	
+
 	TimeModule> run: 1 subRun: 0 event: 10 beziertrackercc BezierTrackerModule 0.231838
 	"""
 	Tokens = line.split()
-	
+
 	ModuleKey = None
 	EventKey = None
 	time = None
-	
+
 	# Format 1 parsing:
 	try:
 		EventKey = EventKeyClass((int(Tokens[2]), int(Tokens[4]), int(Tokens[6])))
@@ -441,7 +441,7 @@ def ParseTimeModuleLine(line):
 		  type="Module", event=EventKey, module=ModuleKey
 		  )
 	# try ... except
-	
+
 	# validation of Format 1
 	if (Tokens[0] != 'TimeModule>') \
 	  or (Tokens[1] != 'run:') \
@@ -452,24 +452,24 @@ def ParseTimeModuleLine(line):
 		raise FormatError \
 		  ("TimeModule format not recognized: '%s'" % line, type="Module")
 	# if
-	
+
 	return EntryDataClass(EventKey, module=ModuleKey, time=time)
 # ParseTimeModuleLine()
 
 
 def ParseTimeEventLine(line):
 	"""Parses a line to extract event timing information.
-	
+
 	The line must be known to contain event timing information.
 	The function returns a EntryDataClass including the timing information, or
 	raises a FormatError if the line has no valid format.
-	
+
 	Format 1 (20140226):
-	
+
 	TimeEvent> run: 1 subRun: 0 event: 10 0.231838
 	"""
 	Tokens = line.split()
-	
+
 	EventKey = None
 	time = None
 	try:
@@ -481,7 +481,7 @@ def ParseTimeEventLine(line):
 		  type="Event", event=EventKey
 		  )
 	# try ... except
-	
+
 	if (Tokens[0] != 'TimeEvent>') \
 	  or (Tokens[1] != 'run:') \
 	  or (Tokens[3] != 'subRun:') \
@@ -491,14 +491,14 @@ def ParseTimeEventLine(line):
 		raise FormatError("TimeEvent format not recognized: '%s'" % line,
 		  type="Event", event=EventKey)
 	# if
-	
+
 	return EntryDataClass(EventKey, time=time)
 # ParseTimeEventLine()
 
 
 def OPEN(Path, mode = 'r'):
 	"""Open a file (possibly a compressed one).
-	
+
 	Support for modes other than 'r' (read-only) are questionable.
 	"""
 	if Path.endswith('.bz2'): return bz2.BZ2File(Path, mode)
@@ -509,12 +509,12 @@ def OPEN(Path, mode = 'r'):
 
 def ParseInputFile(InputFilePath, AllStats, EventStats, options):
 	"""Parses a log file.
-	
+
 	The art log file at InputFilePath is parsed.
 	The per-module statistics are added to the existing in AllStats (an instance
 	of JobStatsClass), creating new ones as needed. Similarly, per-event
 	statistics are added to EventStats (a TimeModuleStatsClass instance).
-	
+
 	options class can contain the following members:
 	- Permissive (default: false): do not bail out when a format error is found;
 	  the entry is typically skipped. This often happens because the output line
@@ -523,7 +523,7 @@ def ParseInputFile(InputFilePath, AllStats, EventStats, options):
 	  events (always the first ones)
 	- CheckDuplicates (default: false): enables the single-event tracking, that
 	  allows to check for duplicates
-	
+
 	It returns the number of errors encountered.
 	"""
 	def CompleteEvent(CurrentEvent, EventStats, AllStats):
@@ -532,21 +532,21 @@ def ParseInputFile(InputFilePath, AllStats, EventStats, options):
 		for ModuleStats in AllStats:
 			ModuleStats.complete(EventStats.getEvents())
 	# CompleteEvent()
-	
-	
+
+
 	LogFile = OPEN(InputFilePath, 'r')
-	
+
 	nErrors = 0
 	LastLine = None
 	CurrentEvent = None
 	for iLine, line in enumerate(LogFile):
-		
+
 		line = line.strip()
 		if line == LastLine: continue # duplicate line
 		LastLine = line
-		
+
 		if line.startswith("TimeModule> "):
-			
+
 			try:
 				TimeData = ParseTimeModuleLine(line)
 			except FormatError, e:
@@ -562,7 +562,7 @@ def ParseInputFile(InputFilePath, AllStats, EventStats, options):
 				if not options.Permissive: raise
 				else:                      continue
 			# try ... except
-			
+
 			try:
 				ModuleStats = AllStats[TimeData.module]
 			except KeyError:
@@ -570,7 +570,7 @@ def ParseInputFile(InputFilePath, AllStats, EventStats, options):
 				  (TimeData.module, bTrackEntries=options.CheckDuplicates)
 				AllStats[TimeData.module] = ModuleStats
 			#
-			
+
 			ModuleStats.add(TimeData)
 		elif line.startswith("TimeEvent> "):
 			try:
@@ -588,7 +588,7 @@ def ParseInputFile(InputFilePath, AllStats, EventStats, options):
 				if not options.Permissive: raise
 				else:                      continue
 			# try ... except
-			
+
 			EventStats.add(TimeData)
 			if (options.MaxEvents >= 0) \
 			  and (EventStats.n() >= options.MaxEvents):
@@ -597,7 +597,7 @@ def ParseInputFile(InputFilePath, AllStats, EventStats, options):
 		else:
 			TimeData = None
 			continue
-		
+
 		if (CurrentEvent != TimeData.eventKey):
 			if TimeData and CurrentEvent:
 				CompleteEvent(CurrentEvent, EventStats, AllStats)
@@ -605,7 +605,7 @@ def ParseInputFile(InputFilePath, AllStats, EventStats, options):
 		# if
 	# for line in log file
 	if CurrentEvent: CompleteEvent(CurrentEvent, EventStats, AllStats)
-	
+
 	return nErrors
 # ParseInputFile()
 
@@ -616,16 +616,16 @@ def ParseInputFile(InputFilePath, AllStats, EventStats, options):
 
 class MaxItemLengthsClass:
 	"""A list with the maximum length of items seen.
-	
+
 	Facilitates the correct sizing of a table in text mode.
-	
+
 	When a list of strings is add()ed, for each position in the list the length
 	of the string in that position is compared to the maximum one seen so far in
 	that position, and that maximum value is updated if proper.
 	"""
 	def __init__(self, n = 0):
 		self.maxlength = [ None ] * n
-	
+
 	def add(self, items):
 		for iItem, item in enumerate(items):
 			try:
@@ -638,11 +638,11 @@ class MaxItemLengthsClass:
 			if maxlength < itemlength: self.maxlength[iItem] = itemlength
 		# for
 	# add()
-	
+
 	def __len__(self): return len(self.maxlength)
 	def __iter__(self): return iter(self.maxlength)
 	def __getitem__(self, index): return self.maxlength[index]
-	
+
 # class MaxItemLengthsClass
 
 
@@ -662,7 +662,7 @@ def RightString(s, w, f = ' '):
 
 def JustifyString(s, w, f = ' '):
 	"""Recomputes the spaces between the words in s so that they fill a width w.
-	
+
 	The original spacing is lost. The string is split in words by str.split().
 	The character f is used to create the filling spaces between the words.
 	Note that the string can result longer than w if the content is too long.
@@ -670,7 +670,7 @@ def JustifyString(s, w, f = ' '):
 	assert len(f) == 1
 	tokens = s.split(f)
 	if len(tokens) <= 1: return CenterString(s, w, f=f)
-	
+
 	# example: 6 words, 7 spaces (in 5 spacers)
 	spaceSize = max(1., float(f - sum(map(len, tokens))) / (len(tokens) - 1))
 	  # = 1.4
@@ -700,16 +700,16 @@ class TabularAlignmentClass:
 		self.formats = {}
 		if specs: self.SetDefaultFormats(specs)
 	# __init__()
-	
+
 	class LineIdentifierClass:
 		def __init__(self): pass
 		def __call__(self, iLine, rawdata): return None
 	# class LineIdentifierClass
-	
+
 	class CatchAllLines(LineIdentifierClass):
 		def __call__(self, iLine, rawdata): return 1
 	# class CatchAllLines
-	
+
 	class LineNo(LineIdentifierClass):
 		def __init__(self, lineno, success_factor = 5.):
 			TabularAlignmentClass.LineIdentifierClass.__init__(self)
@@ -717,12 +717,12 @@ class TabularAlignmentClass:
 			else:                       self.lineno = lineno
 			self.success_factor = success_factor
 		# __init__()
-		
+
 		def matchLine(self, lineno, iLine, rawdata):
 			if lineno < 0: lineno = len(rawdata) + lineno
 			return iLine == lineno
 		# matchLine
-		
+
 		def __call__(self, iLine, rawdata):
 			success = 0.
 			for lineno in self.lineno:
@@ -732,9 +732,9 @@ class TabularAlignmentClass:
 			else:                         return success * self.success_factor
 		# __call__()
 	# class LineNo
-	
+
 	class FormatNotSupported(Exception): pass
-	
+
 	def ParseFormatSpec(self, spec):
 		SpecData = {}
 		if spec is None: SpecData['format'] = str
@@ -745,7 +745,7 @@ class TabularAlignmentClass:
 		else: raise TabularAlignmentClass.FormatNotSupported(spec)
 		return SpecData
 	# ParseFormatSpec()
-	
+
 	def SetRowFormats(self, rowSelector, specs):
 		# parse the format specifications
 		formats = []
@@ -758,14 +758,14 @@ class TabularAlignmentClass:
 		# for specifications
 		self.formats[rowSelector] = formats
 	# SetRowFormats()
-	
+
 	def SetDefaultFormats(self, specs):
 		self.SetRowFormats(TabularAlignmentClass.CatchAllLines(), specs)
-	
+
 	def AddData(self, data): self.tabledata.extend(data)
 	def AddRow(self, *row_data): self.tabledata.append(row_data)
-	
-	
+
+
 	def SelectFormat(self, iLine):
 		rowdata = self.tabledata[iLine]
 		success = None
@@ -778,13 +778,13 @@ class TabularAlignmentClass:
 		# for
 		return bestFormat
 	# SelectFormat()
-	
-	
+
+
 	def FormatTable(self):
 		# select the formats for all lines
 		AllFormats \
 		  = [ self.SelectFormat(iRow) for iRow in xrange(len(self.tabledata)) ]
-		
+
 		# format all the items
 		ItemLengths = MaxItemLengthsClass()
 		TableContent = []
@@ -797,7 +797,7 @@ class TabularAlignmentClass:
 					Spec = RowFormats[iItem]
 					LastSpec = Spec
 				except IndexError: Spec = LastSpec
-				
+
 				Formatter = Spec['format']
 				if isinstance(Formatter, basestring):
 					ItemContent = Formatter % itemdata
@@ -812,7 +812,7 @@ class TabularAlignmentClass:
 			ItemLengths.add(LineContent)
 			TableContent.append(LineContent)
 		# for rows
-		
+
 		# pad the objects
 		for iRow, rowdata in enumerate(TableContent):
 			RowFormats = AllFormats[iRow]
@@ -822,7 +822,7 @@ class TabularAlignmentClass:
 					Spec = RowFormats[iItem]
 					LastSpec = Spec
 				except IndexError: Spec = LastSpec
-				
+
 				fieldWidth = ItemLengths[iItem]
 				alignment = Spec.get('align', 'left')
 				if alignment == 'right':
@@ -834,38 +834,38 @@ class TabularAlignmentClass:
 				else: # if alignment == 'left':
 					alignedItem = LeftString(item, fieldWidth)
 				if Spec.get('truncate', True): alignedItem = alignedItem[:fieldWidth]
-				
+
 				rowdata[iItem] = alignedItem
 			# for items
 		# for rows
 		return TableContent
 	# FormatTable()
-	
+
 	def ToStrings(self, separator = " "):
 		return [ separator.join(RowContent) for RowContent in self.FormatTable() ]
-	
+
 	def Print(self, stream = sys.stdout):
 		print "\n".join(self.ToStrings())
-	
+
 # class TabularAlignmentClass
 
 
 ################################################################################
 ### main program
 ###
-if __name__ == "__main__": 
+if __name__ == "__main__":
 	import argparse
-	
+
 	###
 	### parse command line arguments
 	###
 	Parser = argparse.ArgumentParser(description=__doc__)
 	Parser.set_defaults(PresentMode="ModTable")
-	
+
 	# positional arguments
 	Parser.add_argument("LogFiles", metavar="LogFile", nargs="+",
 	  help="log file to be parsed")
-	
+
 	# options
 	Parser.add_argument("--eventtable", dest="PresentMode", action="store_const",
 	  const="EventTable", help="do not group the pages by node")
@@ -876,35 +876,35 @@ if __name__ == "__main__":
 	Parser.add_argument("--permissive", dest="Permissive", action="store_true",
 	  help="treats input errors as non-fatal [%(default)s]")
 	Parser.add_argument('--version', action='version', version=Version)
-	
+
 	options = Parser.parse_args()
-	
+
 	if options.PresentMode in ( 'EventTable', ):
 		options.CheckDuplicates = True
-	
+
 	###
 	### parse all inputs, collect the information
 	###
-	
+
 	# per-module statistics
 	AllStats = JobStatsClass( )
 	# per-event statistics
 	EventStats = TimeModuleStatsClass \
 	  ("=== events ===", bTrackEntries=options.CheckDuplicates)
-	
+
 	class NoMoreInput: pass
-	
+
 	nErrors = 0
 	try:
 		if options.MaxEvents == 0: raise NoMoreInput # wow, that was quick!
 		for LogFilePath in options.LogFiles:
 			nErrors += ParseInputFile(LogFilePath, AllStats, EventStats, options)
-		
+
 	except NoMoreInput: pass
-	
+
 	# give a bit of separation between error messages and actual output
 	if nErrors > 0: print >>sys.stderr
-	
+
 	###
 	### print the results
 	###
@@ -912,9 +912,9 @@ if __name__ == "__main__":
 		print "No time statistics found."
 		sys.exit(1)
 	# if
-	
+
 	OutputTable = TabularAlignmentClass()
-	
+
 	# present results
 	if options.PresentMode == "ModTable":
 		# fill the module stat data into the table
@@ -933,9 +933,9 @@ if __name__ == "__main__":
 		OutputTable.AddRow(*EventStats.FormatTimesAsList())
 	else:
 		raise RuntimeError("Presentation mode %r not known" % options.PresentMode)
-	
+
 	OutputTable.Print()
-	
+
 	###
 	### say goodbye
 	###

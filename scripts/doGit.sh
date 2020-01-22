@@ -60,10 +60,10 @@ done
 
   for REP in $pkglist
   do
-     echo 
+     echo
      echo "${REP}: git ${gitcmd}"
      cd ${MRB_SOURCE}/${REP} || exit 1
-     git ${gitcmd} 
+     git ${gitcmd}
      okflow=$?
      if [ ! ${okflow} ]
      then
