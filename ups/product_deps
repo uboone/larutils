@@ -21,8 +21,8 @@ no_fq_dir
 # fcldir  product_dir  fcl
 # libdir  fq_dir       lib
 # bindir  fq_dir       bin
-# gdmldir -  
-# fwdir   -  
+# gdmldir -
+# fwdir   -
 #
 incdir  -
 libdir  -
