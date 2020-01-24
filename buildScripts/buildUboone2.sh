@@ -18,6 +18,10 @@ echo "workspace: $WORKSPACE"
 if [ x$LABEL = x ]; then
   LABEL=null
 fi
+lopt=''
+if [ $LABEL != null ]; then
+  lopt='-l $LABEL'
+fi
 
 # Create area for biuld artifacts.
 rm -rf $WORKSPACE/copyBack
@@ -58,7 +62,7 @@ chmod +x buildFW
 echo
 echo "Begin build."
 echo
-./buildFW -t -b $QUAL -s $SQUAL $blddir $BUILDTYPE uboone-$VERSION || \
+./buildFW -t -b $QUAL -s $SQUAL $lopt $blddir $BUILDTYPE uboone-$VERSION || \
  { mv *.log $logdir
    exit 1
  }
