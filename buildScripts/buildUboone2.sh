@@ -15,12 +15,8 @@ echo "build labels: $LABEL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
 
-if [ x$LABEL = x ]; then
-  LABEL=null
-fi
-lopt=''
-if [ $LABEL != null ]; then
-  lopt='-l $LABEL'
+if [ x$LABEL = xnull ]; then
+  unset LABEL
 fi
 
 # Create area for biuld artifacts.
@@ -33,12 +29,12 @@ if [[ `uname -s` == Darwin ]] && [[ $QUAL == e* ]]; then
   echo "${QUAL} build not supported on `uname -s`" > $WORKSPACE/copyBack/skipping_build
   exit 0
 fi
-if [[ `uname -s` == Darwin ]] && [[ $LABEL == py2 ]]; then
+if [[ `uname -s` == Darwin ]] && [[ x$LABEL == xpy2 ]]; then
   echo "Python 2 build not supported on `uname -s`"
   echo "Python 2 build not supported on `uname -s`" > $WORKSPACE/copyBack/skipping_build
   exit 0
 fi
-if [[ `uname -s` == Linux ]] && [[ `lsb_release -rs` == 6* ]] && [[ $LABEL == null ]]; then
+if [[ `uname -s` == Linux ]] && [[ `lsb_release -rs` == 6* ]] && [[ x$LABEL == x ]]; then
   echo "Python 3 build not supported on SL6"
   echo "Python 3 build not supported on SL6" > $WORKSPACE/copyBack/skipping_build
   exit 0
@@ -62,10 +58,17 @@ chmod +x buildFW
 echo
 echo "Begin build."
 echo
-./buildFW -t -b $QUAL -s $SQUAL $lopt $blddir $BUILDTYPE uboone-$VERSION || \
- { mv *.log $logdir
-   exit 1
- }
+if [ x$LABEL = x ]; then
+  ./buildFW -t -b $QUAL -s $SQUAL $blddir $BUILDTYPE uboone-$VERSION || \
+  { mv *.log $logdir
+    exit 1
+  }
+else
+  ./buildFW -t -b $QUAL -s $SQUAL -l $LABEL $blddir $BUILDTYPE uboone-$VERSION || \
+  { mv *.log $logdir
+    exit 1
+  }
+fi
 
 # Save log files.
 
