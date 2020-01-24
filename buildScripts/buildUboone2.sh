@@ -34,7 +34,7 @@ if [[ `uname -s` == Darwin ]] && [[ x$LABEL == xpy2 ]]; then
   echo "Python 2 build not supported on `uname -s`" > $WORKSPACE/copyBack/skipping_build
   exit 0
 fi
-if [[ `uname -s` == Linux ]] && [[ `lsb_release -rs` == 6* ]] && [[ x$LABEL == x ]]; then
+if [[ `uname -s` == Linux ]] && [[ `lsb_release -rs` == 6* ]] && [[ x$LABEL == x ]] && [[ $QUAL != e17]] && [[ $QUAL != c2 ]]; then
   echo "Python 3 build not supported on SL6"
   echo "Python 3 build not supported on SL6" > $WORKSPACE/copyBack/skipping_build
   exit 0
