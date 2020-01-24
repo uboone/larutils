@@ -11,17 +11,32 @@ SQUAL=`echo $LARSOFT_QUAL | tr : '\n' | grep ^s`
 echo "uboonecode version: $VERSION"
 echo "base qualifiers: $QUAL"
 echo "set qualifier: $SQUAL"
+echo "build labels: $LABEL"
 echo "build type: $BUILDTYPE"
 echo "workspace: $WORKSPACE"
+
+if [ x$LABEL = x ]; then
+  LABEL=null
+fi
 
 # Create area for biuld artifacts.
 rm -rf $WORKSPACE/copyBack
 mkdir -p $WORKSPACE/copyBack || exit 1
 
-# Check for supported combination of base qualifier and OS.
+# Check for unsupported combinations of base qualifier, OS, and build label.
 if [[ `uname -s` == Darwin ]] && [[ $QUAL == e* ]]; then
   echo "${QUAL} build not supported on `uname -s`"
   echo "${QUAL} build not supported on `uname -s`" > $WORKSPACE/copyBack/skipping_build
+  exit 0
+fi
+if [[ `uname -s` == Darwin ]] && [[ $LABEL == py2 ]]; then
+  echo "Python 2 build not supported on `uname -s`"
+  echo "Python 2 build not supported on `uname -s`" > $WORKSPACE/copyBack/skipping_build
+  exit 0
+fi
+if [[ `uname -s` == Linux ]] && [[ `lsb_release -rs` == 6* ]] && [[ $LABEL == null ]]; then
+  echo "Python 3 build not supported on SL6"
+  echo "Python 3 build not supported on SL6" > $WORKSPACE/copyBack/skipping_build
   exit 0
 fi
 
