@@ -35,8 +35,6 @@ if [ x$basequal = x ]; then
   echo "No base qualifier."
   exit 1
 fi
-exit
-
 
 # Create area for biuld artifacts.
 rm -rf $WORKSPACE/copyBack
