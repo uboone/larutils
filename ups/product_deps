@@ -2,7 +2,7 @@
 
 # The *parent* line must the first non-commented line and defines this product and version
 # The version should be of the form vx_yy_zz (e.g. v1_02_03)
-parent larutils v1_25_05
+parent larutils v1_25_06
 # The no_fq_dir keyword indicates that this product is NULL flavored
 no_fq_dir
 
@@ -30,7 +30,7 @@ bindir  product_dir    bin
 fcldir  -
 
 product          version
-cetbuildtools   v7_13_02       -       only_for_build
+cetbuildtools   v7_15_01       -       only_for_build
 end_product_list
 
 
