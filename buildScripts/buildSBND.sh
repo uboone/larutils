@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# build sbndcode and sbndutil 
+# build sbndcode and sbndutil
 # use mrb
 # designed to work on Jenkins
 # this is a proof of concept script

@@ -18,7 +18,7 @@ Arguments:
   product_name     Product name, e.g., larsoft_data
   product_version  Product version, e.g., v0_03_01
 
-Notes: 
+Notes:
   The tarball will be made in the directory you are in when the script is called.
   $(basename ${0}) is suitable for use with larsoft_data, not other products.
 

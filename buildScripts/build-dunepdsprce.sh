@@ -218,7 +218,7 @@ Common:
       envSet(DUNEPDSPRCE_VERSION, ${UPS_PROD_VERSION})
       envSet(DUNEPDSPRCE_INC, ${DUNEPDSPRCE_DIR}/include)
       envSet(DUNEPDSPRCE_LIB, ${DUNEPDSPRCE_FQ_DIR}/lib)
-      # add the lib directory to LD_LIBRARY_PATH 
+      # add the lib directory to LD_LIBRARY_PATH
       if ( test `uname` = "Darwin" )
         envPrepend(DYLD_LIBRARY_PATH, ${DUNEPDSPRCE_FQ_DIR}/lib)
       else()

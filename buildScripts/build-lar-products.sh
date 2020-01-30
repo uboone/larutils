@@ -63,11 +63,11 @@ case ${qual_set} in
 esac
 
 # create copyBack so artifact copy does not fail on early exit
-rm -rf $WORKSPACE/copyBack 
+rm -rf $WORKSPACE/copyBack
 mkdir -p $WORKSPACE/copyBack || exit 1
 
 # check XCode
-if [[ `uname -s` == Darwin ]] 
+if [[ `uname -s` == Darwin ]]
 then
   OSnum=`uname -r | cut -f1 -d"."`
   xver=`xcodebuild -version | grep Xcode | cut -f2 -d" " | cut -f1 -d"."`
@@ -126,7 +126,7 @@ then
 elif [ "${OS}" = "Darwin" ]
 then
   flvr=d`uname -r | cut -f1 -d"."`
-else 
+else
   echo "ERROR: unrecognized operating system ${OS}"
   exit 1
 fi
@@ -156,7 +156,7 @@ echo "begin build"
 echo
 ./buildFW -t -b ${qual_set} ${blddir} ${build_type} lar_product_stack-${version} || \
  { mv ${blddir}/*.log  $WORKSPACE/copyBack/
-   exit 1 
+   exit 1
  }
 
 echo

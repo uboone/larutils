@@ -8,7 +8,7 @@ usage()
 {
   cat 1>&2 <<EOF
 Usage: $(basename ${0}) [-h]
-       env WORKSPACE=<workspace> LARVER=<larsoft version> QUAL=<qualifier> BUILDTYPE=<debug|prof> $(basename ${0}) 
+       env WORKSPACE=<workspace> LARVER=<larsoft version> QUAL=<qualifier> BUILDTYPE=<debug|prof> $(basename ${0})
 
 Options:
 
@@ -96,7 +96,7 @@ then
   export LC_ALL=$LANG
   locale
   echo
-else 
+else
   echo "ERROR: unrecognized operating system ${OS}"
   exit 1
 fi
@@ -126,17 +126,21 @@ if [[ `uname -s` == Darwin ]]; then
       exit 0
     fi
   fi
-  if have_label py3; then
-    msg="We are not building for Python3 on Darwin."
+  if have_label py2; then
+    msg="We are not building for Python2 on Darwin."
     echo "${msg}"
     echo "${msg}" > "${working_dir}/copyBack/skipping_build"
     exit 0
   fi
-elif [[ "${flvr}" == slf6 ]] && have_label py3; then
+elif [[ "${flvr}" == slf6 ]]; then
+  if have_label py2; then
+    echo "Building for supported Python2 on SLF6"
+  else
     msg="Python3 builds not supported on SLF6."
     echo "${msg}"
     echo "${msg}" > "${working_dir}/copyBack/skipping_build"
     exit 0
+  fi
 fi
 
 dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
@@ -171,26 +175,26 @@ echo
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} lar_product_stack-${version} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
-   exit 1 
+   exit 1
  }
 ./buildFW -t -b ${basequal} -s ${squal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} larbase-${version} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
-   exit 1 
+   exit 1
  }
 ./buildFW -t -b ${basequal} -s ${squal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} larsoft-${version} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
-   exit 1 
+   exit 1
  }
 objver=`ls larsoftobj-cfg* | cut -f3 -d"-" | sed -e 's/\./_/g'`
 ./buildFW -t -b ${basequal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} larsoftobj-${objver} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
-   exit 1 
+   exit 1
  }
 
 echo
@@ -200,7 +204,7 @@ echo
 mv ${blddir}/*source* ${srcdir}/
 mv ${blddir}/g*noarch* ${srcdir}/
 mv ${blddir}/larsoft_data*.bz2 ${srcdir}/
-# 
+#
 mv ${blddir}/*.bz2  "${working_dir}/copyBack/"
 mv ${blddir}/*.txt  "${working_dir}/copyBack/"
 rm -rf ${srcdir}

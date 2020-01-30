@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# build uboonecode and ubutil 
+# build uboonecode and ubutil
 # use mrb
 # designed to work on Jenkins
 # this is a proof of concept script

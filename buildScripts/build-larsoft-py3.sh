@@ -8,8 +8,7 @@ usage()
 {
   cat 1>&2 <<EOF
 Usage: $(basename ${0}) [-h]
-       env WORKSPACE=<workspace> LVER=<larsoftobj version> QUAL=<qualifier> BUILDTYPE=<debug|prof> $(basename ${0})
-       $(basename ${0}) <version> <qual_set> <build_type>
+       env WORKSPACE=<workspace> LARVER=<larsoft version> QUAL=<qualifier> BUILDTYPE=<debug|prof> $(basename ${0})
 
 Options:
 
@@ -43,7 +42,8 @@ shift `expr $OPTIND - 1`
 OPTIND=1
 
 working_dir="${WORKSPACE:-$(pwd)}"
-version="${1:-${LVER}}"
+version="${1:-${LARVER}}"
+#objver=${LAROBJ}
 qual_set="${2:-${QUAL}}"
 oIFS=${IFS}; IFS=:; quals=(${qual_set//-/:}); IFS=$oIFS; unset oIFS
 build_type="${3:-${BUILDTYPE}}"
@@ -54,7 +54,7 @@ for onequal in "${quals[@]}"; do
     e[679]|e1[0-9]|c[0-9])
       basequal=${onequal}
       ;;
-    s7[0-9]|s8[0-9])
+    s7[0-9]|s8[0-9]|s9[0-9])
       squal=${onequal}
       ;;
     *)
@@ -63,8 +63,8 @@ for onequal in "${quals[@]}"; do
 done
 
 case ${build_type} in
-  debug) qflag="-d" ;;
-  prof) qflag="-p" ;;
+  debug)  ;;
+  prof)  ;;
   *)
     usage
     exit 1
@@ -126,26 +126,22 @@ if [[ `uname -s` == Darwin ]]; then
       exit 0
     fi
   fi
-  if have_label py2; then
-    msg="We are not building for Python2 on Darwin."
+  if have_label py3; then
+    msg="We are not building for Python3 on Darwin."
     echo "${msg}"
     echo "${msg}" > "${working_dir}/copyBack/skipping_build"
     exit 0
   fi
-elif [[ "${flvr}" == slf6 ]]; then
-  if have_label py2; then
-    echo "Building for supported Python2 on SLF6"
-  else
+elif [[ "${flvr}" == slf6 ]] && have_label py3; then
     msg="Python3 builds not supported on SLF6."
     echo "${msg}"
     echo "${msg}" > "${working_dir}/copyBack/skipping_build"
     exit 0
-  fi
 fi
 
 dotver=`echo ${version} | sed -e 's/_/./g' | sed -e 's/^v//'`
 
-echo "building the larsoftobj distribution for ${version} ${dotver} ${qual_set} ${build_type}"
+echo "building the larsoft distribution for ${version} ${dotver} ${qual_set} ${build_type}"
 echo "build flavor is ${flvr}"
 echo ""
 
@@ -173,7 +169,26 @@ echo
 (( ${#labels[@]} > 0 )) && lopt=-l
 ./buildFW -t -b ${basequal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
-  ${blddir} ${build_type} larsoftobj-${version} || \
+  ${blddir} ${build_type} lar_product_stack-${version} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
+   exit 1
+ }
+./buildFW -t -b ${basequal} -s ${squal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larbase-${version} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
+   exit 1
+ }
+./buildFW -t -b ${basequal} -s ${squal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larsoft-${version} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
+   exit 1
+ }
+objver=`ls larsoftobj-cfg* | cut -f3 -d"-" | sed -e 's/\./_/g'`
+./buildFW -t -b ${basequal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larsoftobj-${objver} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1
  }
@@ -183,9 +198,11 @@ echo "move files"
 echo
 # get these out of the way
 mv ${blddir}/*source* ${srcdir}/
+mv ${blddir}/g*noarch* ${srcdir}/
+mv ${blddir}/larsoft_data*.bz2 ${srcdir}/
 #
-mv ${blddir}/*.bz2  $WORKSPACE/copyBack/
-mv ${blddir}/*.txt  $WORKSPACE/copyBack/
+mv ${blddir}/*.bz2  "${working_dir}/copyBack/"
+mv ${blddir}/*.txt  "${working_dir}/copyBack/"
 rm -rf ${srcdir}
 rm -rf ${blddir}
 
