@@ -136,10 +136,12 @@ elif [[ "${flvr}" == slf6 ]]; then
   if have_label py2; then
     echo "Building for supported Python2 on SLF6"
   else
-    msg="Python3 builds not supported on SLF6."
-    echo "${msg}"
-    echo "${msg}" > "${working_dir}/copyBack/skipping_build"
-    exit 0
+    if [[ "$basequal" != e17 ]] && [[ "$basequal" != c2 ]]; then
+      msg="Python3 builds not supported on SLF6."
+      echo "${msg}"
+      echo "${msg}" > "${working_dir}/copyBack/skipping_build"
+      exit 0
+    fi
   fi
 fi
 
