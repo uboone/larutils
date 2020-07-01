@@ -191,10 +191,19 @@ echo
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1
  }
+# larsoftobj
 objver=`ls larsoftobj-cfg* | cut -f3 -d"-" | sed -e 's/\./_/g'`
 ./buildFW -t -b ${basequal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
   ${blddir} ${build_type} larsoftobj-${objver} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
+   exit 1
+ }
+# larwire
+wirever=`grep larwirecell larsoft-cfg-${version} | cut -f5 -d" "`
+./buildFW -t -b ${basequal} -s ${squal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larwire-${version} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1
  }
