@@ -211,7 +211,7 @@ if [[ ${have_wirecfg} == "yes" ]]; then
  echo "building larwire ${wirever}"
  ./buildFW -t -b ${basequal} -s ${squal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
-  ${blddir} ${build_type} larwire-${version} || \
+  ${blddir} ${build_type} larwire-${wirever} || \
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1
  }
