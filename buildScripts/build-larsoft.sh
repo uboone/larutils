@@ -54,7 +54,7 @@ for onequal in "${quals[@]}"; do
     e[679]|e1[0-9]|c[0-9])
       basequal=${onequal}
       ;;
-    s7[0-9]|s8[0-9]|s9[0-9])
+    s6[0-9]|s7[0-9]|s8[0-9]|s9[0-9])
       squal=${onequal}
       ;;
     *)
@@ -191,6 +191,7 @@ echo
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1
  }
+# larsoftobj
 objver=`ls larsoftobj-cfg* | cut -f3 -d"-" | sed -e 's/\./_/g'`
 ./buildFW -t -b ${basequal} \
   ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
@@ -198,6 +199,25 @@ objver=`ls larsoftobj-cfg* | cut -f3 -d"-" | sed -e 's/\./_/g'`
  { mv ${blddir}/*.log  "${working_dir}/copyBack/"
    exit 1
  }
+# larwire
+wirever=`grep larwirecell larsoft-cfg-${dotver} | cut -f5 -d" "`
+wiredotver=`echo ${wirever} | sed -e 's/_/./g' | sed -e 's/^v//'`
+have_wirecfg="yes"
+cfgfile=http://scisoft.fnal.gov/scisoft/bundles/larwire/${wirever}/buildcfg/larwire-cfg-${wiredotver}
+echo "looking for ${cfgfile}"
+curl --fail --silent --location --insecure -O ${cfgfile} || have_wirecfg="no"
+echo "have_wirecfg is ${have_wirecfg}"
+if [[ ${have_wirecfg} == "yes" ]]; then
+ echo "building larwire ${wirever}"
+ ./buildFW -t -b ${basequal} -s ${squal} \
+  ${lopt} $(IFS=:; printf '%s' "${labels[*]}") \
+  ${blddir} ${build_type} larwire-${wirever} || \
+ { mv ${blddir}/*.log  "${working_dir}/copyBack/"
+   exit 1
+ }
+else
+ echo "skipping larwire build"
+fi
 
 echo
 echo "move files"
