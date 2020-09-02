@@ -76,11 +76,13 @@ echo
 echo "Begin build."
 echo
 if [ x$label = x ]; then
+  echo "./buildFW -t -b $basequal -s $SQUAL $blddir $BUILDTYPE uboone-$VERSION"
   ./buildFW -t -b $basequal -s $SQUAL $blddir $BUILDTYPE uboone-$VERSION || \
   { mv *.log $logdir
     exit 1
   }
 else
+  echo "./buildFW -t -b $basequal -s $SQUAL -l $label $blddir $BUILDTYPE uboone-$VERSION"
   ./buildFW -t -b $basequal -s $SQUAL -l $label $blddir $BUILDTYPE uboone-$VERSION || \
   { mv *.log $logdir
     exit 1
