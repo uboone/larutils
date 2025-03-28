@@ -96,8 +96,11 @@ mv *.log $logdir || exit 1
 # Save artifacts.
 
 mv ub*.bz2  $WORKSPACE/copyBack/ || exit 1
-mv larlite*.bz2  $WORKSPACE/copyBack/ || exit 1
-mv larcv*.bz2  $WORKSPACE/copyBack/ || exit 1
+for f in larlite*.bz2 larcv*.bz2 ; do
+  if [ -f "$f" ]; then
+    mv $f $WORKSPACE/copyBack/ || exit 1
+  fi
+done
 mv swtrigger*.bz2  $WORKSPACE/copyBack/ || exit 1
 mv *.txt $WORKSPACE/copyBack/ || exit 1
 mv wcp*.bz2  $WORKSPACE/copyBack/ || echo "No wcp tarball"
