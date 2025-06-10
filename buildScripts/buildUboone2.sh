@@ -104,7 +104,8 @@ done
 mv swtrigger*.bz2  $WORKSPACE/copyBack/ || exit 1
 mv *.txt $WORKSPACE/copyBack/ || exit 1
 mv wcp*.bz2  $WORKSPACE/copyBack/ || echo "No wcp tarball"
-mv scn*.bz2  $WORKSPACE/copyBack/ || echo "No wcp tarball"
+mv scn*.bz2  $WORKSPACE/copyBack/ || echo "No scn tarball"
+mv geant4reweight*.bz2  $WORKSPACE/copyBack/ || echo "No geant4reweight tarball"
 
 # Clean up.
 
